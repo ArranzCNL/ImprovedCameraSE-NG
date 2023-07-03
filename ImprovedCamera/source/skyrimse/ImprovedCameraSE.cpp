@@ -305,6 +305,7 @@ namespace ImprovedCamera {
 			{
 				resetFOV = true;
 				m_IsFakeCamera = false;
+				UpdateSkeleton(true);
 				camera->worldFOV = *fDefaultWorldFOV;
 			}
 			return;
