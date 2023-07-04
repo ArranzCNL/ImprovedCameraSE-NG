@@ -3,6 +3,10 @@
 Improved Camera SE is an immersive first person camera modification for [The Elder Scrolls V: Skyrim Special Edition](https://store.steampowered.com/app/489830/The_Elder_Scrolls_V_Skyrim_Special_Edition/).
 NG version allows this modification to work across multiple SkyrimSE versions from 1.5.39 to 1.6.659 (GOG) thanks to [CommonLibSSE-NG](https://github.com/CharmedBaryon/CommonLibSSE-NG) and [Address Library](https://github.com/meh321/AddressLibraryDatabase).
 
+## Showcase
+[![Improved Camera SE](https://img.youtube.com/vi/SGQNoSJBfSk/maxresdefault.jpg)](https://www.youtube.com/watch?v=SGQNoSJBfSk "Improved Camera SE")
+Credits: [Capt. Panda](https://www.youtube.com/@CaptPanda)
+
 ## End User Requirements
 * [Skyrim Script Extender (SKSE)](https://skse.silverlock.org/)
 * [Address Library for SKSE Plugins](https://www.nexusmods.com/skyrimspecialedition/mods/32444)

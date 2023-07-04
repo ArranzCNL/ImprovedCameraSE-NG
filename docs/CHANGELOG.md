@@ -1,5 +1,6 @@
 ## v1.0.1 (compared to PR5-hotfix3 - 15/03/2023)
 * Updated to CommonLibSSE-NG library.
+* Fixed shrunken nodes not restoring with tfc.
 * Fixed bEnableBodyConsole not working.
 * Fixed bEnableShadows not working.
 * Fixed events occurring at closest zoom level in third person.
