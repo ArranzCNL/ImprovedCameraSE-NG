@@ -605,7 +605,9 @@ namespace ImprovedCamera {
 
 		if (m_ICamera && m_ICamera->GetID() == RE::CameraState::kFirstPerson)
 		{
-			if (m_LastStateID != CameraFirstPerson::State::kFishingIdle)
+			bool dialogueMenu = RE::UI::GetSingleton()->IsMenuOpen("Dialogue Menu");
+
+			if (m_LastStateID != CameraFirstPerson::State::kFishingIdle && !dialogueMenu)
 			{
 				m_IsFirstPerson = true;
 				m_IsFakeCamera = true;
