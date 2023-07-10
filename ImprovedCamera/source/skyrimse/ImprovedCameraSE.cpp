@@ -306,6 +306,7 @@ namespace ImprovedCamera {
 				resetFOV = true;
 				m_IsFakeCamera = false;
 				UpdateSkeleton(true);
+				ResetPlayerNodes();
 				camera->worldFOV = *fDefaultWorldFOV;
 			}
 			return;
@@ -445,20 +446,21 @@ namespace ImprovedCamera {
 
 		auto player = RE::PlayerCharacter::GetSingleton();
 		auto camera = RE::PlayerCamera::GetSingleton();
+		auto tfcMode = camera->IsInFreeCameraMode();
 
-		if (actor != player || !camera->IsInFirstPerson())
+		if (actor != player || (!camera->IsInFirstPerson() && !tfcMode))
 		{
 			ModelReferenceEffect_Attach(arg1);
 			return;
 		}
 		// Fix model fx when fighting with third person arms
-		if (player->AsActorState()->IsWeaponDrawn() && !UseThirdPersonArms())
+		if (player->AsActorState()->IsWeaponDrawn() && !UseThirdPersonArms() && !tfcMode)
 		{
 			ModelReferenceEffect_Attach(arg1);
 		}
 		else
 		{
-			if (!m_pluginConfig->Fixes().bQuickLightLighting)
+			if (!m_pluginConfig->Fixes().bQuickLightLighting || tfcMode)
 			{
 				stl::enumeration<RE::PlayerCharacter::FlagBDB, std::uint8_t> saveState = player->GetPlayerRuntimeData().unkBDB;
 				player->GetPlayerRuntimeData().unkBDB.set(RE::PlayerCharacter::FlagBDB::kIsInThirdPersonMode);
@@ -476,21 +478,22 @@ namespace ImprovedCamera {
 
 		auto player = RE::PlayerCharacter::GetSingleton();
 		auto camera = RE::PlayerCamera::GetSingleton();
+		auto tfcMode = camera->IsInFreeCameraMode();
 
-		if (actor != player || !camera->IsInFirstPerson())
+		if (actor != player || (!camera->IsInFirstPerson() && !tfcMode))
 		{
 			return ModelReferenceEffect_Sub_14057BCC0(arg1);
 		}
 
 		bool rtn = false;
 		// Fix model fx when fighting with third person arms
-		if (player->AsActorState()->IsWeaponDrawn() && !UseThirdPersonArms())
+		if (player->AsActorState()->IsWeaponDrawn() && !UseThirdPersonArms() && !tfcMode)
 		{
 			rtn = ModelReferenceEffect_Sub_14057BCC0(arg1);
 		}
 		else
 		{
-			if (!m_pluginConfig->Fixes().bQuickLightLighting)
+			if (!m_pluginConfig->Fixes().bQuickLightLighting || tfcMode)
 			{
 				stl::enumeration<RE::PlayerCharacter::FlagBDB, std::uint8_t> saveState = player->GetPlayerRuntimeData().unkBDB;
 				player->GetPlayerRuntimeData().unkBDB.set(RE::PlayerCharacter::FlagBDB::kIsInThirdPersonMode);
@@ -509,15 +512,16 @@ namespace ImprovedCamera {
 
 		auto player = RE::PlayerCharacter::GetSingleton();
 		auto camera = RE::PlayerCamera::GetSingleton();
+		auto tfcMode = camera->IsInFreeCameraMode();
 
-		if (actor != player || !camera->IsInFirstPerson())
+		if (actor != player || (!camera->IsInFirstPerson() && !tfcMode))
 		{
 			return ShaderReferenceEffect_Sub_140584680(arg1);
 		}
 
 		bool rtn = false;
 		// Only shade the arms if fighting and not using third person arms
-		if (player->AsActorState()->IsWeaponDrawn() && !UseThirdPersonArms())
+		if (player->AsActorState()->IsWeaponDrawn() && !UseThirdPersonArms() && !tfcMode)
 		{
 			rtn = ShaderReferenceEffect_Sub_140584680(arg1);
 		}
@@ -538,14 +542,15 @@ namespace ImprovedCamera {
 
 		auto player = RE::PlayerCharacter::GetSingleton();
 		auto camera = RE::PlayerCamera::GetSingleton();
+		auto tfcMode = camera->IsInFreeCameraMode();
 
-		if (actor != player || !camera->IsInFirstPerson())
+		if (actor != player || (!camera->IsInFirstPerson() && !tfcMode))
 		{
 			ShaderReferenceEffect2(arg1);
 			return;
 		}
 		// Only shade the arms if fighting and not using third person arms
-		if (player->AsActorState()->IsWeaponDrawn() && !UseThirdPersonArms())
+		if (player->AsActorState()->IsWeaponDrawn() && !UseThirdPersonArms() && !tfcMode)
 		{
 			ShaderReferenceEffect2(arg1);
 		}
