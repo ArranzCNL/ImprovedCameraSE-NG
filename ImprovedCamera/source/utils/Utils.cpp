@@ -116,18 +116,18 @@ namespace Utils {
 		std::string delimiter = ".";
 
 		std::size_t pos = 0;
+		std::size_t end = -1 * delimiter.size();
 		std::int32_t i = 0;
 
-		while ((pos = strVersion.find(delimiter)) != std::string::npos)
-		{
+		do {
 			if (i > 3)
-			{
 				break;
-			}
-			version[i] = stoi(strVersion.substr(0, pos));
-			strVersion.erase(0, pos + delimiter.length());
-			i++;
-		}
+
+			pos = end + delimiter.size();
+			end = strVersion.find(delimiter, pos);
+			version[i++] = stoi(strVersion.substr(pos, end - pos));
+
+		} while (end != -1);
 	}
 
 	const std::string GetCurrentDateTime(const char* fmt)
