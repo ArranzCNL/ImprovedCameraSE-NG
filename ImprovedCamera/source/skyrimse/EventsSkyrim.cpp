@@ -68,7 +68,8 @@ namespace Events {
 
 			if (player->GetAnimationGraphManager(graphMgr) && graphMgr)
 			{
-				auto behaviourGraph = graphMgr->graphs[graphMgr->GetRuntimeData().activeGraph] ? graphMgr->graphs[graphMgr->GetRuntimeData().activeGraph]->behaviorGraph : nullptr;
+				auto project = &graphMgr->graphs[0];
+				auto behaviourGraph = project ? graphMgr->graphs[0]->behaviorGraph : nullptr;
 				auto activeNodes = behaviourGraph ? behaviourGraph->activeNodes : nullptr;
 
 				if (activeNodes)
@@ -83,10 +84,10 @@ namespace Events {
 						if (clipGenerator)
 						{
 							auto pluginCamera = DLLMain::Plugin::Get()->SkyrimSE()->Camera();
-							std::string animationName = clipGenerator->animationName.c_str();
+							std::string animationFile = clipGenerator->animationName.c_str();
 							std::string elderscroll = "IdleReadElderScroll";
 
-							if (animationName.find(elderscroll) != std::string::npos)
+							if (animationFile.find(elderscroll) != std::string::npos)
 								pluginCamera->SetElderScrollReading(true);
 							else
 								pluginCamera->SetElderScrollReading(false);
