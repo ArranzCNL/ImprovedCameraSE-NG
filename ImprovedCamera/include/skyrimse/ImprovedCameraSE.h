@@ -39,6 +39,7 @@ namespace ImprovedCamera {
 		void Ragdoll_UpdateObjectUpwards(RE::Actor* actor);
 
 		void SetElderScrollReading(bool reading);
+		void SetCartRiding(bool riding);
 		bool IsFirstPerson() { return m_IsFirstPerson; }
 
 		void RequestAPIs();
@@ -106,6 +107,7 @@ namespace ImprovedCamera {
 		static inline TDM_API::IVTDM2* m_TDMAPI = nullptr;
 		bool m_TDMSnapshot = false;
 		bool m_ElderScrollReading = false;
+		bool m_CartRiding = false;
 
 		// Need to shut these off when needed with TDM to stop horse issues.
 		//    Since we are doing this might as well do the same for Werewolf/VampireLord etc.

@@ -159,6 +159,13 @@ namespace ImprovedCamera {
 			// We force cartride to use the alternative camera.
 			if (m_ICamera->GetStateID() >= CameraFirstPerson::State::kCartRideEnter)
 				m_IsFakeCamera = true;
+
+			// Force Touring Carriages back to third person
+			if (m_CartRiding)
+			{
+				playerCamera->ForceThirdPerson();
+				return;
+			}
 		}
 		// Fixes issue with player following Vanity Camera
 		else if (currentID == RE::CameraStates::kAutoVanity)
@@ -691,7 +698,7 @@ namespace ImprovedCamera {
 			// Fixes inputEventHandling, crafting usually disables this.
 			thirdpersonState->inputEventHandlingEnabled = true;
 			// Fixes common enabledControls issues.
-			controlMap->enabledControls.set(RE::UserEvents::USER_EVENT_FLAG::kMovement, 
+			controlMap->enabledControls.set(RE::UserEvents::USER_EVENT_FLAG::kMovement,
 				RE::UserEvents::USER_EVENT_FLAG::kLooking,
 				RE::UserEvents::USER_EVENT_FLAG::kPOVSwitch,
 				RE::UserEvents::USER_EVENT_FLAG::kFighting);
@@ -748,6 +755,11 @@ namespace ImprovedCamera {
 	void ImprovedCameraSE::SetElderScrollReading(bool reading)
 	{
 		m_ElderScrollReading = reading;
+	}
+
+	void ImprovedCameraSE::SetCartRiding(bool riding)
+	{
+		m_CartRiding = riding;
 	}
 
 	void ImprovedCameraSE::RequestAPIs()
