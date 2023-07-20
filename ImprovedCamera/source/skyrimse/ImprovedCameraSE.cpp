@@ -1201,6 +1201,10 @@ namespace ImprovedCamera {
 			}
 			else
 			{
+				auto checkNode = (thirdpersonNode->local.translate * thirdpersonNode->local.scale) * thirdpersonNode->world.scale;
+				if (checkNode.Length() > 0.95f)
+					return;
+
 				if (player->AsActorState()->IsSprinting() && !player->AsActorState()->IsSneaking())
 					point1.y = -25.0f * thirdpersonNode->world.scale;
 
