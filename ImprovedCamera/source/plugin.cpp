@@ -90,7 +90,6 @@ namespace DLLMain {
 		if (m_Config->ModuleData().iMenuMode > Systems::Window::MenuDisplay::kNone)
 		{
 			m_Graphics = std::make_unique<Systems::Graphics>(m_Config->ModuleData().iMenuMode);
-			m_Input = std::make_unique<Systems::Input>();
 		}
 	}
 

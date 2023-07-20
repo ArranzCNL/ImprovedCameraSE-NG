@@ -22,4 +22,6 @@ namespace ImGui {
 	extern void TableItemToggleButton(const char* text, const char* buttonText, bool* setting, bool insertRow = true);
 	extern void TableItemSliderFloat(const char* text, const char* sliderText, float* setting, float v_min, float v_max, const char* format, bool insertRow = true);
 
+	extern const ImGuiKey VirtualKeyToImGuiKey(const std::uint32_t key);
+
 }

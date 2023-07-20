@@ -42,8 +42,8 @@ namespace Patch {
 
 	void SkyrimSE::LoadGame()
 	{
-		m_Camera->ResetState();
 		Events::Observer::Register();
+		m_Camera->ResetState();
 	}
 
 	void SkyrimSE::ExecutableInfo()

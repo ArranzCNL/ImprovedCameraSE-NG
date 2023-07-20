@@ -10,6 +10,8 @@
 #include "utils/Utils.h"
 #include "plugin.h"
 
+#define DIRECTINPUT_VERSION 0x0800
+#include <dinput.h>
 #include <time.h>
 
 
@@ -141,6 +143,173 @@ namespace Utils {
 		strftime(buffer, sizeof(buffer), fmt, &tstruct);
 
 		return buffer;
+	}
+
+	// Note: This only supports US/GB keyboards maybe others, untested!
+	void CorrectExtendedKeys(const std::uint32_t scanCode, std::uint32_t* virtualKey)
+	{
+		switch (scanCode)
+		{
+			case DIK_LWIN:
+			{
+				*virtualKey = VK_LWIN;
+				break;
+			}
+			case DIK_RMENU:
+			{
+				*virtualKey = VK_RMENU;
+				break;
+			}
+			case DIK_RWIN:
+			{
+				*virtualKey = VK_RWIN;
+				break;
+			}
+			case DIK_APPS:
+			{
+				*virtualKey = VK_APPS;
+				break;
+			}
+			case DIK_RCONTROL:
+			{
+				*virtualKey = VK_RCONTROL;
+				break;
+			}
+			case DIK_SYSRQ:
+			{
+				// Print Screen
+				*virtualKey = VK_SNAPSHOT;
+				break;
+			}
+			// Not an extended key
+			case DIK_PAUSE:
+			{
+				*virtualKey = VK_PAUSE;
+				break;
+			}
+			case DIK_INSERT:
+			{
+				*virtualKey = VK_INSERT;
+				break;
+			}
+			case DIK_HOME:
+			{
+				*virtualKey = VK_HOME;
+				break;
+			}
+			case DIK_PRIOR:
+			{
+				// Page Up
+				*virtualKey = VK_PRIOR;
+				break;
+			}
+			case DIK_DELETE:
+			{
+				*virtualKey = VK_DELETE;
+				break;
+			}
+			case DIK_END:
+			{
+				*virtualKey = VK_END;
+				break;
+			}
+			case DIK_NEXT:
+			{
+				// Page Down
+				*virtualKey = VK_NEXT;
+				break;
+			}
+			case DIK_UP:
+			{
+				*virtualKey = VK_UP;
+				break;
+			}
+			case DIK_LEFT:
+			{
+				*virtualKey = VK_LEFT;
+				break;
+			}
+			case DIK_DOWN:
+			{
+				*virtualKey = VK_DOWN;
+				break;
+			}
+			case DIK_RIGHT:
+			{
+				*virtualKey = VK_RIGHT;
+				break;
+			}
+			case DIK_DIVIDE:
+			{
+				*virtualKey = VK_DIVIDE;
+				break;
+			}
+			case DIK_NUMPAD7:
+			{
+				*virtualKey = VK_NUMPAD7;
+				break;
+			}
+			case DIK_NUMPAD8:
+			{
+				*virtualKey = VK_NUMPAD8;
+				break;
+			}
+			case DIK_NUMPAD9:
+			{
+				*virtualKey = VK_NUMPAD9;
+				break;
+			}
+			case DIK_NUMPAD4:
+			{
+				*virtualKey = VK_NUMPAD4;
+				break;
+			}
+			case DIK_NUMPAD5:
+			{
+				*virtualKey = VK_NUMPAD5;
+				break;
+			}
+			case DIK_NUMPAD6:
+			{
+				*virtualKey = VK_NUMPAD6;
+				break;
+			}
+			case DIK_NUMPAD1:
+			{
+				*virtualKey = VK_NUMPAD1;
+				break;
+			}
+			case DIK_NUMPAD2:
+			{
+				*virtualKey = VK_NUMPAD2;
+				break;
+			}
+			case DIK_NUMPAD3:
+			{
+				*virtualKey = VK_NUMPAD3;
+				break;
+			}
+			case DIK_NUMPAD0:
+			{
+				*virtualKey = VK_NUMPAD0;
+				break;
+			}
+			case DIK_DECIMAL:
+			{
+				*virtualKey = VK_DECIMAL;
+				break;
+			}
+			case DIK_NUMPADENTER:
+			{
+				*virtualKey = VK_RETURN + 256; // Numpad Enter (Special handling)
+				break;
+			}
+			// Unsure of this one should be fine.
+			case DIK_NUMPADEQUALS:
+			{
+				*virtualKey = VK_OEM_NEC_EQUAL;
+			}
+		}
 	}
 
 }

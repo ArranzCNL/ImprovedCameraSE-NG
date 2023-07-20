@@ -143,6 +143,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\RE\C\CharEvent.h" />
     <ClInclude Include="..\..\include\RE\H\hkbNodeInfo.h" />
     <ClInclude Include="..\..\include\RE\H\hkClass.h" />
     <ClInclude Include="..\..\include\RE\H\hkClassEnum.h" />

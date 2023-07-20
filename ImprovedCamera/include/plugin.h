@@ -10,7 +10,6 @@
 #include "skyrimse/SkyrimSE.h"
 #include "systems/Config.h"
 #include "systems/Graphics.h"
-#include "systems/Input.h"
 #include "systems/Logging.h"
 
 
@@ -39,11 +38,11 @@ namespace DLLMain {
 		const std::uint32_t VersionMinor() const { return m_VersionMinor; };
 		const std::uint32_t VersionRevision() const { return m_VersionRevision; };
 		const std::uint32_t VersionBuild() const { return m_VersionBuild; };
+		const bool IsGraphicsInitialized() const { return m_GraphicsInitialized; };
 
 		Patch::SkyrimSE* SkyrimSE() const { return m_SkyrimSE.get(); };
 		Systems::Config* Config() const { return m_Config.get(); };
 		Systems::Graphics* Graphics() const { return m_Graphics.get(); };
-		Systems::Input* Input() const { return m_Input.get(); };
 
 	private:
 		std::string m_Name{};
@@ -53,13 +52,13 @@ namespace DLLMain {
 		std::uint32_t m_VersionMinor = 0;
 		std::uint32_t m_VersionRevision = 0;
 		std::uint32_t m_VersionBuild = 0;
+		bool m_GraphicsInitialized = false;
 
 		Systems::Logging m_Logging;
 
 		std::unique_ptr<Patch::SkyrimSE> m_SkyrimSE = nullptr;
 		std::unique_ptr<Systems::Config> m_Config = nullptr;
 		std::unique_ptr<Systems::Graphics> m_Graphics = nullptr;
-		std::unique_ptr<Systems::Input> m_Input = nullptr;
 
 		bool m_Loaded = false;
 		bool m_InitializeMenu = false;

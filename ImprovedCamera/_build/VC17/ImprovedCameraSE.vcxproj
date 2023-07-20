@@ -171,7 +171,6 @@
     <ClInclude Include="..\..\include\skyrimse\SkyrimSE.h" />
     <ClInclude Include="..\..\include\systems\Config.h" />
     <ClInclude Include="..\..\include\systems\Graphics.h" />
-    <ClInclude Include="..\..\include\systems\Input.h" />
     <ClInclude Include="..\..\include\systems\Logging.h" />
     <ClInclude Include="..\..\include\systems\UI.h" />
     <ClInclude Include="..\..\include\systems\Window.h" />
@@ -230,7 +229,6 @@
     <ClCompile Include="..\..\source\skyrimse\SkyrimSE.cpp" />
     <ClCompile Include="..\..\source\systems\Config.cpp" />
     <ClCompile Include="..\..\source\systems\Graphics.cpp" />
-    <ClCompile Include="..\..\source\systems\Input.cpp" />
     <ClCompile Include="..\..\source\systems\Logging.cpp" />
     <ClCompile Include="..\..\source\systems\UI.cpp" />
     <ClCompile Include="..\..\source\systems\Window.cpp" />

@@ -47,6 +47,7 @@ namespace RE {
 namespace Address {
 
 	namespace Hook {
+		static std::uintptr_t ProcessInput;
 		static std::uintptr_t UpdateSwitchPOV;
 		static std::uintptr_t UpdateCamera;
 		static std::uintptr_t UpdateFirstPerson;

@@ -38,6 +38,13 @@ namespace SKSE {
 				plugin->CreateMenu();
 				break;
 			}
+			case SKSE::MessagingInterface::kDataLoaded:
+			{
+				if (plugin->Graphics()->IsInitalized())
+					plugin->m_GraphicsInitialized = true;
+
+				break;
+			}
 		}
 	}
 

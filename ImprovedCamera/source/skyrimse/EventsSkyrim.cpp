@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "skyrimse/EventsSkyrim.h"
@@ -36,6 +36,9 @@ namespace Events {
 
 	EventResult Observer::ProcessEvent(const RE::MenuOpenCloseEvent* a_event, RE::BSTEventSource<RE::MenuOpenCloseEvent>*)
 	{
+		if (!a_event)
+			return EventResult::kContinue;
+
 		if (strcmp(a_event->menuName.c_str(), "Console") == 0)
 		{
 			auto camera = RE::PlayerCamera::GetSingleton();
@@ -47,7 +50,8 @@ namespace Events {
 
 				auto thirdperson3D = RE::PlayerCharacter::GetSingleton()->Get3D(0);
 				if (!thirdperson3D)
-					return RE::BSEventNotifyControl::kContinue;;
+					return RE::BSEventNotifyControl::kContinue;
+				;
 
 				auto thirdpersonNode = thirdperson3D->AsNode();
 

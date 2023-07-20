@@ -13,6 +13,7 @@
 #include "utils/PatternScan.h"
 #include "utils/Log.h"
 #include "utils/ICMath.h"
+#include "utils/Utils.h"
 #include "skyrimse/Helper.h"
 
 
@@ -24,6 +25,64 @@ namespace ImprovedCamera {
 	{
 		m_pluginConfig = DLLMain::Plugin::Get()->Config();
 		SetupCameraData();
+	}
+
+	bool ImprovedCameraSE::ProcessInput(const RE::InputEvent* const* a_event)
+	{
+		auto pluginGraphics = DLLMain::Plugin::Get()->Graphics();
+
+		if (!a_event || !pluginGraphics)
+			return false;
+
+		if (!pluginGraphics->m_UI.get()->IsUIDisplayed())
+			return false;
+
+		for (auto event = *a_event; event; event = event->next)
+		{
+			if (const auto charEvent = event->AsCharEvent())
+			{
+				pluginGraphics->m_UI.get()->AddCharacterEvent(charEvent->keycode);
+			}
+			else if (const auto buttonEvent = event->AsButtonEvent())
+			{
+				auto scanCode = buttonEvent->GetIDCode();
+				auto virtualKey = MapVirtualKeyEx(scanCode, MAPVK_VSC_TO_VK_EX, GetKeyboardLayout(0));
+				Utils::CorrectExtendedKeys(scanCode, &virtualKey);
+
+				switch (event->GetDevice())
+				{
+					case RE::INPUT_DEVICE::kKeyboard:
+					{
+						pluginGraphics->m_UI.get()->AddKeyEvent(virtualKey, buttonEvent->IsPressed());
+
+						if (virtualKey == VK_LSHIFT || virtualKey == VK_RSHIFT ||
+							virtualKey == VK_LCONTROL || virtualKey == VK_RCONTROL ||
+							virtualKey == VK_LMENU || virtualKey == VK_RMENU)
+						{
+							pluginGraphics->m_UI.get()->AddKeyModEvent(virtualKey, buttonEvent->IsPressed());
+						}
+						break;
+					}
+					case RE::INPUT_DEVICE::kMouse:
+					{
+						if (scanCode == 8 || scanCode == 9)  // Mouse Wheel: 8 is UP, 9 is DOWN
+						{
+							pluginGraphics->m_UI.get()->AddMouseWheelEvent(0.0f, buttonEvent->Value() * (scanCode == 8 ? 1.0f : -1.0f));
+						}
+						else
+						{
+							// Only handle 5 mouse buttons
+							if (scanCode > 4)
+								scanCode = 4;
+
+							pluginGraphics->m_UI.get()->AddMouseButtonEvent(scanCode, buttonEvent->IsPressed());
+						}
+						break;
+					}
+				}
+			}
+		}
+		return true;
 	}
 
 	void ImprovedCameraSE::UpdateSwitchPOV()
@@ -253,6 +312,9 @@ namespace ImprovedCamera {
 						{
 							auto smoothCamResult = m_SmoothCamAPI->RequestCameraControl(m_ICHandle);
 							if (smoothCamResult == SmoothCamAPI::APIResult::OK) {} // Just to stop compiler moaning
+
+							if (!m_SmoothCamSnapshot)
+								m_SmoothCamSnapshot = true;
 						}
 						if (m_TDMAPI)
 						{
@@ -1005,6 +1067,7 @@ namespace ImprovedCamera {
 				return RE::BSVisit::BSVisitControl::kContinue;
 			});
 	}
+
 	void ImprovedCameraSE::UpdateNearDistance(RE::PlayerCamera* camera)
 	{
 		auto player = RE::PlayerCharacter::GetSingleton();
@@ -1202,7 +1265,7 @@ namespace ImprovedCamera {
 			else
 			{
 				auto checkNode = (thirdpersonNode->local.translate * thirdpersonNode->local.scale) * thirdpersonNode->world.scale;
-				if (checkNode.Length() > 0.95f)
+				if (checkNode.Length() > 0.95)
 					return;
 
 				if (player->AsActorState()->IsSprinting() && !player->AsActorState()->IsSneaking())
@@ -1422,19 +1485,17 @@ namespace ImprovedCamera {
 
 	void ImprovedCameraSE::ReleaseAPIs()
 	{
-		if (m_SmoothCamAPI)
-			m_SmoothCamAPI->ReleaseCameraControl(m_ICHandle);
-
-		if (m_TDMAPI)
+		if (m_SmoothCamAPI && m_SmoothCamSnapshot)
 		{
+			m_SmoothCamSnapshot = false;
+			m_SmoothCamAPI->ReleaseCameraControl(m_ICHandle);
+		}
+		if (m_TDMAPI && m_TDMSnapshot)
+		{
+			m_TDMSnapshot = false;
 			m_TDMAPI->ReleaseDisableHeadtracking(m_ICHandle);
-
-			if (m_TDMSnapshot)
-			{
-				m_TDMSnapshot = false;
-				*m_directionalMovementSheathed = m_directionalMovementSheathedOriginal;
-				*m_directionalMovementDrawn = m_directionalMovementDrawnOriginal;
-			}
+			*m_directionalMovementSheathed = m_directionalMovementSheathedOriginal;
+			*m_directionalMovementDrawn = m_directionalMovementDrawnOriginal;
 		}
 	}
 

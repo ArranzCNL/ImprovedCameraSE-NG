@@ -16,16 +16,24 @@ namespace Systems {
 		virtual ~UI() = default;
 
 		virtual bool Initialize() = 0;
-		virtual LRESULT WndprocHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) = 0;
+		virtual LRESULT WndprocHandler(const HWND hWnd, const UINT msg, const WPARAM wParam, const LPARAM lParam) = 0;
 		virtual void BeginFrame() = 0;
 		virtual void OnUpdate() = 0;
 		virtual void EndFrame() = 0;
 		virtual void ResizeBuffer(const glm::uvec2 size) = 0;
+		// Keyboard input
+		virtual void AddKeyEvent(const std::uint32_t key, const bool down) = 0;
+		virtual void AddKeyModEvent(const std::uint32_t key, const bool down) = 0;
+		virtual void AddCharacterEvent(const std::uint32_t character) = 0;
+		// Mouse input
+		virtual void AddMousePosEvent(const float x_pos, const float y_pos) = 0;
+		virtual void AddMouseButtonEvent(const std::uint32_t button, const bool down) = 0;
+		virtual void AddMouseWheelEvent(const float x_wheel, const float y_wheel) = 0;
 
-		const bool IsMenuDisplayed() const { return m_DisplayMenu; };
+		const bool IsUIDisplayed() const { return m_DisplayUI; };
 
 	protected:
-		bool m_DisplayMenu = false;
+		bool m_DisplayUI = false;
 	};
 
 }

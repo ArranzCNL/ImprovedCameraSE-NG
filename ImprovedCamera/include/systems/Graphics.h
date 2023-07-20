@@ -16,6 +16,10 @@
 namespace Menu {
 	class UIMenu;
 }
+// Forward declare ImprovedCameraSE
+namespace ImprovedCamera {
+	class ImprovedCameraSE;
+}
 
 
 namespace Systems {
@@ -31,9 +35,9 @@ namespace Systems {
 	public:
 		const bool IsInitalized() const { return m_Initialized; };
 		void ResizeBuffer(const glm::uvec2 size);
-		Window* Window() const { return m_Window.get(); };
-
 		bool IsOverlayHooked() const { return m_OverlayHooked; };
+
+		Systems::Window* Window() const { return m_Window.get(); };
 
 	private:
 		bool m_Initialized = false;
@@ -52,7 +56,8 @@ namespace Systems {
 		PresentHook m_PresentTarget = nullptr;
 
 		std::unique_ptr<Systems::Window> m_Window = nullptr;
-		std::unique_ptr<UI> m_UI = nullptr;
+		std::unique_ptr<Systems::UI> m_UI = nullptr;
+		std::uintptr_t m_DXGIPresentAddress;
 
 	private:
 		bool CheckLoader(const std::string& fileName);
@@ -61,14 +66,15 @@ namespace Systems {
 		bool HookOverlay();
 		void CreateRenderTargetView();
 		void CleanupRenderTarget();
-		void CreateDummyDevice();
 
 	private:
 		static HRESULT STDMETHODCALLTYPE Hook_Present(IDXGISwapChain* pThis, UINT SyncInterval, UINT Flags);
 		static DWORD WINAPI CreateDevice(LPVOID lpParam);
 
-		friend class Window;
+		friend struct DXGIPresentHook;
+		friend class Systems::Window;
 		friend class Menu::UIMenu;
+		friend class ImprovedCamera::ImprovedCameraSE;
 	};
 
 }

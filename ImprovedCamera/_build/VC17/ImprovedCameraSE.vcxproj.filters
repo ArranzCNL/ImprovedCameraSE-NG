@@ -126,9 +126,6 @@
     <ClInclude Include="..\..\include\systems\Graphics.h">
       <Filter>include\systems</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\systems\Input.h">
-      <Filter>include\systems</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\systems\UI.h">
       <Filter>include\systems</Filter>
     </ClInclude>
@@ -270,9 +267,6 @@
       <Filter>source\systems</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\systems\Graphics.cpp">
-      <Filter>source\systems</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\systems\Input.cpp">
       <Filter>source\systems</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\systems\UI.cpp">

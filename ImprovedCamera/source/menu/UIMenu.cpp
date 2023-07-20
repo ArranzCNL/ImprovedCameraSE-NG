@@ -27,7 +27,6 @@ namespace Menu {
 		m_pluginConfig = plugin->Config();
 		m_pluginGraphics = plugin->Graphics();
 		m_pluginSkyrimSE = plugin->SkyrimSE();
-		m_pluginInput = plugin->Input();
 
 		m_ProfileName = m_pluginConfig->ModuleData().sProfileName.substr(0, m_pluginConfig->ModuleData().sProfileName.size() - 4);
 		m_TitlebarName = plugin->Description().c_str();
@@ -54,7 +53,6 @@ namespace Menu {
 			// Set imgui.ini to the proper location also change it's name to editorconfig.ini
 			m_ImGuiConfig = m_pluginConfig->Path() + "editorconfig.ini";
 			io.IniFilename = m_ImGuiConfig.c_str();
-
 			LOG_TRACE("  ImGuiConfig:\t\t\t{}", m_ImGuiConfig.c_str());
 
 			// Setup Font
@@ -123,7 +121,7 @@ namespace Menu {
 
 	LRESULT UIMenu::WndprocHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
-		if (!m_DisplayMenu)
+		if (!m_DisplayUI)
 			return false;
 
 		// ImGui callback
@@ -149,34 +147,33 @@ namespace Menu {
 		ForegroundWindow = GetForegroundWindow();
 
 		// Focus loss detection - Force close.
-		if (ForegroundWindow && ForegroundWindow != m_UIMenuWindow && m_DisplayMenu)
+		if (ForegroundWindow && ForegroundWindow != m_UIMenuWindow && m_DisplayUI)
 		{
 			OnUpdateMenuClose();
 		}
 		// Display the Window - Configured key pressed.
-		if (ForegroundWindow == m_ApplicationWindow && !m_DisplayMenu && (GetAsyncKeyState(m_MenuKey) & 0x8000) != 0 && (GetAsyncKeyState(VK_LSHIFT) & 0x8000) != 0)
+		if (ForegroundWindow == m_ApplicationWindow && !m_DisplayUI && (GetAsyncKeyState(m_MenuKey) & 0x8000) != 0 && (GetAsyncKeyState(VK_LSHIFT) & 0x8000) != 0)
 		{
-			m_DisplayMenu = true;
+			m_DisplayUI = true;
 
 			if (m_pluginConfig->ModuleData().iMenuMode == Systems::Window::MenuDisplay::kInternal)
 			{
 				ShowCursor(true);
-				m_pluginInput->MenuDisplayed(m_DisplayMenu);
 			}
 		}
 		// Close the Window - Escape key pressed.
-		if (m_ApplicationWindow && ForegroundWindow == m_UIMenuWindow && m_DisplayMenu && (GetAsyncKeyState(VK_ESCAPE) & 0x8000) != 0)
+		if (m_ApplicationWindow && ForegroundWindow == m_UIMenuWindow && m_DisplayUI && (GetAsyncKeyState(VK_ESCAPE) & 0x8000) != 0)
 		{
 			OnUpdateMenuClose();
 			SetForegroundWindow(m_ApplicationWindow);
 		}
 		// Save Config - CTRL+S (0x53).
-		if (ForegroundWindow == m_UIMenuWindow && m_DisplayMenu && !m_ViewSaveWindow && (GetAsyncKeyState(0x53) & 0x8000) != 0 && (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0)
+		if (ForegroundWindow == m_UIMenuWindow && m_DisplayUI && !m_ViewSaveWindow && (GetAsyncKeyState(0x53) & 0x8000) != 0 && (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0)
 		{
 			OnUpdateMenuSave();
 		}
 		// Update Menu(s)
-		if (m_UIMenuWindow && IsWindowVisible(m_UIMenuWindow) && m_DisplayMenu)
+		if (m_UIMenuWindow && IsWindowVisible(m_UIMenuWindow) && m_DisplayUI)
 		{
 			OnUpdateMenu();
 		}
@@ -203,6 +200,44 @@ namespace Menu {
 	void UIMenu::ResizeBuffer(const glm::uvec2 size)
 	{
 		m_pluginGraphics->ResizeBuffer(size);
+	}
+
+	void UIMenu::AddKeyEvent(const std::uint32_t key, const bool down)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.AddKeyEvent(ImGui::VirtualKeyToImGuiKey(key), down);
+	}
+
+	void UIMenu::AddKeyModEvent(const std::uint32_t key, const bool down)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+
+		if (key == VK_LSHIFT || key == VK_RSHIFT)
+			io.AddKeyEvent(ImGuiMod_Shift, down);
+		else if (key == VK_LCONTROL || key == VK_RCONTROL)
+			io.AddKeyEvent(ImGuiMod_Ctrl, down);
+		else if (key == VK_LMENU || key == VK_RMENU)
+			io.AddKeyEvent(ImGuiMod_Alt, down);
+	}
+
+	void UIMenu::AddCharacterEvent(const std::uint32_t character)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.AddInputCharacter(character);
+	}
+	// Not used
+	void UIMenu::AddMousePosEvent(const float, const float) {}
+
+	void UIMenu::AddMouseButtonEvent(const std::uint32_t button, const bool down)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.AddMouseButtonEvent(button, down);
+	}
+
+	void UIMenu::AddMouseWheelEvent(const float x_wheel, const float y_wheel)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.AddMouseWheelEvent(x_wheel, y_wheel);
 	}
 
 	void UIMenu::OnUpdateMenu()
@@ -238,7 +273,7 @@ namespace Menu {
 		ImGuiIO& io = ImGui::GetIO();
 		io.MouseDrawCursor = false;
 
-		m_DisplayMenu = false;
+		m_DisplayUI = false;
 		for (Interface::IMenu* menu : m_Menu)
 			menu->OnClose();
 
@@ -251,14 +286,18 @@ namespace Menu {
 		m_ViewDemoWindow = false;
 		m_ViewAboutImGuiWindow = false;
 
-		if (m_pluginConfig->ModuleData().iMenuMode == Systems::Window::MenuDisplay::kInternal)
-		{
-			ShowCursor(false);
-			m_pluginInput->MenuDisplayed(m_DisplayMenu);
-		}
 		// Clear ImGui input
 		io.ClearInputCharacters();
 		io.ClearInputKeys();
+
+		if (m_pluginConfig->ModuleData().iMenuMode == Systems::Window::MenuDisplay::kInternal)
+		{
+			ShowCursor(false);
+			// Close Journal Menu
+			Sleep(10);
+			const auto msgQueue = RE::UIMessageQueue::GetSingleton();
+			msgQueue->AddMessage("Journal Menu", RE::UI_MESSAGE_TYPE::kHide, nullptr);
+		}
 	}
 
 	void UIMenu::OnUpdateMenuSave()

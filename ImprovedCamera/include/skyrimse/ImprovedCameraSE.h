@@ -20,6 +20,8 @@ namespace ImprovedCamera {
 		~ImprovedCameraSE() = default;
 
 	public:
+		bool ProcessInput(const RE::InputEvent* const* a_event);
+
 		void UpdateSwitchPOV();
 		void UpdateCamera(std::uint8_t currentID, std::uint8_t previousID);
 		void UpdateFirstPerson();
@@ -105,6 +107,7 @@ namespace ImprovedCamera {
 
 		static inline SmoothCamAPI::IVSmoothCam3* m_SmoothCamAPI = nullptr;
 		static inline TDM_API::IVTDM2* m_TDMAPI = nullptr;
+		bool m_SmoothCamSnapshot = false;
 		bool m_TDMSnapshot = false;
 		bool m_ElderScrollReading = false;
 		bool m_CartRiding = false;
