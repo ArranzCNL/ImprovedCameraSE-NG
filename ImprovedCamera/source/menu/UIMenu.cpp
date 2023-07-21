@@ -118,7 +118,7 @@ namespace Menu {
 		return false;
 	}
 
-	LRESULT UIMenu::WndprocHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+	LRESULT UIMenu::WndprocHandler(const HWND hWnd, const UINT msg, const WPARAM wParam, const LPARAM lParam)
 	{
 		if (!m_DisplayUI)
 			return false;
