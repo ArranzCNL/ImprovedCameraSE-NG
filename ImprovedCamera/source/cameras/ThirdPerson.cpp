@@ -297,6 +297,7 @@ namespace ImprovedCamera {
 
 					if (thirdpersonState->freeRotation.x >= werewolfMaxAngle)
 						thirdpersonState->freeRotation.x = werewolfMaxAngle;
+
 					if (thirdpersonState->freeRotation.x <= -werewolfMaxAngle)
 						thirdpersonState->freeRotation.x = -werewolfMaxAngle;
 				}
@@ -310,6 +311,7 @@ namespace ImprovedCamera {
 
 					if (thirdpersonState->freeRotation.x >= necroLichMaxAngle)
 						thirdpersonState->freeRotation.x = necroLichMaxAngle;
+
 					if (thirdpersonState->freeRotation.x <= -necroLichMaxAngle)
 						thirdpersonState->freeRotation.x = -necroLichMaxAngle;
 				}

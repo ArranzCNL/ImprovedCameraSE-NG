@@ -20,6 +20,7 @@ namespace Patch {
 
 	// Credits to Ershin. Added force closing of journal menu which caused an issue.
 	struct ProcessInput {
+
 		static void thunk(RE::BSTEventSource<RE::InputEvent*>* a_dispatcher, RE::InputEvent* const* a_event)
 		{
 			auto plugin = DLLMain::Plugin::Get();
@@ -49,6 +50,7 @@ namespace Patch {
 	};
 
 	struct UpdateSwitchPOV {
+
 		static void thunk(RE::PlayerCharacter* player, void* arg2)
 		{
 			func(player, arg2);
@@ -63,6 +65,7 @@ namespace Patch {
 	};
 
 	struct UpdateCamera {
+
 		static void thunk(RE::TESCamera* tesCamera)
 		{
 			func(tesCamera);
@@ -92,6 +95,7 @@ namespace Patch {
 	};
 
 	struct UpdateFirstPerson {
+
 		static void thunk(RE::NiAVObject* firstpersonObject, RE::NiUpdateData* updateData)
 		{
 			firstpersonObject->Update(*updateData);
@@ -103,6 +107,7 @@ namespace Patch {
 	};
 
 	struct TESObjectCell {
+
 		static RE::NiNode* thunk(RE::TESObjectREFR* objectREFR)
 		{
 			// Replace function with Get3D as a node
@@ -114,6 +119,7 @@ namespace Patch {
 	};
 
 	struct SmoothAnimationTransitions {
+
 		static bool thunk(RE::Actor* actor)
 		{
 			if (actor)
@@ -128,6 +134,7 @@ namespace Patch {
 	};
 
 	struct HeadTracking {
+
 		static void thunk(void* arg1, void* arg2, void* arg3)
 		{
 			if (ic->UpdateHeadTracking())
@@ -148,9 +155,11 @@ namespace Patch {
 	};
 
 	struct ModelReferenceEffect_UpdatePosition {
+
 		static void Install()
 		{
 			struct Patch : Xbyak::CodeGenerator {
+
 				DLLMain::Plugin* g_plugin = DLLMain::Plugin::Get();
 
 				Patch(std::uintptr_t func)
@@ -186,9 +195,11 @@ namespace Patch {
 	};
 
 	struct ModelReferenceEffect_Update {
+
 		static void Install()
 		{
 			struct Patch : Xbyak::CodeGenerator {
+
 				Patch(std::uintptr_t func)
 				{
 					Xbyak::Label f;
@@ -219,10 +230,13 @@ namespace Patch {
 	};
 
 	struct ShaderReferenceEffect_Update {
+
 		struct Patch1 {
+
 			static void Install()
 			{
 				struct Patch : Xbyak::CodeGenerator {
+
 					Patch(std::uintptr_t func)
 					{
 						Xbyak::Label f;
@@ -253,9 +267,11 @@ namespace Patch {
 		};
 
 		struct Patch2 {
+
 			static void Install()
 			{
 				struct Patch : Xbyak::CodeGenerator {
+
 					Patch(std::uintptr_t func)
 					{
 						Xbyak::Label f;
@@ -287,6 +303,7 @@ namespace Patch {
 	};
 
 	struct GetEffectNode_IsThirdPerson {
+
 		static bool thunk(void*)
 		{
 			auto camera = RE::PlayerCamera::GetSingleton();
@@ -306,6 +323,7 @@ namespace Patch {
 	};
 
 	struct ForceFirstPerson {
+
 		static void func()
 		{
 			auto camera = RE::PlayerCamera::GetSingleton();
@@ -318,6 +336,7 @@ namespace Patch {
 	};
 
 	struct ForceThirdPerson {
+
 		static void func()
 		{
 			auto camera = RE::PlayerCamera::GetSingleton();
@@ -330,6 +349,7 @@ namespace Patch {
 	};
 
 	struct Ragdoll {
+
 		static void* thunk(void* BSTaskPool, RE::Actor* actor, float arg3, float arg4, float arg5, float arg6)
 		{
 			ic->Ragdoll(actor);
@@ -341,9 +361,11 @@ namespace Patch {
 	};
 
 	struct Ragdoll_IsTaskPoolRequired {
+
 		static void Install()
 		{
 			struct Patch : Xbyak::CodeGenerator {
+
 				Patch(std::uintptr_t func)
 				{
 					Xbyak::Label f;
@@ -377,6 +399,7 @@ namespace Patch {
 	};
 
 	struct Ragdoll_UpdateObjectUpwards {
+
 		static void thunk(RE::NiAVObject* object, RE::NiUpdateData* updateData)
 		{
 			auto player = RE::PlayerCharacter::GetSingleton();
@@ -393,6 +416,7 @@ namespace Patch {
 	};
 
 	struct RagdollDeath {
+
 		static void* thunk(void* BSTaskPool, RE::Actor* actor, float arg3, void* arg4, std::uint8_t arg5, std::uint8_t arg6)
 		{
 			ic->Ragdoll(actor);
@@ -404,6 +428,7 @@ namespace Patch {
 	};
 
 	struct KillActor {
+
 		static void* thunk(RE::Actor* actor, void* arg2, float arg3, std::uint8_t arg4, std::uint8_t arg5)
 		{
 			ic->Ragdoll_UpdateObjectUpwards(actor);
@@ -415,6 +440,7 @@ namespace Patch {
 	};
 
 	struct TogglePOV {
+
 		static void thunk(RE::TogglePOVHandler* povHandler, RE::ButtonEvent* buttonEvent, RE::PlayerControlsData* controlsData)
 		{
 			// buttonEvent->value should be either bool or an int.

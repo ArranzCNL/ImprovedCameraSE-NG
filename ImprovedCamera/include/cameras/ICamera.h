@@ -21,6 +21,7 @@ namespace Interface {
 
 	protected:
 		struct Data {
+
 			const bool* EventActive;
 			const float* FOV;
 			const float* NearDistance;

@@ -11,6 +11,7 @@ namespace stl {
 	namespace detail {
 
 		struct asm_patch : Xbyak::CodeGenerator {
+
 			asm_patch(std::uintptr_t a_dst)
 			{
 				Xbyak::Label dst;

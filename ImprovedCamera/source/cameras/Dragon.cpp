@@ -103,7 +103,6 @@ namespace ImprovedCamera {
 			if (m_DragonState == CameraDragon::State::kRiding)
 			{
 				auto thirdpersonState = (RE::ThirdPersonState*)RE::PlayerCamera::GetSingleton()->currentState.get();
-
 				float dragonMaxAngle = m_pluginConfig->RestrictAngles().fFlying * (M_PI / 180.0f);  // Degrees to Radians;
 
 				if (m_pluginConfig->Events().bDragon && m_DragonState == CameraDragon::State::kRiding)
@@ -114,6 +113,7 @@ namespace ImprovedCamera {
 					{
 						if (thirdpersonState->freeRotation.x >= dragonMaxAngle)
 							thirdpersonState->freeRotation.x = dragonMaxAngle;
+
 						if (thirdpersonState->freeRotation.x <= -dragonMaxAngle)
 							thirdpersonState->freeRotation.x = -dragonMaxAngle;
 

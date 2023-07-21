@@ -14,6 +14,7 @@ namespace ImprovedCamera {
 
 	public:
 		struct State {
+
 			enum Furniture : std::uint8_t
 			{
 				kStopped = 0,

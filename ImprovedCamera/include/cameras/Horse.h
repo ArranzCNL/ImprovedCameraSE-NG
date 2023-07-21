@@ -14,6 +14,7 @@ namespace ImprovedCamera {
 
 	public:
 		struct State {
+
 			enum Horse : std::uint8_t
 			{
 				kDismounted = 0,

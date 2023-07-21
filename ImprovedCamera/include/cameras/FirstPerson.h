@@ -14,6 +14,7 @@ namespace ImprovedCamera {
 
 	public:
 		struct State {
+
 			enum FirstPerson : std::uint8_t
 			{
 				kExit = 0,

@@ -213,8 +213,10 @@ namespace Menu {
 
 		if (key == VK_LSHIFT || key == VK_RSHIFT)
 			io.AddKeyEvent(ImGuiMod_Shift, down);
+
 		else if (key == VK_LCONTROL || key == VK_RCONTROL)
 			io.AddKeyEvent(ImGuiMod_Ctrl, down);
+
 		else if (key == VK_LMENU || key == VK_RMENU)
 			io.AddKeyEvent(ImGuiMod_Alt, down);
 	}
@@ -458,6 +460,7 @@ namespace Menu {
 		if (m_ProfileName.compare("Default") == 0)
 		{
 			struct TextFilters {
+
 				static int FilterAllowedCharacters(ImGuiInputTextCallbackData* data)
 				{
 					if (data->EventChar < 256 && strchr("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", (char)data->EventChar))

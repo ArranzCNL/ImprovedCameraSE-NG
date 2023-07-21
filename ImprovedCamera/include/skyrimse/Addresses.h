@@ -20,6 +20,7 @@ namespace RE {
 	};
 
 	struct EQUIPPED_ITEMTYPE_IDS {
+
 		enum EQUIPPED_ITEMTYPE_ID : std::int32_t
 		{
 			kFist = 0,

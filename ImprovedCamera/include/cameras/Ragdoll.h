@@ -14,6 +14,7 @@ namespace ImprovedCamera {
 
 	public:
 		struct State {
+
 			enum Ragdoll : std::uint8_t
 			{
 				kStopped = 0,

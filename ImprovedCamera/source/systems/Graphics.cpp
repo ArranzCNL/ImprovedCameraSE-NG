@@ -55,6 +55,7 @@ namespace Systems {
 	}
 
 	struct DXGIPresentHook {
+
 		static void thunk(std::uint32_t a_timer)
 		{
 			func(a_timer);
