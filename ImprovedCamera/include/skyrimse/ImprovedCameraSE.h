@@ -6,10 +6,9 @@
 
 #pragma once
 
-#include "cameras/ICamera.h"
 #include "api/SmoothCamAPI.h"
 #include "api/TrueDirectionalMovementAPI.h"
-
+#include "cameras/ICamera.h"
 
 namespace ImprovedCamera {
 
@@ -20,6 +19,8 @@ namespace ImprovedCamera {
 		~ImprovedCameraSE() = default;
 
 	public:
+		bool ProcessInput(const RE::InputEvent* const* a_event);
+
 		void UpdateSwitchPOV();
 		void UpdateCamera(std::uint8_t currentID, std::uint8_t previousID);
 		void UpdateFirstPerson();
@@ -39,6 +40,7 @@ namespace ImprovedCamera {
 		void Ragdoll_UpdateObjectUpwards(RE::Actor* actor);
 
 		void SetElderScrollReading(bool reading);
+		void SetCartRiding(bool riding);
 		bool IsFirstPerson() { return m_IsFirstPerson; }
 
 		void RequestAPIs();
@@ -47,11 +49,14 @@ namespace ImprovedCamera {
 		class NodeOverride {
 
 		public:
-			NodeOverride(RE::NiNode* node, float scale) : node(node) {
+			NodeOverride(RE::NiNode* node, float scale) :
+				node(node)
+			{
 				old_scale = node->local.scale;
 				node->local.scale = scale;
 			}
-			~NodeOverride() {
+			~NodeOverride()
+			{
 				node->local.scale = old_scale;
 			}
 
@@ -91,7 +96,7 @@ namespace ImprovedCamera {
 		std::uint8_t m_CameraEventID = CameraEvent::kFirstPerson;
 		uint8_t m_PreviousCameraID = 255;
 		uint8_t m_CurrentCameraID = 255;
-		
+
 		bool m_IsThirdPersonForced = false;
 		bool m_IsFirstPerson = false;
 		bool m_IsFakeCamera = false;
@@ -104,8 +109,10 @@ namespace ImprovedCamera {
 
 		static inline SmoothCamAPI::IVSmoothCam3* m_SmoothCamAPI = nullptr;
 		static inline TDM_API::IVTDM2* m_TDMAPI = nullptr;
+		bool m_SmoothCamSnapshot = false;
 		bool m_TDMSnapshot = false;
 		bool m_ElderScrollReading = false;
+		bool m_CartRiding = false;
 
 		// Need to shut these off when needed with TDM to stop horse issues.
 		//    Since we are doing this might as well do the same for Werewolf/VampireLord etc.

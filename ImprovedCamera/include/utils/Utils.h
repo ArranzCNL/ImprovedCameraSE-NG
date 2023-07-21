@@ -6,7 +6,6 @@
 
 #pragma once
 
-
 namespace Utils {
 
 	extern const std::string GetFileInfo(const std::string& fullFilePath, const std::string& keyValue);
@@ -14,4 +13,5 @@ namespace Utils {
 	extern void GetVersionFromString(const std::string& text, std::uint32_t version[]);
 	extern const std::string GetCurrentDateTime(const char* fmt);
 
+	extern void CorrectExtendedKeys(const std::uint32_t scanCode, std::uint32_t* virtualKey);
 }

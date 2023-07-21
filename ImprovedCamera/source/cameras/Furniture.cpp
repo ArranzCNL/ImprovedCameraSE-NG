@@ -4,16 +4,15 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "cameras/Furniture.h"
 
-
 namespace ImprovedCamera {
 
-	CameraFurniture::CameraFurniture()
-		: ICamera("Furniture", RE::CameraStates::kFurniture)
+	CameraFurniture::CameraFurniture() :
+		ICamera("Furniture", RE::CameraStates::kFurniture)
 	{
 		SetData();
 	}
@@ -66,7 +65,7 @@ namespace ImprovedCamera {
 			if (wakeUp)
 			{
 				auto controlMap = RE::ControlMap::GetSingleton();
-				controlMap->enabledControls.set(RE::UserEvents::USER_EVENT_FLAG::kLooking); // Unblock Looking
+				controlMap->enabledControls.set(RE::UserEvents::USER_EVENT_FLAG::kLooking);  // Unblock Looking
 			}
 			return true;
 		}

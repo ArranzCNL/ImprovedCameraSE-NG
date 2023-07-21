@@ -1,6 +1,7 @@
 #include "RE/I/InputEvent.h"
 
 #include "RE/B/ButtonEvent.h"
+#include "RE/C/CharEvent.h"
 #include "RE/I/IDEvent.h"
 
 namespace RE
@@ -13,6 +14,16 @@ namespace RE
 	const ButtonEvent* InputEvent::AsButtonEvent() const
 	{
 		return GetEventType() == INPUT_EVENT_TYPE::kButton ? static_cast<const ButtonEvent*>(this) : nullptr;
+	}
+
+	CharEvent* InputEvent::AsCharEvent()
+	{
+		return GetEventType() == INPUT_EVENT_TYPE::kChar ? static_cast<CharEvent*>(this) : nullptr;
+	}
+
+	const CharEvent* InputEvent::AsCharEvent() const
+	{
+		return GetEventType() == INPUT_EVENT_TYPE::kChar ? static_cast<const CharEvent*>(this) : nullptr;
 	}
 
 	IDEvent* InputEvent::AsIDEvent()

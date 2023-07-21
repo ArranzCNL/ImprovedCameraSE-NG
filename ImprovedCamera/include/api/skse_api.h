@@ -10,7 +10,6 @@
 
 #define SKSE_API extern "C" __declspec(dllexport)
 
-
 namespace SKSE {
 
 	extern void SKSEMessageHandler(SKSE::MessagingInterface::Message* message);

@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "systems/Window.h"
@@ -13,7 +13,6 @@
 #include "utils/Log.h"
 
 #include <dwmapi.h>
-
 
 namespace Systems {
 
@@ -26,7 +25,7 @@ namespace Systems {
 			return CallWindowProc(pluginGraphics->Window()->m_Properties->Wndproc, hWnd, msg, wParam, lParam);
 
 		// External Menu
-		if (!pluginGraphics->m_UI.get()->IsMenuDisplayed() && pluginGraphics->Window()->m_MenuMode == Window::MenuDisplay::kOverlay)
+		if (!pluginGraphics->m_UI.get()->IsUIDisplayed() && pluginGraphics->Window()->m_MenuMode == Window::MenuDisplay::kOverlay)
 		{
 			switch (msg)
 			{
@@ -54,13 +53,6 @@ namespace Systems {
 					break;
 				}
 			}
-		}
-		// Internal Menu
-		if (pluginGraphics->m_UI.get()->IsMenuDisplayed() && pluginGraphics->Window()->m_MenuMode == Window::MenuDisplay::kInternal)
-		{
-			// Pass to Menu WndProc
-			if (pluginGraphics->m_UI.get()->WndprocHandler(hWnd, msg, wParam, lParam))
-				return 0;
 		}
 		return CallWindowProc(pluginGraphics->Window()->m_Properties->Wndproc, hWnd, msg, wParam, lParam);
 	}
@@ -195,8 +187,8 @@ namespace Systems {
 		}
 		if (GetWindowRect(window, &rectWindow))
 		{
-			posX = ((rectWindow.right - rectWindow.left) - width) / 2; // Border size for both Horizontal and Vertical, top and bottom borders are usually forgotten.
-			posY = ((rectWindow.bottom - rectWindow.top) - height) - posX; // Offset from HTCAPTION and/or HTMENU including above to get the topmost HTCLIENT position.
+			posX = ((rectWindow.right - rectWindow.left) - width) / 2;      // Border size for both Horizontal and Vertical, top and bottom borders are usually forgotten.
+			posY = ((rectWindow.bottom - rectWindow.top) - height) - posX;  // Offset from HTCAPTION and/or HTMENU including above to get the topmost HTCLIENT position.
 			rectClip.left = rectWindow.left + posX;
 			rectClip.top = rectWindow.top + posY;
 			rectClip.right = rectWindow.right - posX;
@@ -218,7 +210,7 @@ namespace Systems {
 		RegisterClassEx(&wcex);
 
 		m_MenuHwnd = CreateWindowEx(
-			WS_EX_TOPMOST | WS_EX_TRANSPARENT | WS_EX_NOACTIVATE, // Makes the Window appear above everything else, also removes the taskbar icon.
+			WS_EX_TOPMOST | WS_EX_TRANSPARENT | WS_EX_NOACTIVATE,  // Makes the Window appear above everything else, also removes the taskbar icon.
 			wcex.lpszClassName,
 			TEXT(plugin->Description().c_str()),
 			WS_POPUP,
@@ -229,8 +221,7 @@ namespace Systems {
 			nullptr,
 			nullptr,
 			wcex.hInstance,
-			this
-		);
+			this);
 
 		if (!m_MenuHwnd)
 		{
@@ -254,10 +245,10 @@ namespace Systems {
 
 	void Window::RunOverlay()
 	{
-		if (!m_Initialized) return;
+		if (!m_Initialized)
+			return;
 
 		auto pluginGraphics = DLLMain::Plugin::Get()->Graphics();
-		auto pluginInput = DLLMain::Plugin::Get()->Input();
 
 		// Allow capturing of window messages now since all systems should be good to go.
 		m_CaptureMsgs = true;
@@ -267,7 +258,7 @@ namespace Systems {
 			if (!pluginGraphics->m_UI.get())
 				continue;
 
-			if (pluginGraphics->m_UI.get()->IsMenuDisplayed())
+			if (pluginGraphics->m_UI.get()->IsUIDisplayed())
 			{
 				MSG msg{};
 				while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -298,7 +289,7 @@ namespace Systems {
 					// Fix held down left shift
 					INPUT ipKeyboard{};
 					ipKeyboard.type = INPUT_KEYBOARD;
-					ipKeyboard.ki.wScan = DIK_LSHIFT;
+					ipKeyboard.ki.wScan = 0x2A;  // DIK_LSHIFT
 					ipKeyboard.ki.dwFlags = KEYEVENTF_SCANCODE;
 					SendInput(1, &ipKeyboard, sizeof(INPUT));
 					Sleep(10);
@@ -306,10 +297,9 @@ namespace Systems {
 					SendInput(1, &ipKeyboard, sizeof(INPUT));
 				}
 			}
-			
+
 			if (!pluginGraphics->IsOverlayHooked())
 			{
-				pluginInput->OnUpdate();
 				pluginGraphics->m_UI.get()->BeginFrame();
 				pluginGraphics->m_UI.get()->OnUpdate();
 				pluginGraphics->m_UI.get()->EndFrame();

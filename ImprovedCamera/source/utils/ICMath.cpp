@@ -4,11 +4,10 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "utils/ICMath.h"
-
 
 namespace Utils {
 

@@ -4,15 +4,14 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "plugin.h"
 
-#include "version.h"
 #include "utils/Log.h"
 #include "utils/Utils.h"
-
+#include "version.h"
 
 namespace DLLMain {
 
@@ -20,7 +19,9 @@ namespace DLLMain {
 
 	Plugin::Plugin()
 	{
-		if (s_Instance) return;
+		if (s_Instance)
+			return;
+
 		s_Instance = this;
 
 		m_Name = VERSION_PRODUCTNAME_STR;
@@ -60,7 +61,9 @@ namespace DLLMain {
 
 	bool Plugin::Load()
 	{
-		if (m_Loaded) return true;
+		if (m_Loaded)
+			return true;
+
 		m_Loaded = true;
 
 		if (!m_Config->m_PreInitialized)
@@ -83,14 +86,15 @@ namespace DLLMain {
 
 	void Plugin::CreateMenu()
 	{
-		if (m_InitializeMenu) return;
+		if (m_InitializeMenu)
+			return;
+
 		m_InitializeMenu = true;
 
 		// No need to run this if a menu is not required
 		if (m_Config->ModuleData().iMenuMode > Systems::Window::MenuDisplay::kNone)
 		{
 			m_Graphics = std::make_unique<Systems::Graphics>(m_Config->ModuleData().iMenuMode);
-			m_Input = std::make_unique<Systems::Input>();
 		}
 	}
 
@@ -100,6 +104,7 @@ namespace DLLMain {
 
 		std::uint32_t fileVersionMin[4]{};
 		std::uint32_t fileVersionMax[4]{};
+		std::uint32_t skseVersionMin[4]{};
 
 		Utils::GetVersionFromString(m_Config->ModuleData().sFileVersionMin, fileVersionMin);
 		Utils::GetVersionFromString(m_Config->ModuleData().sFileVersionMax, fileVersionMax);
@@ -116,6 +121,13 @@ namespace DLLMain {
 			std::string fullFilePath = m_SkyrimSE->Path() + "skse64_loader.exe";
 			std::string productName = Utils::GetFileInfo(fullFilePath, "ProductName");
 			std::string fileVersion = Utils::GetFileInfo(fullFilePath, "ProductVersion");
+			Utils::GetVersionFromString(fileVersion, skseVersionMin);
+
+			if (skseVersionMin[0] == 0 && skseVersionMin[1] == 2 && skseVersionMin[2] == 0 && skseVersionMin[3] < 18)
+			{
+				LOG_CRITICAL("{}: v{} not supported. (Requirement: SKSE64 v0.2.0.18 or higher)", productName.c_str(), fileVersion.c_str());
+				return false;
+			}
 			LOG_TRACE("  {}:\t\t\t\tv{}", productName.c_str(), fileVersion.c_str());
 		}
 		else
@@ -151,7 +163,9 @@ namespace DLLMain {
 		if (SkyrimTogether)
 		{
 			// Compatibility.
-			if (m_Config->m_ModuleData.iMenuMode) m_Config->m_ModuleData.iMenuMode = Systems::Window::MenuDisplay::kOverlay;
+			if (m_Config->m_ModuleData.iMenuMode)
+				m_Config->m_ModuleData.iMenuMode = Systems::Window::MenuDisplay::kOverlay;
+
 			m_Config->m_ModuleData.sWindowName = "Skyrim Together";
 			// Pull file information.
 			fullFilePath = m_SkyrimSE->Path() + "Data\\SkyrimTogetherReborn\\SkyrimTogetherServer.exe";

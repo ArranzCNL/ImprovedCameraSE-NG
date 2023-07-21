@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include "plugin.h"
 #include "cameras/Events.h"
+#include "plugin.h"
 #include "skyrimse/Helper.h"
 
 #if _DEBUG
@@ -15,13 +15,13 @@
 	#include <iomanip>
 #endif
 
-
 namespace Interface {
 
 	class ICamera {
 
 	protected:
 		struct Data {
+
 			const bool* EventActive;
 			const float* FOV;
 			const float* NearDistance;

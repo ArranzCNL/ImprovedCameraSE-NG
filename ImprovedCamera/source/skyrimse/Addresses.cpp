@@ -4,15 +4,15 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "skyrimse/Addresses.h"
 
-
 namespace Address {
 
 	namespace Function {
+
 		std::uintptr_t Orig_ModelReferenceEffect1;
 		std::uintptr_t Orig_ModelReferenceEffect2;
 		std::uintptr_t Orig_ShaderReferenceEffect1;
@@ -85,6 +85,7 @@ namespace Address {
 	}
 
 	namespace Variable {
+
 		float* NiNodeGlobalTime;
 		float* fControllerBufferDepth;
 		float* fDefaultWorldFOV;

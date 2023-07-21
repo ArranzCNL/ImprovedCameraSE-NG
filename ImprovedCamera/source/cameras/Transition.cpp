@@ -4,16 +4,15 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "cameras/Transition.h"
 
-
 namespace ImprovedCamera {
 
-	CameraTransition::CameraTransition()
-		: ICamera("Transition", RE::CameraStates::kPCTransition)
+	CameraTransition::CameraTransition() :
+		ICamera("Transition", RE::CameraStates::kPCTransition)
 	{
 		SetData();
 	}
@@ -141,7 +140,7 @@ namespace ImprovedCamera {
 			case CameraTransition::State::kCannibal:
 				return CameraEvent::kCannibal;
 		}
-		return CameraEvent::kScripted; // Unknown state
+		return CameraEvent::kScripted;  // Unknown state
 	}
 
 	void CameraTransition::SetData()
@@ -189,10 +188,6 @@ namespace ImprovedCamera {
 				this->m_Data.FOV = &m_pluginConfig->FOV().fScripted;
 				this->m_Data.NearDistance = &m_pluginConfig->NearDistance().fScripted;
 				break;
-				/* Need adding!
-				this->m_Data.FOV = &m_pluginConfig->FOV().fFOVTransform;
-				this->m_Data.NearDistance = &m_pluginConfig->NearDistance().fNearDistanceTransform;
-				*/
 			}
 			case CameraTransition::State::kWerewolfKillmove:
 			{

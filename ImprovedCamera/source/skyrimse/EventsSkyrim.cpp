@@ -4,14 +4,14 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "skyrimse/EventsSkyrim.h"
 
 #include "plugin.h"
 #include "skyrimse/ImprovedCameraSE.h"
-
+#include "utils/Log.h"
 
 namespace Events {
 
@@ -35,6 +35,9 @@ namespace Events {
 
 	EventResult Observer::ProcessEvent(const RE::MenuOpenCloseEvent* a_event, RE::BSTEventSource<RE::MenuOpenCloseEvent>*)
 	{
+		if (!a_event)
+			return EventResult::kContinue;
+
 		if (strcmp(a_event->menuName.c_str(), "Console") == 0)
 		{
 			auto camera = RE::PlayerCamera::GetSingleton();
@@ -46,7 +49,7 @@ namespace Events {
 
 				auto thirdperson3D = RE::PlayerCharacter::GetSingleton()->Get3D(0);
 				if (!thirdperson3D)
-					return RE::BSEventNotifyControl::kContinue;;
+					return RE::BSEventNotifyControl::kContinue;
 
 				auto thirdpersonNode = thirdperson3D->AsNode();
 
@@ -61,20 +64,32 @@ namespace Events {
 
 	EventResult Observer::ProcessEvent(const RE::BSAnimationGraphEvent* a_event, RE::BSTEventSource<RE::BSAnimationGraphEvent>*)
 	{
-		if (a_event)
+		if (!a_event)
+			return EventResult::kContinue;
+
+		RE::BSAnimationGraphManagerPtr graphMgr;
+
+		if (a_event->holder->GetAnimationGraphManager(graphMgr) && graphMgr)
 		{
-			auto player = RE::PlayerCharacter::GetSingleton();
-			RE::BSAnimationGraphManagerPtr graphMgr;
+			std::int32_t activeGraph = 0;  //graphMgr->GetRuntimeData().activeGraph; // 0 is third person, 1 is first person.
 
-			if (player->GetAnimationGraphManager(graphMgr) && graphMgr)
+			RE::BShkbAnimationGraphPtr project = graphMgr->graphs[activeGraph];
+			auto behaviourGraph = project ? graphMgr->graphs[activeGraph]->behaviorGraph : nullptr;
+
+			if (!behaviourGraph)
+				return EventResult::kContinue;
+
+			RE::NodeList activeNodes = *behaviourGraph->activeNodes;
+			std::int32_t index = 0;
+
+			if (!activeNodes.empty())
 			{
-				auto behaviourGraph = graphMgr->graphs[graphMgr->GetRuntimeData().activeGraph] ? graphMgr->graphs[graphMgr->GetRuntimeData().activeGraph]->behaviorGraph : nullptr;
-				auto activeNodes = behaviourGraph ? behaviourGraph->activeNodes : nullptr;
-
-				if (activeNodes)
+#ifdef _DEBUG
+				LOG_DEBUG("Behavior Project: {}", project->projectName);
+#endif
+				for (auto nodeInfo : activeNodes)
 				{
-					auto nodeInfo = activeNodes->data();
-					auto nodeClone = nodeInfo->nodeClone;
+					auto nodeClone = nodeInfo.nodeClone;
 
 					if (nodeClone && nodeClone->GetClassType())
 					{
@@ -82,16 +97,29 @@ namespace Events {
 
 						if (clipGenerator)
 						{
-							auto pluginCamera = DLLMain::Plugin::Get()->SkyrimSE()->Camera();
-							std::string animationName = clipGenerator->animationName.c_str();
-							std::string elderscroll = "IdleReadElderScroll";
+							std::string animationFile = clipGenerator->animationName.c_str();
+#ifdef _DEBUG
+							LOG_DEBUG("Animation[{}] Name: {}\n\tFile: {}", index, nodeClone->name.c_str(), animationFile);
+#endif
+							if (index == 0)
+							{
+								auto pluginCamera = DLLMain::Plugin::Get()->SkyrimSE()->Camera();
+								std::string elderscroll = "IdleReadElderScroll";
+								std::string cartRiding = "CartPrisonerCSway";
 
-							if (animationName.find(elderscroll) != std::string::npos)
-								pluginCamera->SetElderScrollReading(true);
-							else
-								pluginCamera->SetElderScrollReading(false);
+								if (animationFile.find(elderscroll) != std::string::npos)
+									pluginCamera->SetElderScrollReading(true);
+								else
+									pluginCamera->SetElderScrollReading(false);
+
+								if (animationFile.find(cartRiding) != std::string::npos)
+									pluginCamera->SetCartRiding(true);
+								else
+									pluginCamera->SetCartRiding(false);
+							}
 						}
 					}
+					index++;
 				}
 			}
 		}

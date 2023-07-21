@@ -6,11 +6,10 @@
 
 #pragma once
 
-
 namespace ImprovedCamera {
 
-	struct CameraEvent
-	{
+	struct CameraEvent {
+
 		enum Event : std::uint8_t
 		{
 			kFirstPerson = 0,

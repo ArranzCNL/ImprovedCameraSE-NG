@@ -8,14 +8,13 @@
 
 #include "cameras/ICamera.h"
 
-
 namespace ImprovedCamera {
 
 	class CameraFirstPerson : public Interface::ICamera {
 
 	public:
-		struct State
-		{
+		struct State {
+
 			enum FirstPerson : std::uint8_t
 			{
 				kExit = 0,
@@ -52,7 +51,7 @@ namespace ImprovedCamera {
 		virtual std::uint8_t GetEventID() override;
 		virtual std::uint8_t GetStateID() override { return m_FirstPersonState; };
 		virtual const Data& GetData() const override { return this->m_Data; };
-		virtual void OnShutdown() override {};
+		virtual void OnShutdown() override{};
 
 	private:
 		void SetData();

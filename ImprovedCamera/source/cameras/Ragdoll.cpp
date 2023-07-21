@@ -4,16 +4,15 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "cameras/Ragdoll.h"
 
-
 namespace ImprovedCamera {
 
-	CameraRagdoll::CameraRagdoll()
-		: ICamera("Ragdoll", RE::CameraStates::kBleedout)
+	CameraRagdoll::CameraRagdoll() :
+		ICamera("Ragdoll", RE::CameraStates::kBleedout)
 	{
 		SetData();
 	}

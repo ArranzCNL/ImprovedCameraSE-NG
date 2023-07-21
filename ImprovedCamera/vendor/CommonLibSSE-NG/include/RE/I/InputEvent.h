@@ -16,6 +16,7 @@ namespace RE
 	};
 
 	class ButtonEvent;
+	class CharEvent;
 	class IDEvent;
 
 	class InputEvent
@@ -33,6 +34,9 @@ namespace RE
 
 		[[nodiscard]] ButtonEvent*       AsButtonEvent();
 		[[nodiscard]] const ButtonEvent* AsButtonEvent() const;
+
+		[[nodiscard]] CharEvent*       AsCharEvent();
+		[[nodiscard]] const CharEvent* AsCharEvent() const;
 
 		[[nodiscard]] IDEvent*       AsIDEvent();
 		[[nodiscard]] const IDEvent* AsIDEvent() const;

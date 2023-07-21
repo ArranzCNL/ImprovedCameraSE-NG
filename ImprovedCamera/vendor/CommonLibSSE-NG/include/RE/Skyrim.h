@@ -414,6 +414,7 @@
 #include "RE/C/Calendar.h"
 #include "RE/C/CalmEffect.h"
 #include "RE/C/Character.h"
+#include "RE/C/CharEvent.h"
 #include "RE/C/ChestsLooted.h"
 #include "RE/C/Clouds.h"
 #include "RE/C/CodeTasklet.h"

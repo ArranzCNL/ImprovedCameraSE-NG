@@ -6,7 +6,6 @@
 
 #pragma once
 
-
 namespace Settings {
 
 	// 11 Settings
@@ -23,7 +22,7 @@ namespace Settings {
 		std::string sMenuFont;
 		float fMenuFontSize;
 	};
-// Data for ImprovedCameraSE.ini
+	// Data for ImprovedCameraSE.ini
 	// 19 Settings
 	struct General {
 		bool bEnableBody;

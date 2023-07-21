@@ -6,21 +6,21 @@
 
 #pragma once
 
-
 namespace RE {
 
-	class BipedModel
-	{
+	class BipedModel {
+
 	public:
-		enum {
+		enum
+		{
 			kWeightModel_Small = 0,
 			kWeightModel_Large = 1
 		};
 		BipedAnim* bipedData;
 	};
 
-	struct EQUIPPED_ITEMTYPE_IDS
-	{
+	struct EQUIPPED_ITEMTYPE_IDS {
+
 		enum EQUIPPED_ITEMTYPE_ID : std::int32_t
 		{
 			kFist = 0,
@@ -47,6 +47,8 @@ namespace RE {
 namespace Address {
 
 	namespace Hook {
+
+		static std::uintptr_t ProcessInput;
 		static std::uintptr_t UpdateSwitchPOV;
 		static std::uintptr_t UpdateCamera;
 		static std::uintptr_t UpdateFirstPerson;
@@ -72,9 +74,10 @@ namespace Address {
 	}
 
 	namespace Function {
+
 		extern void ModelReferenceEffect_Attach(void* arg);
-		extern const bool ModelReferenceEffect_Sub_14057BCC0(void* arg); // 1.6.640
-		extern const bool ShaderReferenceEffect_Sub_140584680(void* arg); // 1.6.640
+		extern const bool ModelReferenceEffect_Sub_14057BCC0(void* arg);   // 1.6.640
+		extern const bool ShaderReferenceEffect_Sub_140584680(void* arg);  // 1.6.640
 		extern const bool BipedAnim_GetTorchObject(void* bipedData, std::int32_t value);
 		extern const std::int32_t GetEquippedItemTypeID(RE::Actor* actor, bool rightHand = false);
 		extern const bool Ragdoll_IsTaskPoolRequired();
@@ -83,6 +86,7 @@ namespace Address {
 	}
 
 	namespace Variable {
+
 		extern float* NiNodeGlobalTime;
 		extern float* fControllerBufferDepth;
 		extern float* fDefaultWorldFOV;

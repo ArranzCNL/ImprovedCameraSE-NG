@@ -4,11 +4,10 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "menu/RestrictAngles.h"
-
 
 namespace Menu {
 
@@ -19,7 +18,8 @@ namespace Menu {
 
 	void MenuRestrictAngles::OnUpdate()
 	{
-		if (!m_Window) return;
+		if (!m_Window)
+			return;
 
 		ImGui::Begin("[RESTRICT ANGLES]", &m_Window, ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse);
 		if (ImGui::BeginTable("RestrictAnglesTable", 2, ImGuiTableFlags_::ImGuiTableFlags_SizingFixedFit))
@@ -42,7 +42,9 @@ namespace Menu {
 			ImGui::EndTable();
 		}
 
-		if (ImGui::Button("Close"))	m_Window = false;
+		if (ImGui::Button("Close"))
+			m_Window = false;
+
 		ImGui::End();
 	}
 

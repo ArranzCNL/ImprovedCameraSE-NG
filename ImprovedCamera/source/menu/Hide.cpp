@@ -4,31 +4,37 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "menu/Hide.h"
 
-
 namespace Menu {
 
-    void MenuHide::OnOpen()
-    {
-        ImGui::BeginDisabled();
-        ImGui::Checkbox("Hide", &m_Window);
-        ImGui::EndDisabled();
-    }
+	void MenuHide::OnOpen()
+	{
+		ImGui::Checkbox("Hide", &m_Window);
+	}
 
-    void MenuHide::OnUpdate()
-    {
-		if (!m_Window) return;
+	void MenuHide::OnUpdate()
+	{
+		if (!m_Window)
+			return;
 
 		ImGui::Begin("[HIDE]", &m_Window, ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse);
 		if (ImGui::BeginTable("HideTable", 2, ImGuiTableFlags_::ImGuiTableFlags_SizingFixedFit))
 		{
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn();
+			ImGui::SeparatorText("Weaponary");
 			ImGui::TableItemToggleButton("Two-Handed Weapon", "##Hide2HWeapon", &m_pluginConfig->m_Hide.b2HWeapon);
 			ImGui::TableItemToggleButton("Bow", "##HideBow", &m_pluginConfig->m_Hide.bBow);
 			ImGui::TableItemToggleButton("Quiver", "##HideQuiver", &m_pluginConfig->m_Hide.bQuiver);
+
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn();
+			ImGui::SeparatorText("Movements");
+			ImGui::BeginDisabled();
 			ImGui::TableItemToggleButton("Body Sitting", "##HideBodySitting", &m_pluginConfig->m_Hide.bSitting);
 			ImGui::TableItemToggleButton("Body Sleeping", "##HideBodySleeping", &m_pluginConfig->m_Hide.bSleeping);
 			ImGui::TableItemToggleButton("Body Jumping", "##HideBodyJumping", &m_pluginConfig->m_Hide.bJumping);
@@ -38,12 +44,15 @@ namespace Menu {
 			ImGui::TableItemToggleButton("Body Power Attack", "##HideBodyPowerAttack", &m_pluginConfig->m_Hide.bPowerAttack);
 			ImGui::TableItemToggleButton("Body Attack Bow", "##HideBodyAttackBow", &m_pluginConfig->m_Hide.bAttackBow);
 			ImGui::TableItemToggleButton("Body Killmove", "##HideBodyKillmove", &m_pluginConfig->m_Hide.bKillmove);
+			ImGui::EndDisabled();
 
 			ImGui::EndTable();
 		}
 
-		if (ImGui::Button("Close"))	m_Window = false;
+		if (ImGui::Button("Close"))
+			m_Window = false;
+
 		ImGui::End();
-    }
+	}
 
 }

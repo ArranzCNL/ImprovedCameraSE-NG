@@ -8,14 +8,13 @@
 
 #include "cameras/ICamera.h"
 
-
 namespace ImprovedCamera {
 
 	class CameraHorse : public Interface::ICamera {
 
 	public:
-		struct State
-		{
+		struct State {
+
 			enum Horse : std::uint8_t
 			{
 				kDismounted = 0,
@@ -39,7 +38,7 @@ namespace ImprovedCamera {
 		virtual std::uint8_t GetEventID() override;
 		virtual std::uint8_t GetStateID() override { return m_HorseState; };
 		virtual const Data& GetData() const override { return this->m_Data; };
-		virtual void OnShutdown() override {};
+		virtual void OnShutdown() override{};
 
 	private:
 		void SetData();

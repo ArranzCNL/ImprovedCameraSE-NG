@@ -8,10 +8,9 @@
 
 #include "menu/IMenu.h"
 
-
 namespace Menu {
 
-	class MenuRestrictAngles: public Interface::IMenu {
+	class MenuRestrictAngles : public Interface::IMenu {
 
 	public:
 		MenuRestrictAngles() = default;
@@ -19,9 +18,9 @@ namespace Menu {
 
 		virtual void OnOpen() override;
 		virtual void OnUpdate() override;
-		virtual void OnClose() override {};
+		virtual void OnClose() override{};
 
-		virtual void OnShutdown() override {};
+		virtual void OnShutdown() override{};
 	};
 
 }

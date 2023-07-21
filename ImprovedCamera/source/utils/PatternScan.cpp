@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 /* Based upon learn_more's findPattern_v2 */
@@ -12,12 +12,11 @@
 
 #include <tlhelp32.h>
 
-
 namespace Utils {
 
-	#define INRANGE(x, a, b)	(x >= a && x <= b) 
-	#define getBits(x)			(INRANGE(x, '0', '9') ? (x - '0') : ((x&(~0x20)) - 'A' + 0xa))
-	#define getByte(x)			(getBits(x[0]) << 4 | getBits(x[1]))
+	#define INRANGE(x, a, b)    (x >= a && x <= b) 
+	#define getBits(x)          (INRANGE(x, '0', '9') ? (x - '0') : ((x&(~0x20)) - 'A' + 0xa))
+	#define getByte(x)          (getBits(x[0]) << 4 | getBits(x[1]))
 
 	static inline bool CompareBytes(const PBYTE buffer, const PBYTE pattern, const PBYTE mask)
 	{
@@ -149,8 +148,7 @@ namespace Utils {
 					pid = process.th32ProcessID;
 					break;
 				}
-			}
-			while (Module32Next(snapshot, &process));
+			} while (Module32Next(snapshot, &process));
 		}
 
 		CloseHandle(snapshot);

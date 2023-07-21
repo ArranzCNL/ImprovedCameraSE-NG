@@ -10,10 +10,12 @@
 
 // Forward declare Plugin
 namespace DLLMain {
+
 	class Plugin;
 }
 // Forward declare Menus
 namespace Menu {
+
 	class UIMenu;
 	class MenuGeneral;
 	class MenuHide;
@@ -25,7 +27,6 @@ namespace Menu {
 	class MenuHeadbob;
 	class MenuCamera;
 }
-
 
 namespace Systems {
 
@@ -69,10 +70,9 @@ namespace Systems {
 		std::string m_FontPath{};
 		std::string m_ProfilePath{};
 
-
-	// Data from ImprovedCameraSE.ini
 	private:
 		Settings::ModuleData m_ModuleData{};
+		// Data from ImprovedCameraSE.ini
 		Settings::General m_General{};
 		Settings::Hide m_Hide{};
 		Settings::Fixes m_Fixes{};

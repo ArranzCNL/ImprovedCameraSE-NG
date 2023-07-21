@@ -4,18 +4,17 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "systems/Graphics.h"
 
-#include "plugin.h"
-#include "utils/Utils.h"
-#include "utils/Log.h"
 #include "Utils/PatternScan.h"
+#include "plugin.h"
+#include "utils/Log.h"
+#include "utils/Utils.h"
 
 #include <MinHook.h>
-
 
 namespace Systems {
 
@@ -25,7 +24,6 @@ namespace Systems {
 	HRESULT STDMETHODCALLTYPE Graphics::Hook_Present(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags)
 	{
 		auto pluginGraphics = DLLMain::Plugin::Get()->Graphics();
-		auto pluginInput = DLLMain::Plugin::Get()->Input();
 
 		if (!pluginGraphics->m_Initialized)
 		{
@@ -49,14 +47,46 @@ namespace Systems {
 				return pluginGraphics->m_Present(pSwapChain, SyncInterval, Flags);
 			}
 		}
-		
-		pluginInput->OnUpdate();
 		pluginGraphics->m_UI->BeginFrame();
 		pluginGraphics->m_UI->OnUpdate();
 		pluginGraphics->m_UI->EndFrame();
-		
+
 		return pluginGraphics->m_Present(pSwapChain, SyncInterval, Flags);
 	}
+
+	struct DXGIPresentHook {
+
+		static void thunk(std::uint32_t a_timer)
+		{
+			func(a_timer);
+
+			static auto pluginGraphics = DLLMain::Plugin::Get()->Graphics();
+
+			if (!pluginGraphics->m_Initialized)
+			{
+				const auto renderer = RE::BSRenderManager::GetSingleton();
+
+				if (SUCCEEDED(renderer->swapChain->GetDevice(IID_PPV_ARGS(&pluginGraphics->m_Device))))
+				{
+					pluginGraphics->m_Device->GetImmediateContext(&pluginGraphics->m_DeviceContext);
+					pluginGraphics->m_UI = UI::CreateMenu(pluginGraphics->m_OutputWindow);
+
+					if (pluginGraphics->m_UI->Initialize())
+						pluginGraphics->m_Initialized = true;
+				}
+				else
+				{
+					return;
+				}
+			}
+			pluginGraphics->m_UI->BeginFrame();
+			pluginGraphics->m_UI->OnUpdate();
+			pluginGraphics->m_UI->EndFrame();
+		}
+		static inline REL::Relocation<decltype(thunk)> func;
+
+		static inline constexpr std::size_t size{ 5 };
+	};
 
 	Graphics::Graphics(std::int32_t newThread)
 	{
@@ -90,7 +120,8 @@ namespace Systems {
 					// Setup Output window
 					m_OutputWindow = m_Window->m_MenuHwnd;
 
-					CreateDummyDevice();
+					m_DXGIPresentAddress = REL::RelocationID(75461, 77246).address() + 0x9;
+					stl::write_thunk_call<DXGIPresentHook>(m_DXGIPresentAddress);
 				}
 			}
 		}
@@ -100,7 +131,8 @@ namespace Systems {
 
 	void Graphics::ResizeBuffer(const glm::uvec2 size)
 	{
-		if (!m_Initialized) return;
+		if (!m_Initialized)
+			return;
 
 		CleanupRenderTarget();
 		m_SwapChain->ResizeBuffers(0, size.x, size.y, DXGI_FORMAT_UNKNOWN, 0);
@@ -220,78 +252,6 @@ namespace Systems {
 			m_RenderTargetView.Reset();
 	}
 
-	void Graphics::CreateDummyDevice()
-	{
-		if (HookOverlay())
-			return;
-
-		DXGI_SWAP_CHAIN_DESC scd{};
-		scd.BufferCount = 1;
-		scd.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-		scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-		scd.OutputWindow = GetDesktopWindow();
-		scd.SampleDesc.Count = 1;
-		scd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-		scd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-		scd.Windowed = TRUE;
-		scd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-		scd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-
-		D3D_FEATURE_LEVEL featureLevel;
-		Microsoft::WRL::ComPtr<ID3D11Device> device;
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext> deviceContext;
-		Microsoft::WRL::ComPtr<IDXGISwapChain> swapChain;
-
-		HRESULT hr = S_OK;
-
-		hr = D3D11SystemCreateDeviceAndSwapChain(
-			nullptr,
-			D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
-			nullptr,
-			0,
-			nullptr,
-			0,
-			D3D11_SDK_VERSION,
-			&scd,
-			swapChain.GetAddressOf(),
-			device.GetAddressOf(),
-			&featureLevel,
-			nullptr
-		);
-
-		if (FAILED(hr))
-		{
-			LOG_INFO("  Failed to Create Device and SwapChain");
-			return;
-		}
-
-		void** ppSwapChainVTable = *reinterpret_cast<void***>(swapChain.Get());
-		m_PresentTarget = reinterpret_cast<PresentHook>(ppSwapChainVTable[8]);
-
-		// Cleanup
-		swapChain.Reset();
-		device.Reset();
-
-		MH_STATUS status = MH_Initialize();
-		if (status != MH_OK && status != MH_ERROR_ALREADY_INITIALIZED)
-		{
-			LOG_ERROR("  MinHook:\t\t\t\tFailed to Initialize.");
-			return;
-		}
-		status = MH_CreateHook(reinterpret_cast<LPVOID>(m_PresentTarget), reinterpret_cast<LPVOID>(Hook_Present), reinterpret_cast<LPVOID*>(&m_Present));
-		if (status != MH_OK)
-		{
-			LOG_ERROR("  MinHook:\t\t\t\tFailed to CreateHook for [IDXGISwapChain] Present. Error Code: {}", (std::int32_t)status);
-			return;
-		}
-		if (MH_EnableHook(reinterpret_cast<LPVOID>(m_PresentTarget)) != MH_OK)
-		{
-			LOG_ERROR("  MinHook:\t\t\t\tFailed to EnableHook for [IDXGISwapChain] Present.");
-			return;
-		}
-		LOG_TRACE("  MinHook:\t\t\t\tHooked [IDXGISwapChain] Present.");
-	}
-
 	DWORD WINAPI Graphics::CreateDevice(LPVOID)
 	{
 		auto pluginGraphics = DLLMain::Plugin::Get()->Graphics();
@@ -345,8 +305,7 @@ namespace Systems {
 				pluginGraphics->m_SwapChain.GetAddressOf(),
 				pluginGraphics->m_Device.GetAddressOf(),
 				&featureLevel,
-				pluginGraphics->m_DeviceContext.GetAddressOf()
-			);
+				pluginGraphics->m_DeviceContext.GetAddressOf());
 
 			if (FAILED(hr))
 			{

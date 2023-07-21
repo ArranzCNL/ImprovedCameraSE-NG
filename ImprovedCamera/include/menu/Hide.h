@@ -8,7 +8,6 @@
 
 #include "menu/IMenu.h"
 
-
 namespace Menu {
 
 	class MenuHide : public Interface::IMenu {
@@ -19,9 +18,9 @@ namespace Menu {
 
 		virtual void OnOpen() override;
 		virtual void OnUpdate() override;
-		virtual void OnClose() override {};
+		virtual void OnClose() override{};
 
-		virtual void OnShutdown() override {};
+		virtual void OnShutdown() override{};
 	};
 
 }

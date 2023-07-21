@@ -5331,6 +5331,9 @@
     <ClInclude Include="..\..\pch\stdafx.h">
       <Filter>_pch</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\RE\C\CharEvent.h">
+      <Filter>include\RE\C</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="..\..\CommonLibSSE.natvis" />

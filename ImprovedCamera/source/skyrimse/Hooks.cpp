@@ -4,20 +4,50 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "skyrimse/Hooks.h"
 
-#include "skyrimse/Addresses.h"
 #include "plugin.h"
-#include "utils/Log.h"
+#include "skyrimse/Addresses.h"
 #include "skyrimse/ImprovedCameraSE.h"
-
+#include "utils/Log.h"
 
 namespace Patch {
 
 	static ImprovedCamera::ImprovedCameraSE* ic = nullptr;
+
+	// Credits to Ershin. Added force closing of journal menu which caused an issue.
+	struct ProcessInput {
+
+		static void thunk(RE::BSTEventSource<RE::InputEvent*>* a_dispatcher, RE::InputEvent* const* a_event)
+		{
+			auto plugin = DLLMain::Plugin::Get();
+
+			if (plugin->IsGraphicsInitialized() && plugin->Config()->ModuleData().iMenuMode == Systems::Window::MenuDisplay::kInternal)
+			{
+				if (ic->ProcessInput(a_event))
+				{
+					// Close Journal Menu
+					auto ui = RE::UI::GetSingleton();
+					if (ui->IsMenuOpen("Journal Menu"))
+					{
+						const auto msgQueue = RE::UIMessageQueue::GetSingleton();
+						msgQueue->AddMessage("Journal Menu", RE::UI_MESSAGE_TYPE::kHide, nullptr);
+					}
+
+					constexpr RE::InputEvent* const dummy[]{ nullptr };
+					func(a_dispatcher, dummy);
+					return;
+				}
+			}
+			func(a_dispatcher, a_event);
+		}
+		static inline REL::Relocation<decltype(thunk)> func;
+
+		static inline constexpr std::size_t size{ 5 };
+	};
 
 	struct UpdateSwitchPOV {
 
@@ -128,8 +158,8 @@ namespace Patch {
 
 		static void Install()
 		{
-			struct Patch : Xbyak::CodeGenerator
-			{
+			struct Patch : Xbyak::CodeGenerator {
+
 				DLLMain::Plugin* g_plugin = DLLMain::Plugin::Get();
 
 				Patch(std::uintptr_t func)
@@ -137,9 +167,9 @@ namespace Patch {
 					Xbyak::Label f;
 
 					if (g_plugin->SkyrimSE()->Build() > SkyrimSE::BuildInfo::k15970)
-						mov(rcx, r14); // arg1
+						mov(rcx, r14);  // arg1
 
-					mov(rdx, rbx); // RE::Actor*
+					mov(rdx, rbx);  // RE::Actor*
 					jmp(ptr[rip + f]);
 
 					L(f);
@@ -155,6 +185,7 @@ namespace Patch {
 
 			_Effect = trampoline.write_call<5>(Address::Hook::ModelReferenceEffect_UpdatePosition, trampoline.allocate(patch));
 		}
+
 	private:
 		static void Effect(void* arg1, RE::Actor* actor)
 		{
@@ -167,13 +198,13 @@ namespace Patch {
 
 		static void Install()
 		{
-			struct Patch : Xbyak::CodeGenerator
-			{
+			struct Patch : Xbyak::CodeGenerator {
+
 				Patch(std::uintptr_t func)
 				{
 					Xbyak::Label f;
 
-					mov(rdx, rbx); // RE::Actor*
+					mov(rdx, rbx);  // RE::Actor*
 					jmp(ptr[rip + f]);
 
 					L(f);
@@ -189,6 +220,7 @@ namespace Patch {
 
 			_Effect = trampoline.write_call<5>(Address::Hook::ModelReferenceEffect_Update, trampoline.allocate(patch));
 		}
+
 	private:
 		static bool Effect(void* arg1, RE::Actor* actor)
 		{
@@ -199,17 +231,17 @@ namespace Patch {
 
 	struct ShaderReferenceEffect_Update {
 
-		struct Patch1
-		{
+		struct Patch1 {
+
 			static void Install()
 			{
-				struct Patch : Xbyak::CodeGenerator
-				{
+				struct Patch : Xbyak::CodeGenerator {
+
 					Patch(std::uintptr_t func)
 					{
 						Xbyak::Label f;
 
-						mov(rdx, rbx); // RE::Actor*
+						mov(rdx, rbx);  // RE::Actor*
 						jmp(ptr[rip + f]);
 
 						L(f);
@@ -225,6 +257,7 @@ namespace Patch {
 
 				_Effect = trampoline.write_call<5>(Address::Hook::ShaderReferenceEffect1, trampoline.allocate(patch));
 			}
+
 		private:
 			static bool Effect(void* arg1, RE::Actor* actor)
 			{
@@ -233,17 +266,17 @@ namespace Patch {
 			static inline REL::Relocation<bool()> _Effect;
 		};
 
-		struct Patch2
-		{
+		struct Patch2 {
+
 			static void Install()
 			{
-				struct Patch : Xbyak::CodeGenerator
-				{
+				struct Patch : Xbyak::CodeGenerator {
+
 					Patch(std::uintptr_t func)
 					{
 						Xbyak::Label f;
 
-						mov(rdx, rbx); // RE::Actor*
+						mov(rdx, rbx);  // RE::Actor*
 						jmp(ptr[rip + f]);
 
 						L(f);
@@ -259,6 +292,7 @@ namespace Patch {
 
 				_Effect = trampoline.write_call<6>(Address::Hook::ShaderReferenceEffect2, trampoline.allocate(patch));
 			}
+
 		private:
 			static void Effect(void* arg1, RE::Actor* actor)
 			{
@@ -330,13 +364,13 @@ namespace Patch {
 
 		static void Install()
 		{
-			struct Patch : Xbyak::CodeGenerator
-			{
+			struct Patch : Xbyak::CodeGenerator {
+
 				Patch(std::uintptr_t func)
 				{
 					Xbyak::Label f;
 
-					mov(rcx, rbx); // RE::Actor*
+					mov(rcx, rbx);  // RE::Actor*
 					jmp(ptr[rip + f]);
 
 					L(f);
@@ -352,6 +386,7 @@ namespace Patch {
 
 			_IsTaskPoolRequired = trampoline.write_call<5>(Address::Hook::Ragdoll_IsTaskPoolRequired, trampoline.allocate(patch));
 		}
+
 	private:
 		static bool IsTaskPoolRequired(RE::Actor* actor)
 		{
@@ -435,14 +470,15 @@ namespace Patch {
 		auto pluginSkyrimSE = DLLMain::Plugin::Get()->SkyrimSE();
 		ic = pluginSkyrimSE->Camera();
 
+		stl::write_thunk_call<ProcessInput>(Address::Hook::ProcessInput);
 		stl::write_thunk_call<UpdateSwitchPOV>(Address::Hook::UpdateSwitchPOV);
 		stl::write_thunk_call<UpdateCamera>(Address::Hook::UpdateCamera);
 		stl::write_thunk_call<UpdateFirstPerson>(Address::Hook::UpdateFirstPerson);
-		stl::write_thunk_call<TESObjectCell>(Address::Hook::TESObjectCell_Get3D); // Fixes body being hidden indoors
+		stl::write_thunk_call<TESObjectCell>(Address::Hook::TESObjectCell_Get3D);  // Fixes body being hidden indoors
 		stl::write_thunk_call<SmoothAnimationTransitions>(Address::Hook::SmoothAnimationTransitions);
 		stl::write_vfunc<RE::BSLookAtModifier, HeadTracking>();
 		stl::write_vfunc<RE::TogglePOVHandler, TogglePOV>();
-		stl::write_thunk_call<GetEffectNode_IsThirdPerson>(Address::Hook::GetEffectNode_IsThirdPerson); // Fixes firstperson magic casting for thirdperson arms
+		stl::write_thunk_call<GetEffectNode_IsThirdPerson>(Address::Hook::GetEffectNode_IsThirdPerson);  // Fixes firstperson magic casting for thirdperson arms
 		stl::asm_replace<ForceFirstPerson>(Address::Hook::ForceFirstPerson);
 		stl::asm_replace<ForceThirdPerson>(Address::Hook::ForceThirdPerson);
 		// Ragdoll fixes
@@ -475,6 +511,7 @@ namespace Patch {
 
 	void Hooks::Setup()
 	{
+		Address::Hook::ProcessInput = REL::RelocationID(67315, 68617).address() + 0x7B;
 		Address::Hook::UpdateSwitchPOV = REL::RelocationID(39401, 40476).address() + REL::VariantOffset(0x2AF, 0x294, 0).offset();
 		Address::Hook::UpdateCamera = REL::RelocationID(49852, 50784).address() + 0x1A6;
 		Address::Hook::UpdateFirstPerson = REL::RelocationID(39446, 40522).address() + 0xD7;
@@ -521,6 +558,8 @@ namespace Patch {
 
 		LOG_INFO("Dumping addresses for {} v{}.{}.{}.{}...", pluginSkyrimSE->Name().c_str(),
 			pluginSkyrimSE->VersionMajor(), pluginSkyrimSE->VersionMinor(), pluginSkyrimSE->VersionRevision(), pluginSkyrimSE->VersionBuild());
+
+		LOG_DEBUG("Hook::ProcessInput:\t\t\t\t0x{:08X}", Address::Hook::ProcessInput - baseAddress);
 
 		LOG_DEBUG("Hook::UpdateSwitchPOV:\t\t\t0x{:08X}", Address::Hook::UpdateSwitchPOV - baseAddress);
 		LOG_DEBUG("Hook::UpdateCamera:\t\t\t\t0x{:08X}", Address::Hook::UpdateCamera - baseAddress);

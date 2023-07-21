@@ -4,13 +4,12 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "systems/UI.h"
 
 #include "menu/UIMenu.h"
-
 
 namespace Systems {
 

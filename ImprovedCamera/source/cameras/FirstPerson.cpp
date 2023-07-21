@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "cameras/FirstPerson.h"
@@ -12,13 +12,12 @@
 #include "skyrimse/Addresses.h"
 #include "utils/ICMath.h"
 
-
 namespace ImprovedCamera {
 
 	using namespace Address::Variable;
 
-	CameraFirstPerson::CameraFirstPerson()
-		: ICamera("FirstPerson", RE::CameraStates::kFirstPerson)
+	CameraFirstPerson::CameraFirstPerson() :
+		ICamera("FirstPerson", RE::CameraStates::kFirstPerson)
 	{
 		SetData();
 	}
@@ -137,7 +136,7 @@ namespace ImprovedCamera {
 			{
 				m_FirstPersonState = CameraFirstPerson::State::kSleepingIdle;
 				auto controlMap = RE::ControlMap::GetSingleton();
-				controlMap->enabledControls.reset(RE::UserEvents::USER_EVENT_FLAG::kLooking); // Block Looking
+				controlMap->enabledControls.reset(RE::UserEvents::USER_EVENT_FLAG::kLooking);  // Block Looking
 				return true;
 			}
 			// Looking around only Entered
@@ -175,8 +174,8 @@ namespace ImprovedCamera {
 			// Sitting and Weapon Drawn detection
 			if (m_FirstPersonState == CameraFirstPerson::State::kIdle || m_FirstPersonState == CameraFirstPerson::State::kWeaponDrawnIdle)
 			{
-				if (m_FirstPersonState == CameraFirstPerson::State::kIdle && this->Player->AsActorState()->IsWeaponDrawn()
-					|| m_FirstPersonState == CameraFirstPerson::State::kWeaponDrawnIdle && !this->Player->AsActorState()->IsWeaponDrawn())
+				if (m_FirstPersonState == CameraFirstPerson::State::kIdle && this->Player->AsActorState()->IsWeaponDrawn() ||
+					m_FirstPersonState == CameraFirstPerson::State::kWeaponDrawnIdle && !this->Player->AsActorState()->IsWeaponDrawn())
 				{
 					m_FirstPersonState = CameraFirstPerson::State::kExit;
 					return true;
@@ -208,21 +207,30 @@ namespace ImprovedCamera {
 				return true;
 			}
 			// Change sitting angles
-			if (m_FirstPersonState == CameraFirstPerson::State::kSittingIdle || m_FirstPersonState == CameraFirstPerson::State::kCartRideIdle
-				|| m_FirstPersonState == CameraFirstPerson::State::kLookOnlyIdle || m_FirstPersonState == CameraFirstPerson::State::kScriptedIdle)
+			if (m_FirstPersonState == CameraFirstPerson::State::kSittingIdle ||
+				m_FirstPersonState == CameraFirstPerson::State::kCartRideIdle ||
+				m_FirstPersonState == CameraFirstPerson::State::kLookOnlyIdle ||
+				m_FirstPersonState == CameraFirstPerson::State::kScriptedIdle)
 			{
 				// Sanity check getting off the cartride still triggers IsSitting for a moment
-				if (Helper::IsSitting(this->Player) && (!Helper::CanLook() || !Helper::CanMove()) && m_FirstPersonState != CameraFirstPerson::State::kScriptedIdle && m_FirstPersonState != CameraFirstPerson::State::kCartRideIdle)
+				if (Helper::IsSitting(this->Player) && (!Helper::CanLook() || !Helper::CanMove()) &&
+					m_FirstPersonState != CameraFirstPerson::State::kScriptedIdle &&
+					m_FirstPersonState != CameraFirstPerson::State::kCartRideIdle)
+				{
 					m_FirstPersonState = CameraFirstPerson::State::kExit;
-
+				}
 				auto firstpersonState = (RE::FirstPersonState*)RE::PlayerCamera::GetSingleton()->currentState.get();
+				float sittingMaxAngle = m_pluginConfig->RestrictAngles().fSitting * (M_PI / 180.0f);  // Degrees to Radians
 
-				float sittingMaxAngle = m_pluginConfig->RestrictAngles().fSitting * (M_PI / 180.0f); // Degrees to Radians
-				if (firstpersonState->sittingRotation >= sittingMaxAngle) firstpersonState->sittingRotation = sittingMaxAngle;
-				if (firstpersonState->sittingRotation <= -sittingMaxAngle) firstpersonState->sittingRotation = -sittingMaxAngle;
+				if (firstpersonState->sittingRotation >= sittingMaxAngle)
+					firstpersonState->sittingRotation = sittingMaxAngle;
 
-				float sittingMaxLookingUp = m_pluginConfig->RestrictAngles().fSittingMaxLookingUp * (M_PI / 180.0f); // Degrees to Radians
-				if (this->Player->data.angle.x <= -sittingMaxLookingUp) this->Player->data.angle.x = -sittingMaxLookingUp;
+				if (firstpersonState->sittingRotation <= -sittingMaxAngle)
+					firstpersonState->sittingRotation = -sittingMaxAngle;
+
+				float sittingMaxLookingUp = m_pluginConfig->RestrictAngles().fSittingMaxLookingUp * (M_PI / 180.0f);  // Degrees to Radians
+				if (this->Player->data.angle.x <= -sittingMaxLookingUp)
+					this->Player->data.angle.x = -sittingMaxLookingUp;
 
 				*fSittingMaxLookingDown = m_pluginConfig->RestrictAngles().fSittingMaxLookingDown;
 			}

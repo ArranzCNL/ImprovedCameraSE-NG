@@ -6,10 +6,9 @@
 
 #pragma once
 
-#include "skyrimse/Addresses.h"
 #include "plugin.h"
+#include "skyrimse/Addresses.h"
 #include <RE/Skyrim.h>
-
 
 namespace Helper {
 
@@ -19,7 +18,7 @@ namespace Helper {
 		return (void*)(vtbl[address / 8]);
 	}
 
-	static inline void UpdateNode(RE::NiNode* node, SKSE::stl::enumeration<RE::NiUpdateData::Flag, std::uint32_t>flags = RE::NiUpdateData::Flag::kNone, float updateTime = 0.f)
+	static inline void UpdateNode(RE::NiNode* node, SKSE::stl::enumeration<RE::NiUpdateData::Flag, std::uint32_t> flags = RE::NiUpdateData::Flag::kNone, float updateTime = 0.f)
 	{
 		auto updateData = RE::NiUpdateData();
 		updateData.flags = flags;
@@ -29,8 +28,7 @@ namespace Helper {
 
 	static RE::NiNode* GetHeadNode(RE::NiNode* node)
 	{
-		const char* headNames[] =
-		{
+		const char* headNames[] = {
 			"NPC Head [Head]",
 			"NPC Head",
 			"Bip01 Head",
@@ -164,9 +162,10 @@ namespace Helper {
 		std::int32_t equippedLeftItemID = GetEquippedItemTypeID(player);
 		std::int32_t equippedRightItemID = GetEquippedItemTypeID(player, true);
 
-		return (equippedLeftItemID == RE::EQUIPPED_ITEMTYPE_ID::kFist && (equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kFist || equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kSword
-			|| equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kDagger || equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kAxe || equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kMace
-			|| equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kStaff));
+		return (equippedLeftItemID == RE::EQUIPPED_ITEMTYPE_ID::kFist && (equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kFist ||
+			equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kSword || equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kDagger ||
+			equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kAxe || equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kMace ||
+			equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kStaff));
 	}
 
 	static inline bool IsRangedWeaponEquipped(RE::PlayerCharacter* player, bool crossbow = false)
@@ -183,7 +182,7 @@ namespace Helper {
 
 		return false;
 	}
-	
+
 	static inline bool IsTorchOut(RE::Actor* actor)
 	{
 		using namespace Address::Function;
@@ -211,7 +210,7 @@ namespace Helper {
 		}
 		return torch_out;
 	}
-	
+
 	// Needs testing.
 	static inline bool IsIdlePlaying(RE::PlayerCharacter* player)
 	{
@@ -251,8 +250,7 @@ namespace Helper {
 		auto playerControls = RE::PlayerControls::GetSingleton();
 
 		// unk2A seems to be LoadingData, called just after loading screen and switched off a few moments later.
-		if (camera->currentState->id == RE::CameraStates::kFirstPerson && playerControls->data.unk2A && playerControls->data.povScriptMode
-			&& CanLook() && !CanMove())
+		if (camera->currentState->id == RE::CameraStates::kFirstPerson && playerControls->data.unk2A && playerControls->data.povScriptMode && CanLook() && !CanMove())
 			return true;
 
 		return false;

@@ -4,22 +4,21 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "cameras/Dragon.h"
 
-#include "skyrimse/ImprovedCameraSE.h"
 #include "skyrimse/Addresses.h"
+#include "skyrimse/ImprovedCameraSE.h"
 #include "utils/ICMath.h"
-
 
 namespace ImprovedCamera {
 
 	using namespace Address::Variable;
 
-	CameraDragon::CameraDragon()
-		: ICamera("Dragon", RE::CameraStates::kDragon)
+	CameraDragon::CameraDragon() :
+		ICamera("Dragon", RE::CameraStates::kDragon)
 	{
 		SetData();
 	}
@@ -104,8 +103,7 @@ namespace ImprovedCamera {
 			if (m_DragonState == CameraDragon::State::kRiding)
 			{
 				auto thirdpersonState = (RE::ThirdPersonState*)RE::PlayerCamera::GetSingleton()->currentState.get();
-
-				float dragonMaxAngle = m_pluginConfig->RestrictAngles().fFlying * (M_PI / 180.0f); // Degrees to Radians;
+				float dragonMaxAngle = m_pluginConfig->RestrictAngles().fFlying * (M_PI / 180.0f);  // Degrees to Radians;
 
 				if (m_pluginConfig->Events().bDragon && m_DragonState == CameraDragon::State::kRiding)
 				{
@@ -113,8 +111,11 @@ namespace ImprovedCamera {
 
 					if (isFirstPerson && thirdpersonState->currentZoomOffset <= zoom)
 					{
-						if (thirdpersonState->freeRotation.x >= dragonMaxAngle) thirdpersonState->freeRotation.x = dragonMaxAngle;
-						if (thirdpersonState->freeRotation.x <= -dragonMaxAngle) thirdpersonState->freeRotation.x = -dragonMaxAngle;
+						if (thirdpersonState->freeRotation.x >= dragonMaxAngle)
+							thirdpersonState->freeRotation.x = dragonMaxAngle;
+
+						if (thirdpersonState->freeRotation.x <= -dragonMaxAngle)
+							thirdpersonState->freeRotation.x = -dragonMaxAngle;
 
 						*fFlyingMaxLookingUp = m_pluginConfig->RestrictAngles().fFlyingMaxLookingUp;
 						*fFlyingMaxLookingDown = m_pluginConfig->RestrictAngles().fFlyingMaxLookingDown;

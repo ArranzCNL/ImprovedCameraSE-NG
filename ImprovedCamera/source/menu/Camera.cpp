@@ -4,11 +4,10 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "menu/Camera.h"
-
 
 namespace Menu {
 
@@ -19,7 +18,8 @@ namespace Menu {
 
 	void MenuCamera::OnUpdate()
 	{
-		if (!m_Window) return;
+		if (!m_Window)
+			return;
 
 		ImGui::Begin("[CAMERA]", &m_Window, ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse);
 		if (ImGui::BeginTable("CameraTable", 4, ImGuiTableFlags_::ImGuiTableFlags_SizingFixedFit))
@@ -76,11 +76,13 @@ namespace Menu {
 			ImGui::TableItemSliderFloat("Dragon Position X", "##DragonCameraPosX", &m_pluginConfig->m_Camera.fDragonPosX, -500.0f, 500.0f, "%.1f");
 			ImGui::TableItemSliderFloat("Dragon Position Y", "##DragonCameraPosZ", &m_pluginConfig->m_Camera.fDragonPosZ, -500.0f, 500.0f, "%.1f");
 			ImGui::TableItemSliderFloat("Dragon Position Z", "##DragonCameraPosY", &m_pluginConfig->m_Camera.fDragonPosY, -500.0f, 500.0f, "%.1f");
-			
+
 			ImGui::EndTable();
 		}
 
-		if (ImGui::Button("Close"))	m_Window = false;
+		if (ImGui::Button("Close"))
+			m_Window = false;
+
 		ImGui::End();
 	}
 
