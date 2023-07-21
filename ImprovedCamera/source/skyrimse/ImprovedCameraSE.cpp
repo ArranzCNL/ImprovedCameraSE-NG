@@ -777,10 +777,8 @@ namespace ImprovedCamera {
 			// Fixes being stuck in Scripted state
 			playerControls->data.povScriptMode = false;
 			player->NotifyAnimationGraph("IdleForceDefaultState");
-
-			m_IsThirdPersonForced = false;
 		}
-
+		m_IsThirdPersonForced = false;
 		m_IsFirstPerson = false;
 		m_IsFakeCamera = false;
 

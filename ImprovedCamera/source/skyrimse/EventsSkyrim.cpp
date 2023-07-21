@@ -50,7 +50,6 @@ namespace Events {
 				auto thirdperson3D = RE::PlayerCharacter::GetSingleton()->Get3D(0);
 				if (!thirdperson3D)
 					return RE::BSEventNotifyControl::kContinue;
-				;
 
 				auto thirdpersonNode = thirdperson3D->AsNode();
 
