@@ -12,7 +12,6 @@
 #include "systems/Graphics.h"
 #include "systems/Logging.h"
 
-
 namespace DLLMain {
 
 	constexpr auto PLUGIN_PATH = "Data\\SKSE\\Plugins\\";

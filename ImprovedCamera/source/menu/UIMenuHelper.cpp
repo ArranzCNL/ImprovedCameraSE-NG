@@ -4,13 +4,12 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "menu/UIMenuHelper.h"
 
 #include <imgui_internal.h>
-
 
 // Custom ImGui
 namespace ImGui {
@@ -135,7 +134,9 @@ namespace ImGui {
 
 	void TableItemToggleButton(const char* text, const char* buttonText, bool* setting, bool insertRow)
 	{
-		if (insertRow) ImGui::TableNextRow();
+		if (insertRow)
+			ImGui::TableNextRow();
+
 		ImGui::TableNextColumn();
 		ImGui::Text(text);
 		ImGui::TableNextColumn();
@@ -144,7 +145,9 @@ namespace ImGui {
 
 	void TableItemSliderFloat(const char* text, const char* sliderText, float* setting, float v_min, float v_max, const char* format, bool insertRow)
 	{
-		if (insertRow) ImGui::TableNextRow();
+		if (insertRow)
+			ImGui::TableNextRow();
+
 		ImGui::TableNextColumn();
 		ImGui::Text(text);
 		ImGui::TableNextColumn();
@@ -161,17 +164,17 @@ namespace ImGui {
 		{
 			case VK_TAB:
 				return ImGuiKey_Tab;
-			case VK_LEFT: // Left Arrow
+			case VK_LEFT:  // Left Arrow
 				return ImGuiKey_LeftArrow;
-			case VK_RIGHT: // Right Arrow
+			case VK_RIGHT:  // Right Arrow
 				return ImGuiKey_RightArrow;
-			case VK_UP: // Up Arrow
+			case VK_UP:  // Up Arrow
 				return ImGuiKey_UpArrow;
-			case VK_DOWN: // Down Arrow
+			case VK_DOWN:  // Down Arrow
 				return ImGuiKey_DownArrow;
-			case VK_PRIOR: // Page Up
+			case VK_PRIOR:  // Page Up
 				return ImGuiKey_PageUp;
-			case VK_NEXT: // Page Down
+			case VK_NEXT:  // Page Down
 				return ImGuiKey_PageDown;
 			case VK_HOME:
 				return ImGuiKey_Home;
@@ -193,7 +196,7 @@ namespace ImGui {
 				return ImGuiKey_LeftCtrl;
 			case VK_LSHIFT:
 				return ImGuiKey_LeftShift;
-			case VK_LMENU: // Left Alt
+			case VK_LMENU:  // Left Alt
 				return ImGuiKey_LeftAlt;
 			case VK_LWIN:
 				return ImGuiKey_LeftSuper;
@@ -201,7 +204,7 @@ namespace ImGui {
 				return ImGuiKey_RightCtrl;
 			case VK_RSHIFT:
 				return ImGuiKey_RightShift;
-			case VK_RMENU: // Right Alt
+			case VK_RMENU:  // Right Alt
 				return ImGuiKey_RightAlt;
 			case VK_RWIN:
 				return ImGuiKey_RightSuper;
@@ -303,7 +306,7 @@ namespace ImGui {
 				return ImGuiKey_F11;
 			case VK_F12:
 				return ImGuiKey_F12;
-			case VK_OEM_7: // Apostrophe
+			case VK_OEM_7:  // Apostrophe
 				return ImGuiKey_Apostrophe;
 			case VK_OEM_COMMA:
 				return ImGuiKey_Comma;
@@ -311,19 +314,19 @@ namespace ImGui {
 				return ImGuiKey_Minus;
 			case VK_OEM_PERIOD:
 				return ImGuiKey_Period;
-			case VK_OEM_2: // Forward Slash
+			case VK_OEM_2:  // Forward Slash
 				return ImGuiKey_Slash;
-			case VK_OEM_1: // Semicolon
+			case VK_OEM_1:  // Semicolon
 				return ImGuiKey_Semicolon;
 			case VK_OEM_PLUS:
 				return ImGuiKey_Equal;
-			case VK_OEM_4: // Left Bracket
+			case VK_OEM_4:  // Left Bracket
 				return ImGuiKey_LeftBracket;
-			case VK_OEM_5: // Backslash
+			case VK_OEM_5:  // Backslash
 				return ImGuiKey_Backslash;
-			case VK_OEM_6: // Right Bracket
+			case VK_OEM_6:  // Right Bracket
 				return ImGuiKey_RightBracket;
-			case VK_OEM_3: // Grave Accent 
+			case VK_OEM_3:  // Grave Accent
 				return ImGuiKey_GraveAccent;
 			case VK_CAPITAL:
 				return ImGuiKey_CapsLock;
@@ -331,7 +334,7 @@ namespace ImGui {
 				return ImGuiKey_ScrollLock;
 			case VK_NUMLOCK:
 				return ImGuiKey_NumLock;
-			case VK_SNAPSHOT: // Print Screen
+			case VK_SNAPSHOT:  // Print Screen
 				return ImGuiKey_PrintScreen;
 			case VK_PAUSE:
 				return ImGuiKey_Pause;
@@ -365,9 +368,9 @@ namespace ImGui {
 				return ImGuiKey_KeypadSubtract;
 			case VK_ADD:
 				return ImGuiKey_KeypadAdd;
-			case VK_RETURN + 256: // Numpad Enter (Special handling from ImGui)
+			case VK_RETURN + 256:  // Numpad Enter (Special handling from ImGui)
 				return ImGuiKey_KeypadEnter;
-			case VK_OEM_NEC_EQUAL: // Numpad Equal
+			case VK_OEM_NEC_EQUAL:  // Numpad Equal
 				return ImGuiKey_KeypadEqual;
 			default:
 				return ImGuiKey_None;

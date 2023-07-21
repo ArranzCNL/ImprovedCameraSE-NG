@@ -256,6 +256,9 @@
       <Project>{f142a341-5ee0-442d-a15f-98ae9b48dbae}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\.clang-format" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

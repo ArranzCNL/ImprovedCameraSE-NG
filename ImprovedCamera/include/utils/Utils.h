@@ -6,7 +6,6 @@
 
 #pragma once
 
-
 namespace Utils {
 
 	extern const std::string GetFileInfo(const std::string& fullFilePath, const std::string& keyValue);

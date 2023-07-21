@@ -4,22 +4,21 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "cameras/ThirdPerson.h"
 
-#include "skyrimse/ImprovedCameraSE.h"
 #include "skyrimse/Addresses.h"
+#include "skyrimse/ImprovedCameraSE.h"
 #include "utils/ICMath.h"
-
 
 namespace ImprovedCamera {
 
 	using namespace Address::Variable;
 
-	CameraThirdPerson::CameraThirdPerson()
-		: ICamera("ThirdPerson", RE::CameraStates::kThirdPerson)
+	CameraThirdPerson::CameraThirdPerson() :
+		ICamera("ThirdPerson", RE::CameraStates::kThirdPerson)
 	{
 		SetData();
 	}
@@ -92,7 +91,7 @@ namespace ImprovedCamera {
 				return true;
 			}
 			// Third party animations.
-			bool activate_enabled = 1;// SkyrimFunction::IsActivateControlsEnabled();
+			bool activate_enabled = 1;  // SkyrimFunction::IsActivateControlsEnabled();
 
 			if (Helper::IsScripted() || !activate_enabled || !controlMap->IsMovementControlsEnabled())
 			{
@@ -127,7 +126,7 @@ namespace ImprovedCamera {
 			if (m_ThirdPersonState == CameraThirdPerson::State::kSleepingEnter)
 			{
 				m_ThirdPersonState = CameraThirdPerson::State::kSleepingIdle;
-				controlMap->enabledControls.set(RE::UserEvents::USER_EVENT_FLAG::kLooking); // Allow Looking
+				controlMap->enabledControls.set(RE::UserEvents::USER_EVENT_FLAG::kLooking);  // Allow Looking
 				return true;
 			}
 			// Crafting Entered
@@ -152,7 +151,7 @@ namespace ImprovedCamera {
 			if (m_ThirdPersonState == CameraThirdPerson::State::kAnimationEnter)
 			{
 				m_ThirdPersonState = CameraThirdPerson::State::kAnimationIdle;
-				controlMap->enabledControls.set(RE::UserEvents::USER_EVENT_FLAG::kPOVSwitch); // Allow POV
+				controlMap->enabledControls.set(RE::UserEvents::USER_EVENT_FLAG::kPOVSwitch);  // Allow POV
 				return true;
 			}
 			// VampireLord Entered
@@ -188,16 +187,13 @@ namespace ImprovedCamera {
 		float zoom = *fMinCurrentZoom + m_pluginConfig->Fixes().fSwitchPOVDetectDistance;
 		bool isFirstPerson = pluginCamera->IsFirstPerson();
 
-		// For Scripted detection
-		bool activate_enabled = 1;// SkyrimFunction::IsActivateControlsEnabled();
-
 		if (m_ThirdPersonState)
 		{
 			if (m_ThirdPersonState == CameraThirdPerson::State::kIdle || m_ThirdPersonState == CameraThirdPerson::State::kWeaponDrawnIdle)
 			{
 				// Weapon Drawn detection
-				if (m_ThirdPersonState == CameraThirdPerson::State::kIdle && this->Player->AsActorState()->IsWeaponDrawn()
-					|| m_ThirdPersonState == CameraThirdPerson::State::kWeaponDrawnIdle && !this->Player->AsActorState()->IsWeaponDrawn())
+				if (m_ThirdPersonState == CameraThirdPerson::State::kIdle && this->Player->AsActorState()->IsWeaponDrawn() ||
+					m_ThirdPersonState == CameraThirdPerson::State::kWeaponDrawnIdle && !this->Player->AsActorState()->IsWeaponDrawn())
 				{
 					m_ThirdPersonState = CameraThirdPerson::State::kExit;
 					return true;
@@ -215,7 +211,7 @@ namespace ImprovedCamera {
 					return true;
 				}
 				// Scripted detection
-				if (Helper::IsScripted() || !activate_enabled || !controlMap->IsMovementControlsEnabled())
+				if (Helper::IsScripted() || !controlMap->IsMovementControlsEnabled())
 				{
 					m_ThirdPersonState = CameraThirdPerson::State::kExit;
 					return true;
@@ -250,23 +246,31 @@ namespace ImprovedCamera {
 				return true;
 			}
 			// Angle Restriction Scripted
-			if ((m_ThirdPersonState == CameraThirdPerson::State::kScriptedIdle || m_ThirdPersonState == CameraThirdPerson::State::kAnimationIdle) && m_pluginConfig->Events().bScripted)
+			if (m_pluginConfig->Events().bScripted &&
+				(m_ThirdPersonState == CameraThirdPerson::State::kScriptedIdle ||
+				m_ThirdPersonState == CameraThirdPerson::State::kAnimationIdle))
 			{
 				if (isFirstPerson && thirdpersonState->currentZoomOffset <= zoom)
 				{
-					float scriptedMaxAngle = m_pluginConfig->RestrictAngles().fScripted * (M_PI / 180.0f); // Degrees to Radians;
+					float scriptedMaxAngle = m_pluginConfig->RestrictAngles().fScripted * (M_PI / 180.0f);  // Degrees to Radians;
 
-					if (thirdpersonState->freeRotation.x >= scriptedMaxAngle) thirdpersonState->freeRotation.x = scriptedMaxAngle;
-					if (thirdpersonState->freeRotation.x <= -scriptedMaxAngle) thirdpersonState->freeRotation.x = -scriptedMaxAngle;
+					if (thirdpersonState->freeRotation.x >= scriptedMaxAngle)
+						thirdpersonState->freeRotation.x = scriptedMaxAngle;
 
-					float scriptedMaxPitch = m_pluginConfig->RestrictAngles().fScriptedPitch * (M_PI / 180.0f); // Degrees to Radians
+					if (thirdpersonState->freeRotation.x <= -scriptedMaxAngle)
+						thirdpersonState->freeRotation.x = -scriptedMaxAngle;
 
-					if (thirdpersonState->freeRotation.y >= scriptedMaxPitch) thirdpersonState->freeRotation.y = scriptedMaxPitch;
-					if (thirdpersonState->freeRotation.y <= -scriptedMaxPitch) thirdpersonState->freeRotation.y = -scriptedMaxPitch;
+					float scriptedMaxPitch = m_pluginConfig->RestrictAngles().fScriptedPitch * (M_PI / 180.0f);  // Degrees to Radians
+
+					if (thirdpersonState->freeRotation.y >= scriptedMaxPitch)
+						thirdpersonState->freeRotation.y = scriptedMaxPitch;
+
+					if (thirdpersonState->freeRotation.y <= -scriptedMaxPitch)
+						thirdpersonState->freeRotation.y = -scriptedMaxPitch;
 				}
 			}
 			// Angle Restriction VampireLord
-			if (m_ThirdPersonState == CameraThirdPerson::State::kVampireLordIdle && m_pluginConfig->Events().bVampireLord)
+			if (m_pluginConfig->Events().bVampireLord && m_ThirdPersonState == CameraThirdPerson::State::kVampireLordIdle)
 			{
 				if (this->Player->IsInKillMove())
 				{
@@ -275,32 +279,39 @@ namespace ImprovedCamera {
 				}
 				if (isFirstPerson && thirdpersonState->currentZoomOffset <= zoom)
 				{
-					float vampireLordMaxAngle = m_pluginConfig->RestrictAngles().fVampireLord * (M_PI / 180.0f); // Degrees to Radians;
+					float vampireLordMaxAngle = m_pluginConfig->RestrictAngles().fVampireLord * (M_PI / 180.0f);  // Degrees to Radians;
 
-					if (thirdpersonState->freeRotation.x >= vampireLordMaxAngle) thirdpersonState->freeRotation.x = vampireLordMaxAngle;
-					if (thirdpersonState->freeRotation.x <= -vampireLordMaxAngle) thirdpersonState->freeRotation.x = -vampireLordMaxAngle;
+					if (thirdpersonState->freeRotation.x >= vampireLordMaxAngle)
+						thirdpersonState->freeRotation.x = vampireLordMaxAngle;
+
+					if (thirdpersonState->freeRotation.x <= -vampireLordMaxAngle)
+						thirdpersonState->freeRotation.x = -vampireLordMaxAngle;
 				}
 			}
 			// Angle Restriction Werewolf
-			if (m_ThirdPersonState == CameraThirdPerson::State::kWerewolfIdle && m_pluginConfig->Events().bWerewolf)
+			if (m_pluginConfig->Events().bWerewolf && m_ThirdPersonState == CameraThirdPerson::State::kWerewolfIdle)
 			{
 				if (isFirstPerson && thirdpersonState->currentZoomOffset <= zoom)
 				{
-					float werewolfMaxAngle = m_pluginConfig->RestrictAngles().fWerewolf * (M_PI / 180.0f); // Degrees to Radians;
+					float werewolfMaxAngle = m_pluginConfig->RestrictAngles().fWerewolf * (M_PI / 180.0f);  // Degrees to Radians;
 
-					if (thirdpersonState->freeRotation.x >= werewolfMaxAngle) thirdpersonState->freeRotation.x = werewolfMaxAngle;
-					if (thirdpersonState->freeRotation.x <= -werewolfMaxAngle) thirdpersonState->freeRotation.x = -werewolfMaxAngle;
+					if (thirdpersonState->freeRotation.x >= werewolfMaxAngle)
+						thirdpersonState->freeRotation.x = werewolfMaxAngle;
+					if (thirdpersonState->freeRotation.x <= -werewolfMaxAngle)
+						thirdpersonState->freeRotation.x = -werewolfMaxAngle;
 				}
 			}
 			// Angle Restriction NecroLich
-			if (m_ThirdPersonState == CameraThirdPerson::State::kNecroLichIdle && m_pluginConfig->Events().bNecroLich)
+			if (m_pluginConfig->Events().bNecroLich && m_ThirdPersonState == CameraThirdPerson::State::kNecroLichIdle)
 			{
 				if (isFirstPerson && thirdpersonState->currentZoomOffset <= zoom)
 				{
-					float necroLichMaxAngle = m_pluginConfig->RestrictAngles().fNecroLich * (M_PI / 180.0f); // Degrees to Radians;
+					float necroLichMaxAngle = m_pluginConfig->RestrictAngles().fNecroLich * (M_PI / 180.0f);  // Degrees to Radians;
 
-					if (thirdpersonState->freeRotation.x >= necroLichMaxAngle) thirdpersonState->freeRotation.x = necroLichMaxAngle;
-					if (thirdpersonState->freeRotation.x <= -necroLichMaxAngle) thirdpersonState->freeRotation.x = -necroLichMaxAngle;
+					if (thirdpersonState->freeRotation.x >= necroLichMaxAngle)
+						thirdpersonState->freeRotation.x = necroLichMaxAngle;
+					if (thirdpersonState->freeRotation.x <= -necroLichMaxAngle)
+						thirdpersonState->freeRotation.x = -necroLichMaxAngle;
 				}
 			}
 			// Exit Crafting detection
@@ -310,7 +321,7 @@ namespace ImprovedCamera {
 				return true;
 			}
 			// Exit Scripted detection
-			if (m_ThirdPersonState == CameraThirdPerson::State::kScriptedIdle && !Helper::IsScripted() && activate_enabled && controlMap->IsMovementControlsEnabled())
+			if (m_ThirdPersonState == CameraThirdPerson::State::kScriptedIdle && !Helper::IsScripted() && controlMap->IsMovementControlsEnabled())
 			{
 				m_ThirdPersonState = CameraThirdPerson::State::kExit;
 				return true;

@@ -4,18 +4,17 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "systems/Graphics.h"
 
-#include "plugin.h"
-#include "utils/Utils.h"
-#include "utils/Log.h"
 #include "Utils/PatternScan.h"
+#include "plugin.h"
+#include "utils/Log.h"
+#include "utils/Utils.h"
 
 #include <MinHook.h>
-
 
 namespace Systems {
 
@@ -51,12 +50,11 @@ namespace Systems {
 		pluginGraphics->m_UI->BeginFrame();
 		pluginGraphics->m_UI->OnUpdate();
 		pluginGraphics->m_UI->EndFrame();
-		
+
 		return pluginGraphics->m_Present(pSwapChain, SyncInterval, Flags);
 	}
 
-	struct DXGIPresentHook
-	{
+	struct DXGIPresentHook {
 		static void thunk(std::uint32_t a_timer)
 		{
 			func(a_timer);
@@ -132,7 +130,8 @@ namespace Systems {
 
 	void Graphics::ResizeBuffer(const glm::uvec2 size)
 	{
-		if (!m_Initialized) return;
+		if (!m_Initialized)
+			return;
 
 		CleanupRenderTarget();
 		m_SwapChain->ResizeBuffers(0, size.x, size.y, DXGI_FORMAT_UNKNOWN, 0);
@@ -305,8 +304,7 @@ namespace Systems {
 				pluginGraphics->m_SwapChain.GetAddressOf(),
 				pluginGraphics->m_Device.GetAddressOf(),
 				&featureLevel,
-				pluginGraphics->m_DeviceContext.GetAddressOf()
-			);
+				pluginGraphics->m_DeviceContext.GetAddressOf());
 
 			if (FAILED(hr))
 			{

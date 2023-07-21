@@ -8,7 +8,6 @@
 
 #pragma comment(lib, "Version.lib")
 
-
 #define MAKE_STR_HELPER(a_str) #a_str
 #define MAKE_STR(a_str) MAKE_STR_HELPER(a_str)
 

@@ -8,7 +8,7 @@
 
 #define IMGUI_DISABLE_OBSOLETE_FUNCTIONS
 #include <imgui.h>
-#include <misc/cpp/imgui_stdlib.h> // allows std:string
+#include <misc/cpp/imgui_stdlib.h>  // allows std:string
 
 // We cheat and pollute ImGui's namespace!
 namespace ImGui {

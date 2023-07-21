@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "menu/UIMenu.h"
@@ -16,11 +16,10 @@
 
 #include <filesystem>
 
-
 namespace Menu {
 
-	UIMenu::UIMenu(HWND windowMenu)
-		: m_UIMenuWindow(windowMenu)
+	UIMenu::UIMenu(HWND windowMenu) :
+		m_UIMenuWindow(windowMenu)
 	{
 		// Get the Plugin so we can access Config, Graphics and Input
 		auto plugin = DLLMain::Plugin::Get();
@@ -69,7 +68,7 @@ namespace Menu {
 						fontSize = 10.0f;
 					}
 					LOG_TRACE("  MenuFont:\t\t\t\t{}", customFont.c_str());
-					LOG_TRACE("  MenuFontSize:\t\t\t{}", fontSize); // %.1f
+					LOG_TRACE("  MenuFontSize:\t\t\t{}", fontSize);  // %.1f
 					io.FontDefault = io.Fonts->AddFontFromFileTTF(customFont.c_str(), fontSize);
 				}
 				else
@@ -88,7 +87,7 @@ namespace Menu {
 								fontSize = 10.0f;
 							}
 							LOG_TRACE("  MenuFont:\t\t\t\t{}", customFont.c_str());
-							LOG_TRACE("  MenuFontSize:\t\t\t{}", fontSize); // %.1f
+							LOG_TRACE("  MenuFontSize:\t\t\t{}", fontSize);  // %.1f
 							io.FontDefault = io.Fonts->AddFontFromFileTTF(customFont.c_str(), fontSize);
 						}
 					}
@@ -100,7 +99,7 @@ namespace Menu {
 			m_ApplicationWindow = m_pluginGraphics->Window()->Properties().hWnd;
 			m_MenuKey = m_pluginConfig->ModuleData().iMenuKey;
 
-			LOG_TRACE("  MenuKey:\t\t\t\t0x{:0X}", m_MenuKey); // 0x%I64X
+			LOG_TRACE("  MenuKey:\t\t\t\t0x{:0X}", m_MenuKey);  // 0x%I64X
 			LOG_INFO("UIMenu Loaded.");
 
 			// Setup Platform/Renderer backends
@@ -194,7 +193,7 @@ namespace Menu {
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 		if (m_pluginConfig->ModuleData().iMenuMode == Systems::Window::MenuDisplay::kOverlay && !m_pluginGraphics->IsOverlayHooked())
-			m_pluginGraphics->m_SwapChain->Present(1, 0); // VSync
+			m_pluginGraphics->m_SwapChain->Present(1, 0);  // VSync
 	}
 
 	void UIMenu::ResizeBuffer(const glm::uvec2 size)
@@ -249,23 +248,33 @@ namespace Menu {
 		}
 
 		ShowMenuBarWindow();
-		if (m_ViewSaveWindow) ShowSaveWindow();
+		if (m_ViewSaveWindow)
+			ShowSaveWindow();
 		// In order of precedence from the MenuBar
-		if (m_ViewModuleDataWindow) ShowModuleDataWindow();
+		if (m_ViewModuleDataWindow)
+			ShowModuleDataWindow();
+
 		for (Interface::IMenu* menu : m_Menu)
 			menu->OnUpdate();
 
 		// ImGui Tools
-		if (m_ViewStackToolWindow) ImGui::ShowStackToolWindow(&m_ViewStackToolWindow);
-		if (m_ViewMetricsWindow) ImGui::ShowMetricsWindow(&m_ViewMetricsWindow);
+		if (m_ViewStackToolWindow)
+			ImGui::ShowStackToolWindow(&m_ViewStackToolWindow);
+
+		if (m_ViewMetricsWindow)
+			ImGui::ShowMetricsWindow(&m_ViewMetricsWindow);
+
 		if (m_ViewStyleEditorWindow)
 		{
 			ImGui::Begin("Style Editor", &m_ViewStyleEditorWindow);
 			ImGui::ShowStyleEditor();
 			ImGui::End();
 		}
-		if (m_ViewDemoWindow) ImGui::ShowDemoWindow(&m_ViewDemoWindow);
-		if (m_ViewAboutImGuiWindow) ImGui::ShowAboutWindow(&m_ViewAboutImGuiWindow);
+		if (m_ViewDemoWindow)
+			ImGui::ShowDemoWindow(&m_ViewDemoWindow);
+
+		if (m_ViewAboutImGuiWindow)
+			ImGui::ShowAboutWindow(&m_ViewAboutImGuiWindow);
 	}
 
 	void UIMenu::OnUpdateMenuClose()
@@ -335,12 +344,19 @@ namespace Menu {
 					ShowProfileWindow();
 					ImGui::EndMenu();
 				}
-				if (ImGui::MenuItem("Save Profile", "Ctrl+S") && !m_ViewSaveWindow) OnUpdateMenuSave();
+				if (ImGui::MenuItem("Save Profile", "Ctrl+S") && !m_ViewSaveWindow)
+					OnUpdateMenuSave();
+
 				ImGui::Separator();
-				if (m_ProfileName.compare("Default") == 0) ImGui::MenuItem("Delete Profile", NULL, false, false);
-				else if(ImGui::MenuItem("Delete Profile")) OnUpdateDeleteProfile();
+				if (m_ProfileName.compare("Default") == 0)
+					ImGui::MenuItem("Delete Profile", NULL, false, false);
+
+				else if (ImGui::MenuItem("Delete Profile"))
+					OnUpdateDeleteProfile();
+
 				ImGui::Separator();
-				if (ImGui::MenuItem("Close", "Esc")) OnUpdateMenuClose();
+				if (ImGui::MenuItem("Close", "Esc"))
+					OnUpdateMenuClose();
 
 				ImGui::EndMenu();
 			}
@@ -356,12 +372,19 @@ namespace Menu {
 			}
 			if (ImGui::BeginMenu("Tools"))
 			{
-				if (ImGui::MenuItem("Stack Tool")) m_ViewStackToolWindow = true;
-				if (ImGui::MenuItem("Metrics/Debugger")) m_ViewMetricsWindow = true;
+				if (ImGui::MenuItem("Stack Tool"))
+					m_ViewStackToolWindow = true;
+
+				if (ImGui::MenuItem("Metrics/Debugger"))
+					m_ViewMetricsWindow = true;
+
 #ifdef IMGUI_ENABLE_DEMO_WINDOWS
 				ImGui::Separator();
-				if (ImGui::MenuItem("Style Editor")) m_ViewStyleEditorWindow = true;
-				if (ImGui::MenuItem("ImGui Demo")) m_ViewDemoWindow = true;
+				if (ImGui::MenuItem("Style Editor"))
+					m_ViewStyleEditorWindow = true;
+
+				if (ImGui::MenuItem("ImGui Demo"))
+					m_ViewDemoWindow = true;
 #endif
 				ImGui::EndMenu();
 			}
@@ -370,7 +393,8 @@ namespace Menu {
 				if (ImGui::MenuItem("Reset State"))
 					m_pluginSkyrimSE->Camera()->ResetState(true);
 
-				if (ImGui::MenuItem("About Dear ImGui")) m_ViewAboutImGuiWindow = true;
+				if (ImGui::MenuItem("About Dear ImGui"))
+					m_ViewAboutImGuiWindow = true;
 
 				ImGui::EndMenu();
 			}
@@ -430,11 +454,10 @@ namespace Menu {
 
 		ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
 		ImGui::Text("Save Settings");
-		
+
 		if (m_ProfileName.compare("Default") == 0)
 		{
-			struct TextFilters
-			{
+			struct TextFilters {
 				static int FilterAllowedCharacters(ImGuiInputTextCallbackData* data)
 				{
 					if (data->EventChar < 256 && strchr("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", (char)data->EventChar))
@@ -444,7 +467,8 @@ namespace Menu {
 			};
 
 			static std::string textInput{};
-			ImGui::Text("Profile Name:"); ImGui::SameLine();
+			ImGui::Text("Profile Name:");
+			ImGui::SameLine();
 			ImGui::InputText("##SaveInput", &textInput, ImGuiInputTextFlags_CallbackCharFilter, TextFilters::FilterAllowedCharacters);
 			ImGui::NewLine();
 			ImGui::SetCursorPosX((windowWidth - 90) * 0.5f);
@@ -526,7 +550,9 @@ namespace Menu {
 			ImGui::EndTable();
 		}
 
-		if (ImGui::Button("Close"))	m_ViewModuleDataWindow = false;
+		if (ImGui::Button("Close"))
+			m_ViewModuleDataWindow = false;
+
 		ImGui::End();
 	}
 

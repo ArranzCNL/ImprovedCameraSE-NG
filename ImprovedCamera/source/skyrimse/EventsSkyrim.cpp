@@ -13,7 +13,6 @@
 #include "skyrimse/ImprovedCameraSE.h"
 #include "utils/Log.h"
 
-
 namespace Events {
 
 	static inline RE::hkbClipGenerator* ClipGeneratorNode(RE::hkbNode* a_node)
@@ -101,7 +100,7 @@ namespace Events {
 						{
 							std::string animationFile = clipGenerator->animationName.c_str();
 #ifdef _DEBUG
-							LOG_DEBUG("Animation Index[{}] | ID[{}]: {}", index, nodeClone->id, animationFile);
+							LOG_DEBUG("Animation[{}] Name: {}\n\tFile: {}", index, nodeClone->name.c_str(), animationFile);
 #endif
 							if (index == 0)
 							{

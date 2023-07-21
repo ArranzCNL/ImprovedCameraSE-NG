@@ -4,16 +4,15 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
-#include "utils/Utils.h"
 #include "plugin.h"
+#include "utils/Utils.h"
 
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 #include <time.h>
-
 
 namespace Utils {
 
@@ -135,7 +134,7 @@ namespace Utils {
 	const std::string GetCurrentDateTime(const char* fmt)
 	{
 		time_t now = time(0);
-		struct tm tstruct{};
+		struct tm tstruct {};
 		char buffer[128]{};
 		localtime_s(&tstruct, &now);
 		// Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
@@ -301,13 +300,14 @@ namespace Utils {
 			}
 			case DIK_NUMPADENTER:
 			{
-				*virtualKey = VK_RETURN + 256; // Numpad Enter (Special handling)
+				*virtualKey = VK_RETURN + 256;  // Numpad Enter (Special handling)
 				break;
 			}
 			// Unsure of this one should be fine.
 			case DIK_NUMPADEQUALS:
 			{
 				*virtualKey = VK_OEM_NEC_EQUAL;
+				break;
 			}
 		}
 	}

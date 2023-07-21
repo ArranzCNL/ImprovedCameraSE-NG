@@ -6,21 +6,22 @@
 
 #pragma once
 
-#include "systems/Window.h"
 #include "systems/UI.h"
+#include "systems/Window.h"
 
 #include <d3d11.h>
 #include <wrl/client.h>
 
 // Forward declare UIMenu
 namespace Menu {
+
 	class UIMenu;
 }
 // Forward declare ImprovedCameraSE
 namespace ImprovedCamera {
+
 	class ImprovedCameraSE;
 }
-
 
 namespace Systems {
 

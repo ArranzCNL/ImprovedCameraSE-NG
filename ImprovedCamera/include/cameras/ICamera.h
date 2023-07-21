@@ -6,15 +6,14 @@
 
 #pragma once
 
-#include "plugin.h"
 #include "cameras/Events.h"
+#include "plugin.h"
 #include "skyrimse/Helper.h"
 
 #if _DEBUG
 	#include <iostream>
 	#include <iomanip>
 #endif
-
 
 namespace Interface {
 

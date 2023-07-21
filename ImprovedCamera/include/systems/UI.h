@@ -6,7 +6,6 @@
 
 #pragma once
 
-
 namespace Systems {
 
 	class UI {

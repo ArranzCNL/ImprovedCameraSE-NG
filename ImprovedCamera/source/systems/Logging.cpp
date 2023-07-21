@@ -4,21 +4,20 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "systems/Logging.h"
 
 #include "plugin.h"
-#include "version.h"
 #include "utils/Log.h"
+#include "version.h"
 
-#include <ShlObj.h>
 #include <KnownFolders.h>
+#include <ShlObj.h>
 
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
-
 
 namespace Systems {
 

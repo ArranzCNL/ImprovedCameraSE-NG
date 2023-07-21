@@ -344,4 +344,7 @@
       <Filter>_resource</Filter>
     </ResourceCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\.clang-format" />
+  </ItemGroup>
 </Project>

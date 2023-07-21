@@ -6,7 +6,6 @@
 
 #pragma once
 
-
 namespace RE {
 
 	class BSLookAtModifier {
@@ -16,16 +15,15 @@ namespace RE {
 		inline static constexpr auto VTABLE = VTABLE_BSLookAtModifier;
 
 		virtual ~BSLookAtModifier();  // 00
-
 	};
 	//static_assert(sizeof(BSLookAtModifier) == 0x277);
 }
 
 namespace Menu {
+
 	class UIMenu;
 	class MenuGeneral;
 }
-
 
 namespace Patch {
 

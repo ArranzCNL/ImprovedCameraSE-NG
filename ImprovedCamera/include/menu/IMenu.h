@@ -9,7 +9,6 @@
 #include "menu/UIMenuHelper.h"
 #include "plugin.h"
 
-
 namespace Interface {
 
 	class IMenu {

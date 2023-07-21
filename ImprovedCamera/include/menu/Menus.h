@@ -6,12 +6,12 @@
 
 #pragma once
 
-#include "menu/General.h"
-#include "menu/Hide.h"
-#include "menu/Fixes.h"
-#include "menu/RestrictAngles.h"
-#include "menu/EventsMenu.h"
-#include "menu/Fov.h"
-#include "menu/NearDistance.h"
-#include "menu/Headbob.h"
 #include "menu/Camera.h"
+#include "menu/EventsMenu.h"
+#include "menu/Fixes.h"
+#include "menu/Fov.h"
+#include "menu/General.h"
+#include "menu/Headbob.h"
+#include "menu/Hide.h"
+#include "menu/NearDistance.h"
+#include "menu/RestrictAngles.h"

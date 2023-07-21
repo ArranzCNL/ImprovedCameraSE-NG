@@ -9,12 +9,11 @@
 #include "menu/IMenu.h"
 
 // ImGui
-#include <imgui.h>
-#include "backends/imgui_impl_win32.h"
 #include "backends/imgui_impl_dx11.h"
+#include "backends/imgui_impl_win32.h"
+#include <imgui.h>
 // Forward declare message handler from imgui_impl_win32.cpp
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
 
 namespace Menu {
 

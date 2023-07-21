@@ -10,9 +10,9 @@
 #include "skyrimse/Hooks.h"
 
 namespace ImprovedCamera {
+
 	class ImprovedCameraSE;
 }
-
 
 namespace Patch {
 
@@ -26,7 +26,7 @@ namespace Patch {
 				k15970 = 1,
 				k16353 = 2,
 				k16640 = 3,
-				k16659 = 4, // GOG
+				k16659 = 4,  // GOG
 
 				kTotal
 			};

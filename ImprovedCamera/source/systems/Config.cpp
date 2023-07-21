@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "systems/Config.h"
@@ -14,7 +14,6 @@
 
 #define MINI_CASE_SENSITIVE
 #include "mini/ini.h"
-
 
 namespace Systems {
 
@@ -37,8 +36,8 @@ namespace Systems {
 
 	bool Config::ReadIni(std::string& name)
 	{
-		try {
-
+		try
+		{
 			if (!m_PreInitialized && m_FileName.compare(name) == 0)
 			{
 				mINI::INIFile ModuleData(name.c_str());
@@ -449,7 +448,7 @@ namespace Systems {
 			ini["CAMERA"]["fScriptedPosX"] = std::to_string(m_Camera.fScriptedPosX);
 			ini["CAMERA"]["fScriptedPosY"] = std::to_string(m_Camera.fScriptedPosY);
 			ini["CAMERA"]["fScriptedPosZ"] = std::to_string(m_Camera.fScriptedPosZ);
-			
+
 			file.write(ini);
 		}
 	}

@@ -6,10 +6,9 @@
 
 #pragma once
 
-#include "cameras/ICamera.h"
 #include "api/SmoothCamAPI.h"
 #include "api/TrueDirectionalMovementAPI.h"
-
+#include "cameras/ICamera.h"
 
 namespace ImprovedCamera {
 
@@ -50,11 +49,14 @@ namespace ImprovedCamera {
 		class NodeOverride {
 
 		public:
-			NodeOverride(RE::NiNode* node, float scale) : node(node) {
+			NodeOverride(RE::NiNode* node, float scale) :
+				node(node)
+			{
 				old_scale = node->local.scale;
 				node->local.scale = scale;
 			}
-			~NodeOverride() {
+			~NodeOverride()
+			{
 				node->local.scale = old_scale;
 			}
 
@@ -94,7 +96,7 @@ namespace ImprovedCamera {
 		std::uint8_t m_CameraEventID = CameraEvent::kFirstPerson;
 		uint8_t m_PreviousCameraID = 255;
 		uint8_t m_CurrentCameraID = 255;
-		
+
 		bool m_IsThirdPersonForced = false;
 		bool m_IsFirstPerson = false;
 		bool m_IsFakeCamera = false;

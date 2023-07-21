@@ -6,7 +6,6 @@
 
 #pragma once
 
-
 namespace Utils {
 
 	extern PBYTE FindPattern(const char* moduleName, const char* patternString, bool externalScan = false);

@@ -4,16 +4,15 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "api/skse_api.h"
 
 #include "plugin.h"
-#include "version.h"
-#include "utils/Log.h"
 #include "skyrimse/ImprovedCameraSE.h"
-
+#include "utils/Log.h"
+#include "version.h"
 
 namespace SKSE {
 
@@ -48,10 +47,9 @@ namespace SKSE {
 		}
 	}
 
-	SKSE_API constinit auto SKSEPlugin_Version = []() noexcept
-	{
+	SKSE_API constinit auto SKSEPlugin_Version = []() noexcept {
 		SKSE::PluginVersionData pluginData{};
-		REL::Version version{VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, VERSION_BUILD};
+		REL::Version version{ VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, VERSION_BUILD };
 
 		pluginData.PluginName(VERSION_PRODUCTNAME_STR);
 		pluginData.PluginVersion(version);
@@ -89,7 +87,7 @@ namespace SKSE {
 		plugin->m_Logging.Initialize();
 
 		SKSE::Init(skse);
-		
+
 		bool loaded = plugin->Load();
 
 		if (loaded)

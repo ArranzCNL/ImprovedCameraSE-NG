@@ -4,16 +4,15 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "cameras/DeathCinematic.h"
 
-
 namespace ImprovedCamera {
 
-	CameraDeathCinematic::CameraDeathCinematic()
-		: ICamera("DeathCinematic", RE::CameraStates::kVATS)
+	CameraDeathCinematic::CameraDeathCinematic() :
+		ICamera("DeathCinematic", RE::CameraStates::kVATS)
 	{
 		SetData();
 	}

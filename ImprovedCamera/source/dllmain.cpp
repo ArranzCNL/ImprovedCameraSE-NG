@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "plugin.h"
@@ -12,7 +12,6 @@
 #ifdef _DEBUG
 	#include <iostream>
 #endif
-
 
 static DLLMain::Plugin* g_plugin = nullptr;
 
@@ -38,7 +37,8 @@ BOOL APIENTRY DllMain(HMODULE hinstDLL, DWORD fdwReason, LPVOID)
 			freopen_s(&pConsole, "CONOUT$", "w", stdout);
 			freopen_s(&pConsole, "CONIN$", "w", stdin);
 			freopen_s(&pConsole, "CONOUT$", "w", stderr);
-			if (pConsole) fclose(pConsole);
+			if (pConsole)
+				fclose(pConsole);
 
 			std::cout << "Debug Console Started:" << std::endl;
 

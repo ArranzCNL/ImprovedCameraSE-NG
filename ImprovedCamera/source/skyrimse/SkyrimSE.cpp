@@ -4,16 +4,15 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "skyrimse/SkyrimSE.h"
 
 #include "plugin.h"
-#include "utils/Utils.h"
-#include "skyrimse/ImprovedCameraSE.h"
 #include "skyrimse/EventsSkyrim.h"
-
+#include "skyrimse/ImprovedCameraSE.h"
+#include "utils/Utils.h"
 
 namespace Patch {
 
@@ -30,7 +29,9 @@ namespace Patch {
 
 	void SkyrimSE::OnLoad()
 	{
-		if (m_OnLoaded) return;
+		if (m_OnLoaded)
+			return;
+
 		m_OnLoaded = true;
 
 		// Initialize Hooks

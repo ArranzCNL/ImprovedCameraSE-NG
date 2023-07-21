@@ -4,22 +4,21 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "cameras/Horse.h"
 
-#include "skyrimse/ImprovedCameraSE.h"
 #include "skyrimse/Addresses.h"
+#include "skyrimse/ImprovedCameraSE.h"
 #include "utils/ICMath.h"
-
 
 namespace ImprovedCamera {
 
 	using namespace Address::Variable;
 
-	CameraHorse::CameraHorse()
-		: ICamera("Horse", RE::CameraStates::kMount)
+	CameraHorse::CameraHorse() :
+		ICamera("Horse", RE::CameraStates::kMount)
 	{
 		SetData();
 	}
@@ -66,7 +65,7 @@ namespace ImprovedCamera {
 			// Fix to face forward once mounted
 			auto thirdpersonState = (RE::ThirdPersonState*)RE::PlayerCamera::GetSingleton()->currentState.get();
 			thirdpersonState->freeRotation.x = this->Player->data.angle.x;
-			
+
 			return true;
 		}
 		// Riding Horse
@@ -103,26 +102,28 @@ namespace ImprovedCamera {
 			if (m_HorseState == CameraHorse::State::kRiding || m_HorseState == CameraHorse::State::kWeaponDrawnIdle)
 			{
 				// Weapon Drawn detection
-				if (m_HorseState == CameraHorse::State::kRiding && this->Player->AsActorState()->IsWeaponDrawn()
-					|| m_HorseState == CameraHorse::State::kWeaponDrawnIdle && !this->Player->AsActorState()->IsWeaponDrawn())
+				if (m_HorseState == CameraHorse::State::kRiding && this->Player->AsActorState()->IsWeaponDrawn() ||
+					m_HorseState == CameraHorse::State::kWeaponDrawnIdle && !this->Player->AsActorState()->IsWeaponDrawn())
 				{
 					m_HorseState = CameraHorse::State::kMounted;
 					return true;
 				}
 				// Change riding angles
-				auto thirdpersonState = (RE::ThirdPersonState*)RE::PlayerCamera::GetSingleton()->currentState.get();;
+				auto thirdpersonState = (RE::ThirdPersonState*)RE::PlayerCamera::GetSingleton()->currentState.get();
+				float horseMaxAngle = m_pluginConfig->RestrictAngles().fMounted * (M_PI / 180.0f);  // Degrees to Radians;
 
-				float horseMaxAngle = m_pluginConfig->RestrictAngles().fMounted * (M_PI / 180.0f); // Degrees to Radians;
-
-				if (m_pluginConfig->Events().bHorse && m_HorseState == CameraHorse::State::kRiding
-					|| m_pluginConfig->Events().bHorseCombat && m_HorseState == CameraHorse::State::kWeaponDrawnIdle)
+				if (m_pluginConfig->Events().bHorse && m_HorseState == CameraHorse::State::kRiding ||
+					m_pluginConfig->Events().bHorseCombat && m_HorseState == CameraHorse::State::kWeaponDrawnIdle)
 				{
 					float zoom = *fMinCurrentZoom + m_pluginConfig->Fixes().fSwitchPOVDetectDistance;
 
 					if (isFirstPerson && thirdpersonState->currentZoomOffset <= zoom)
 					{
-						if (thirdpersonState->freeRotation.x >= horseMaxAngle) thirdpersonState->freeRotation.x = horseMaxAngle;
-						if (thirdpersonState->freeRotation.x <= -horseMaxAngle) thirdpersonState->freeRotation.x = -horseMaxAngle;
+						if (thirdpersonState->freeRotation.x >= horseMaxAngle)
+							thirdpersonState->freeRotation.x = horseMaxAngle;
+
+						if (thirdpersonState->freeRotation.x <= -horseMaxAngle)
+							thirdpersonState->freeRotation.x = -horseMaxAngle;
 
 						*fMountedMaxLookingUp = m_pluginConfig->RestrictAngles().fMountedMaxLookingUp;
 						*fMountedMaxLookingDown = m_pluginConfig->RestrictAngles().fMountedMaxLookingDown;

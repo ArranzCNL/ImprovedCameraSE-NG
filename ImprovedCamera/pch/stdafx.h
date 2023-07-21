@@ -12,7 +12,7 @@
 #pragma warning(disable: 4005 4200)
 
 // Minimum supported Windows version
-#define _WIN32_WINNT 0x0601 // Windows 7
+#define _WIN32_WINNT 0x0601  // Windows 7
 
 // CommonLibSSE-NG configuration
 #define ENABLE_SKYRIM_AE
@@ -37,7 +37,6 @@
 #include <glm/glm.hpp>
 
 using namespace std::literals;
-
 
 namespace stl {
 

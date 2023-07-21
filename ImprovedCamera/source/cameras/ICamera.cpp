@@ -4,16 +4,15 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "cameras/ICamera.h"
 
-
 namespace Interface {
 
-	ICamera::ICamera(const std::string& name, std::int32_t idx)
-		: m_Name(name), m_ID(idx)
+	ICamera::ICamera(const std::string& name, std::int32_t idx) :
+		m_Name(name), m_ID(idx)
 	{
 		m_pluginConfig = DLLMain::Plugin::Get()->Config();
 	}

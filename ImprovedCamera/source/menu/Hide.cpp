@@ -4,22 +4,22 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "menu/Hide.h"
 
-
 namespace Menu {
 
-    void MenuHide::OnOpen()
-    {
-        ImGui::Checkbox("Hide", &m_Window);
-    }
+	void MenuHide::OnOpen()
+	{
+		ImGui::Checkbox("Hide", &m_Window);
+	}
 
-    void MenuHide::OnUpdate()
-    {
-		if (!m_Window) return;
+	void MenuHide::OnUpdate()
+	{
+		if (!m_Window)
+			return;
 
 		ImGui::Begin("[HIDE]", &m_Window, ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse);
 		if (ImGui::BeginTable("HideTable", 2, ImGuiTableFlags_::ImGuiTableFlags_SizingFixedFit))
@@ -49,8 +49,10 @@ namespace Menu {
 			ImGui::EndTable();
 		}
 
-		if (ImGui::Button("Close"))	m_Window = false;
+		if (ImGui::Button("Close"))
+			m_Window = false;
+
 		ImGui::End();
-    }
+	}
 
 }

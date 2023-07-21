@@ -8,7 +8,6 @@
 
 constexpr auto M_PI = 3.141593f;
 
-
 namespace Utils {
 
 	extern void QuaternionToMatrix(const RE::NiQuaternion* src, RE::NiMatrix3* dst);

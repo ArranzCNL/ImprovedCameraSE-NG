@@ -4,15 +4,14 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
- // Precompiled Header
+// Precompiled Header
 #include "stdafx.h"
 
 #include "plugin.h"
 
-#include "version.h"
 #include "utils/Log.h"
 #include "utils/Utils.h"
-
+#include "version.h"
 
 namespace DLLMain {
 
@@ -20,7 +19,9 @@ namespace DLLMain {
 
 	Plugin::Plugin()
 	{
-		if (s_Instance) return;
+		if (s_Instance)
+			return;
+
 		s_Instance = this;
 
 		m_Name = VERSION_PRODUCTNAME_STR;
@@ -60,7 +61,9 @@ namespace DLLMain {
 
 	bool Plugin::Load()
 	{
-		if (m_Loaded) return true;
+		if (m_Loaded)
+			return true;
+
 		m_Loaded = true;
 
 		if (!m_Config->m_PreInitialized)
@@ -83,7 +86,9 @@ namespace DLLMain {
 
 	void Plugin::CreateMenu()
 	{
-		if (m_InitializeMenu) return;
+		if (m_InitializeMenu)
+			return;
+
 		m_InitializeMenu = true;
 
 		// No need to run this if a menu is not required
@@ -158,7 +163,9 @@ namespace DLLMain {
 		if (SkyrimTogether)
 		{
 			// Compatibility.
-			if (m_Config->m_ModuleData.iMenuMode) m_Config->m_ModuleData.iMenuMode = Systems::Window::MenuDisplay::kOverlay;
+			if (m_Config->m_ModuleData.iMenuMode)
+				m_Config->m_ModuleData.iMenuMode = Systems::Window::MenuDisplay::kOverlay;
+
 			m_Config->m_ModuleData.sWindowName = "Skyrim Together";
 			// Pull file information.
 			fullFilePath = m_SkyrimSE->Path() + "Data\\SkyrimTogetherReborn\\SkyrimTogetherServer.exe";
