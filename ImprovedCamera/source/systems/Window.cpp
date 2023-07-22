@@ -25,7 +25,7 @@ namespace Systems {
 			return CallWindowProc(pluginGraphics->Window()->m_Properties->Wndproc, hWnd, msg, wParam, lParam);
 
 		// External Menu
-		if (!pluginGraphics->m_UI.get()->IsUIDisplayed() && pluginGraphics->Window()->m_MenuMode == Window::MenuDisplay::kOverlay)
+		if (!pluginGraphics->m_UI.get()->IsUIDisplayed() && pluginGraphics->Window()->m_MenuMode == Window::UIDisplay::kOverlay)
 		{
 			switch (msg)
 			{
@@ -70,7 +70,7 @@ namespace Systems {
 		// Retrieve the desired MenuMode
 		m_MenuMode = pluginConfig->ModuleData().iMenuMode;
 
-		if (m_MenuMode > MenuDisplay::kNone)
+		if (m_MenuMode > UIDisplay::kNone)
 		{
 			// Retrieve MenuTimeout
 			std::int32_t maxTimeout = pluginConfig->ModuleData().iMenuTimeout - 1;
@@ -140,16 +140,16 @@ namespace Systems {
 					GetModuleBaseName(GetCurrentProcess(), hModule, moduleName, MAX_PATH);
 					LOG_TRACE("  Wndproc:\t\t\t\t0x{:016X} ({})", (std::uint64_t)m_Properties->Wndproc, moduleName);
 
-					if (m_MenuMode == MenuDisplay::kOverlay)
+					if (m_MenuMode == UIDisplay::kOverlay)
 					{
 						if (!CreateOverlay())
 						{
 							m_Initialized = false;
-							m_MenuMode = MenuDisplay::kNone;
+							m_MenuMode = UIDisplay::kNone;
 							LOG_ERROR("Failed to create Overlay window");
 						}
 					}
-					else if (m_MenuMode == MenuDisplay::kInternal)
+					else if (m_MenuMode == UIDisplay::kInternal)
 						m_MenuHwnd = m_Properties->hWnd;
 				}
 			}
@@ -170,7 +170,7 @@ namespace Systems {
 	{
 		m_WindowSystemRunning = false;
 
-		if (m_Initialized && m_MenuMode == MenuDisplay::kOverlay)
+		if (m_Initialized && m_MenuMode == UIDisplay::kOverlay)
 			DestroyWindow(m_MenuHwnd);
 	}
 

@@ -92,7 +92,7 @@ namespace DLLMain {
 		m_InitializeMenu = true;
 
 		// No need to run this if a menu is not required
-		if (m_Config->ModuleData().iMenuMode > Systems::Window::MenuDisplay::kNone)
+		if (m_Config->ModuleData().iMenuMode > Systems::Window::UIDisplay::kNone)
 		{
 			m_Graphics = std::make_unique<Systems::Graphics>(m_Config->ModuleData().iMenuMode);
 		}
@@ -164,7 +164,7 @@ namespace DLLMain {
 		{
 			// Compatibility.
 			if (m_Config->m_ModuleData.iMenuMode)
-				m_Config->m_ModuleData.iMenuMode = Systems::Window::MenuDisplay::kOverlay;
+				m_Config->m_ModuleData.iMenuMode = Systems::Window::UIDisplay::kOverlay;
 
 			m_Config->m_ModuleData.sWindowName = "Skyrim Together";
 			// Pull file information.

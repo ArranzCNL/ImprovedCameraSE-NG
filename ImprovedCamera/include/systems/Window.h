@@ -15,7 +15,7 @@ namespace Systems {
 		~Window();
 
 	public:
-		struct MenuDisplay {
+		struct UIDisplay {
 			enum
 			{
 				kNone = 0,
@@ -49,7 +49,7 @@ namespace Systems {
 		Prop* m_Properties = nullptr;
 		HWND m_MenuHwnd = nullptr;
 
-		std::int32_t m_MenuMode = MenuDisplay::kNone;
+		std::int32_t m_MenuMode = UIDisplay::kNone;
 
 	private:
 		bool CreateOverlay();
