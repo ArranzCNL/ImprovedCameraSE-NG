@@ -29,9 +29,16 @@ namespace Events {
 
 	public:
 		static void Register();
+		void CheckSPIM();
 
 		virtual EventResult ProcessEvent(const RE::MenuOpenCloseEvent* a_event, RE::BSTEventSource<RE::MenuOpenCloseEvent>* a_eventSource) override;
 		virtual EventResult ProcessEvent(const RE::BSAnimationGraphEvent* a_event, RE::BSTEventSource<RE::BSAnimationGraphEvent>* a_eventSource) override;
+
+	private:
+		void ResetArms();
+
+		std::uint32_t* m_SPIMInventoryMenu = nullptr;
+		std::uint32_t* m_SPIMMagicMenu = nullptr;
 	};
 
 }
