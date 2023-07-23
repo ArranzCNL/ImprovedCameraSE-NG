@@ -23,7 +23,7 @@ namespace Settings {
 		float fMenuFontSize;
 	};
 	// Data for ImprovedCameraSE.ini
-	// 19 Settings
+	// 20 Settings
 	struct General {
 		bool bEnableBody;
 		bool bEnableBodyConsole;
@@ -38,6 +38,7 @@ namespace Settings {
 		bool bEnableHeadWerewolf;
 		bool bEnableHeadScripted;
 		bool bEnableThirdPersonArms;
+		bool bEnableThirdPersonTorch;
 		bool bEnableThirdPersonShield;
 		bool bEnableThirdPersonShieldBlock;
 		bool bEnableThirdPersonBow;

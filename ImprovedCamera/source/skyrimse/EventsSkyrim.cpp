@@ -11,6 +11,7 @@
 
 #include "plugin.h"
 #include "skyrimse/ImprovedCameraSE.h"
+#include "utils/PatternScan.h"
 #include "utils/Log.h"
 
 namespace Events {
@@ -31,12 +32,26 @@ namespace Events {
 		player->AddAnimationGraphEventSink(Observer::Get());
 
 		RE::UI::GetSingleton()->AddEventSink<RE::MenuOpenCloseEvent>(Observer::Get());
+		// Show Player In Menus
+		Observer::Get()->CheckSPIM();
 	}
 
 	EventResult Observer::ProcessEvent(const RE::MenuOpenCloseEvent* a_event, RE::BSTEventSource<RE::MenuOpenCloseEvent>*)
 	{
 		if (!a_event)
 			return EventResult::kContinue;
+
+		if (strcmp(a_event->menuName.c_str(), "InventoryMenu") == 0)
+		{
+			if (m_SPIMInventoryMenu && *m_SPIMInventoryMenu)
+				ResetArms();
+		}
+
+		if (strcmp(a_event->menuName.c_str(), "MagicMenu") == 0)
+		{
+			if (m_SPIMMagicMenu && *m_SPIMMagicMenu)
+				ResetArms();
+		}
 
 		if (strcmp(a_event->menuName.c_str(), "Console") == 0)
 		{
@@ -124,6 +139,24 @@ namespace Events {
 			}
 		}
 		return EventResult::kContinue;
+	}
+
+	void Observer::CheckSPIM()
+	{
+		auto SPIMInventoryMenu = Utils::FindPattern("ShowPlayerInMenus.dll", "62 45 6E 61 62 6C 65 49 6E 49 6E 76");
+		auto SPIMMagicMenu = Utils::FindPattern("ShowPlayerInMenus.dll", "62 45 6E 61 62 6C 65 49 6E 4D 61 67");
+		m_SPIMInventoryMenu = (std::uint32_t*)SPIMInventoryMenu;
+		m_SPIMMagicMenu = (std::uint32_t*)SPIMMagicMenu;
+	}
+
+	void Observer::ResetArms()
+	{
+		auto player = RE::PlayerCharacter::GetSingleton();
+		auto thirdpersonNode = player->Get3D(0)->AsNode();
+		auto pluginCamera = DLLMain::Plugin::Get()->SkyrimSE()->Camera();
+
+		pluginCamera->UpdateSkeleton(true);
+		Helper::UpdateNode(thirdpersonNode);
 	}
 
 }

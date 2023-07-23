@@ -13,15 +13,6 @@ namespace Address {
 
 	namespace Function {
 
-		std::uintptr_t Orig_ModelReferenceEffect1;
-		std::uintptr_t Orig_ModelReferenceEffect2;
-		std::uintptr_t Orig_ShaderReferenceEffect1;
-		std::uintptr_t Torch;
-		std::uintptr_t IsJumping;
-		std::uintptr_t IsAttacking;
-		std::uintptr_t IsPowerAttacking;
-		std::uintptr_t IsActivateControlsEnabled;
-
 		__declspec(noinline) static const std::int32_t GetEquippedItemType(void* arg1, std::int32_t arg2, RE::Actor* actor, bool rightHand)
 		{
 			using func_t = decltype(&GetEquippedItemType);

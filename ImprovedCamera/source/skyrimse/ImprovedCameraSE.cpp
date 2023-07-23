@@ -52,6 +52,10 @@ namespace ImprovedCamera {
 				{
 					case RE::INPUT_DEVICE::kKeyboard:
 					{
+						// Fix Printscreen's normal behaviour so ENB/ReShade works.
+						if (virtualKey == VK_SNAPSHOT && buttonEvent->IsUp())
+							return false;
+
 						pluginGraphics->m_UI.get()->AddKeyEvent(virtualKey, buttonEvent->IsPressed());
 
 						if (virtualKey == VK_LSHIFT || virtualKey == VK_RSHIFT ||
@@ -902,6 +906,12 @@ namespace ImprovedCamera {
 		// Fists fix
 		if (GetEquippedItemTypeID(player) == RE::EQUIPPED_ITEMTYPE_ID::kFist && GetEquippedItemTypeID(player, true) == RE::EQUIPPED_ITEMTYPE_ID::kFist)
 			return false;
+
+		if (GetEquippedItemTypeID(player) == RE::EQUIPPED_ITEMTYPE_ID::kTorch)
+		{
+			if (m_pluginConfig->General().bEnableThirdPersonTorch)
+				return true;
+		}
 
 		if (GetEquippedItemTypeID(player) == RE::EQUIPPED_ITEMTYPE_ID::kShield)
 		{

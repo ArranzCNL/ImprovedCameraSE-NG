@@ -24,8 +24,8 @@ namespace Patch {
 		static void thunk(RE::BSTEventSource<RE::InputEvent*>* a_dispatcher, RE::InputEvent* const* a_event)
 		{
 			auto plugin = DLLMain::Plugin::Get();
-
-			if (plugin->IsGraphicsInitialized() && plugin->Config()->ModuleData().iMenuMode == Systems::Window::MenuDisplay::kInternal)
+			// Failsafe incase iMenuMode got downgraded.
+			if (plugin->IsGraphicsInitialized() && plugin->Config()->ModuleData().iMenuMode == Systems::Window::UIDisplay::kInternal)
 			{
 				if (ic->ProcessInput(a_event))
 				{
@@ -467,10 +467,15 @@ namespace Patch {
 	void Hooks::Install()
 	{
 		Setup();
-		auto pluginSkyrimSE = DLLMain::Plugin::Get()->SkyrimSE();
+		auto plugin = DLLMain::Plugin::Get();
+		auto pluginSkyrimSE = plugin->SkyrimSE();
 		ic = pluginSkyrimSE->Camera();
 
-		stl::write_thunk_call<ProcessInput>(Address::Hook::ProcessInput);
+		// No point activating this hook unless Menu is internal.
+		if (plugin->Config()->ModuleData().iMenuMode == Systems::Window::UIDisplay::kInternal)
+		{
+			stl::write_thunk_call<ProcessInput>(Address::Hook::ProcessInput);
+		}
 		stl::write_thunk_call<UpdateSwitchPOV>(Address::Hook::UpdateSwitchPOV);
 		stl::write_thunk_call<UpdateCamera>(Address::Hook::UpdateCamera);
 		stl::write_thunk_call<UpdateFirstPerson>(Address::Hook::UpdateFirstPerson);

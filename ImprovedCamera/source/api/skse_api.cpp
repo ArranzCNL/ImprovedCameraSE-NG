@@ -39,9 +39,11 @@ namespace SKSE {
 			}
 			case SKSE::MessagingInterface::kDataLoaded:
 			{
-				if (plugin->Graphics()->IsInitalized())
-					plugin->m_GraphicsInitialized = true;
-
+				if (plugin->Config()->ModuleData().iMenuMode > Systems::Window::UIDisplay::kNone)
+				{
+					if (plugin->Graphics()->IsInitalized())
+						plugin->m_GraphicsInitialized = true;
+				}
 				break;
 			}
 		}

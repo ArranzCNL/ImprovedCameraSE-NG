@@ -155,7 +155,7 @@ namespace Menu {
 		{
 			m_DisplayUI = true;
 
-			if (m_pluginConfig->ModuleData().iMenuMode == Systems::Window::MenuDisplay::kInternal)
+			if (m_pluginConfig->ModuleData().iMenuMode == Systems::Window::UIDisplay::kInternal)
 			{
 				ShowCursor(true);
 			}
@@ -184,7 +184,7 @@ namespace Menu {
 
 		ImGui::Render();
 
-		if (m_pluginConfig->ModuleData().iMenuMode == Systems::Window::MenuDisplay::kOverlay && !m_pluginGraphics->IsOverlayHooked())
+		if (m_pluginConfig->ModuleData().iMenuMode == Systems::Window::UIDisplay::kOverlay && !m_pluginGraphics->IsOverlayHooked())
 		{
 			m_pluginGraphics->m_DeviceContext->OMSetRenderTargets(1, m_pluginGraphics->m_RenderTargetView.GetAddressOf(), nullptr);
 			m_pluginGraphics->m_DeviceContext->ClearRenderTargetView(m_pluginGraphics->m_RenderTargetView.Get(), m_ClearColour);
@@ -192,7 +192,7 @@ namespace Menu {
 
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-		if (m_pluginConfig->ModuleData().iMenuMode == Systems::Window::MenuDisplay::kOverlay && !m_pluginGraphics->IsOverlayHooked())
+		if (m_pluginConfig->ModuleData().iMenuMode == Systems::Window::UIDisplay::kOverlay && !m_pluginGraphics->IsOverlayHooked())
 			m_pluginGraphics->m_SwapChain->Present(1, 0);  // VSync
 	}
 
@@ -243,7 +243,7 @@ namespace Menu {
 
 	void UIMenu::OnUpdateMenu()
 	{
-		if (m_pluginConfig->ModuleData().iMenuMode == Systems::Window::MenuDisplay::kInternal)
+		if (m_pluginConfig->ModuleData().iMenuMode == Systems::Window::UIDisplay::kInternal)
 		{
 			ImGuiIO& io = ImGui::GetIO();
 			io.MouseDrawCursor = true;
@@ -301,7 +301,7 @@ namespace Menu {
 		io.ClearInputCharacters();
 		io.ClearInputKeys();
 
-		if (m_pluginConfig->ModuleData().iMenuMode == Systems::Window::MenuDisplay::kInternal)
+		if (m_pluginConfig->ModuleData().iMenuMode == Systems::Window::UIDisplay::kInternal)
 		{
 			ShowCursor(false);
 			// Close Journal Menu

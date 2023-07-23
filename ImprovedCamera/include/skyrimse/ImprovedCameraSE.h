@@ -10,6 +10,10 @@
 #include "api/TrueDirectionalMovementAPI.h"
 #include "cameras/ICamera.h"
 
+namespace Events {
+	class Observer;
+}
+
 namespace ImprovedCamera {
 
 	class ImprovedCameraSE {
@@ -120,6 +124,8 @@ namespace ImprovedCamera {
 		std::uint32_t* m_directionalMovementDrawn = nullptr;
 		std::uint32_t m_directionalMovementSheathedOriginal = TDM_API::DirectionalMovementMode::kDirectional;
 		std::uint32_t m_directionalMovementDrawnOriginal = TDM_API::DirectionalMovementMode::kDirectional;
+
+		friend class Events::Observer;
 	};
 
 }

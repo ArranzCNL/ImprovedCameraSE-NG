@@ -92,7 +92,7 @@ namespace DLLMain {
 		m_InitializeMenu = true;
 
 		// No need to run this if a menu is not required
-		if (m_Config->ModuleData().iMenuMode > Systems::Window::MenuDisplay::kNone)
+		if (m_Config->ModuleData().iMenuMode > Systems::Window::UIDisplay::kNone)
 		{
 			m_Graphics = std::make_unique<Systems::Graphics>(m_Config->ModuleData().iMenuMode);
 		}
@@ -123,6 +123,11 @@ namespace DLLMain {
 			std::string fileVersion = Utils::GetFileInfo(fullFilePath, "ProductVersion");
 			Utils::GetVersionFromString(fileVersion, skseVersionMin);
 
+			if (productName.empty())
+			{
+				LOG_CRITICAL("Unable to find: skse64_loader.exe to verify SKSE64 version, aborting.");
+				return false;
+			}
 			if (skseVersionMin[0] == 0 && skseVersionMin[1] == 2 && skseVersionMin[2] == 0 && skseVersionMin[3] < 18)
 			{
 				LOG_CRITICAL("{}: v{} not supported. (Requirement: SKSE64 v0.2.0.18 or higher)", productName.c_str(), fileVersion.c_str());
@@ -164,7 +169,7 @@ namespace DLLMain {
 		{
 			// Compatibility.
 			if (m_Config->m_ModuleData.iMenuMode)
-				m_Config->m_ModuleData.iMenuMode = Systems::Window::MenuDisplay::kOverlay;
+				m_Config->m_ModuleData.iMenuMode = Systems::Window::UIDisplay::kOverlay;
 
 			m_Config->m_ModuleData.sWindowName = "Skyrim Together";
 			// Pull file information.
