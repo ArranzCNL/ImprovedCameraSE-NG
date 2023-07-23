@@ -903,6 +903,12 @@ namespace ImprovedCamera {
 		if (GetEquippedItemTypeID(player) == RE::EQUIPPED_ITEMTYPE_ID::kFist && GetEquippedItemTypeID(player, true) == RE::EQUIPPED_ITEMTYPE_ID::kFist)
 			return false;
 
+		if (GetEquippedItemTypeID(player) == RE::EQUIPPED_ITEMTYPE_ID::kTorch)
+		{
+			if (m_pluginConfig->General().bEnableThirdPersonTorch)
+				return true;
+		}
+
 		if (GetEquippedItemTypeID(player) == RE::EQUIPPED_ITEMTYPE_ID::kShield)
 		{
 			// Shield fix

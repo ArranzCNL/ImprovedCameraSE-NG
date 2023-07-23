@@ -79,6 +79,7 @@ namespace Systems {
 				m_General.bEnableHeadWerewolf = std::stoi(ini.get("GENERAL").get("bEnableHeadWerewolf"));
 				m_General.bEnableHeadScripted = std::stoi(ini.get("GENERAL").get("bEnableHeadScripted"));
 				m_General.bEnableThirdPersonArms = std::stoi(ini.get("GENERAL").get("bEnableThirdPersonArms"));
+				m_General.bEnableThirdPersonTorch = std::stoi(ini.get("GENERAL").get("bEnableThirdPersonTorch"));
 				m_General.bEnableThirdPersonShield = std::stoi(ini.get("GENERAL").get("bEnableThirdPersonShield"));
 				m_General.bEnableThirdPersonShieldBlock = std::stoi(ini.get("GENERAL").get("bEnableThirdPersonShieldBlock"));
 				m_General.bEnableThirdPersonBow = std::stoi(ini.get("GENERAL").get("bEnableThirdPersonBow"));
@@ -297,6 +298,7 @@ namespace Systems {
 			ini["GENERAL"]["bEnableHeadWerewolf"] = std::to_string(m_General.bEnableHeadWerewolf);
 			ini["GENERAL"]["bEnableHeadScripted"] = std::to_string(m_General.bEnableHeadScripted);
 			ini["GENERAL"]["bEnableThirdPersonArms"] = std::to_string(m_General.bEnableThirdPersonArms);
+			ini["GENERAL"]["bEnableThirdPersonTorch"] = std::to_string(m_General.bEnableThirdPersonTorch);
 			ini["GENERAL"]["bEnableThirdPersonShield"] = std::to_string(m_General.bEnableThirdPersonShield);
 			ini["GENERAL"]["bEnableThirdPersonShieldBlock"] = std::to_string(m_General.bEnableThirdPersonShieldBlock);
 			ini["GENERAL"]["bEnableThirdPersonBow"] = std::to_string(m_General.bEnableThirdPersonBow);
