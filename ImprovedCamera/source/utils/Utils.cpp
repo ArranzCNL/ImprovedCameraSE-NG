@@ -113,6 +113,9 @@ namespace Utils {
 
 	void GetVersionFromString(const std::string& text, std::uint32_t version[])
 	{
+		if (text.empty())
+			return;
+
 		std::string strVersion = text;
 		std::string delimiter = ".";
 
