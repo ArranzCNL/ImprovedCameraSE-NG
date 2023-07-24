@@ -304,8 +304,16 @@ namespace Menu {
 		if (m_pluginConfig->ModuleData().iMenuMode == Systems::Window::UIDisplay::kInternal)
 		{
 			ShowCursor(false);
-			// Close Journal Menu
+			// Fix held down left shift
+			INPUT ipKeyboard{};
+			ipKeyboard.type = INPUT_KEYBOARD;
+			ipKeyboard.ki.wScan = 0x2A;  // DIK_LSHIFT
+			ipKeyboard.ki.dwFlags = KEYEVENTF_SCANCODE;
+			SendInput(1, &ipKeyboard, sizeof(INPUT));
 			Sleep(10);
+			ipKeyboard.ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
+			SendInput(1, &ipKeyboard, sizeof(INPUT));
+			// Close Journal Menu
 			const auto msgQueue = RE::UIMessageQueue::GetSingleton();
 			msgQueue->AddMessage("Journal Menu", RE::UI_MESSAGE_TYPE::kHide, nullptr);
 		}
