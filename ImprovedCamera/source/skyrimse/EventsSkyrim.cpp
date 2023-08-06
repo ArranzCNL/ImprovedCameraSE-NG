@@ -40,7 +40,11 @@ namespace Events {
 	{
 		if (!a_event)
 			return EventResult::kContinue;
-
+#ifdef _DEBUG
+		auto pluginConf = DLLMain::Plugin::Get()->Config();
+		if (pluginConf->Logging().bMenus)
+			LOG_INFO("Menu: {} ({})", a_event->menuName.c_str(), a_event->opening ? "Opening" : "Closing");
+#endif
 		if (strcmp(a_event->menuName.c_str(), "InventoryMenu") == 0)
 		{
 			if (m_SPIMInventoryMenu && *m_SPIMInventoryMenu)
@@ -100,7 +104,9 @@ namespace Events {
 			if (!activeNodes.empty())
 			{
 #ifdef _DEBUG
-				LOG_DEBUG("Behavior Project: {}", project->projectName);
+				auto pluginConfig = DLLMain::Plugin::Get()->Config();
+				if (pluginConfig->Logging().bAnimations)
+					LOG_DEBUG("Behavior Project: {}", project->projectName);
 #endif
 				for (auto nodeInfo : activeNodes)
 				{
@@ -114,7 +120,8 @@ namespace Events {
 						{
 							std::string animationFile = clipGenerator->animationName.c_str();
 #ifdef _DEBUG
-							LOG_DEBUG("Animation[{}] Name: {}\n\tFile: {}", index, nodeClone->name.c_str(), animationFile);
+							if (pluginConfig->Logging().bAnimations)
+								LOG_DEBUG("Animation[{}] Name: {}\n\tFile: {}", index, nodeClone->name.c_str(), animationFile.c_str());
 #endif
 							if (index == 0)
 							{

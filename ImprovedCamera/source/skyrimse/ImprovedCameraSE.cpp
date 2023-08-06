@@ -166,8 +166,13 @@ namespace ImprovedCamera {
 		thirdpersonNode->GetFlags().reset(RE::NiAVObject::Flag::kHidden);
 	}
 
-	void ImprovedCameraSE::UpdateCamera(std::uint8_t currentID, std::uint8_t previousID)
+	void ImprovedCameraSE::UpdateCamera(std::uint8_t currentID, std::uint8_t previousID, float deltaTime)
 	{
+#ifdef _DEBUG
+		if (m_pluginConfig->Logging().bCameraDelta)
+			LOG_INFO("DeltaTime: {0:.4f}", deltaTime);
+#endif
+		m_DeltaTime = deltaTime;
 		m_CurrentCameraID = currentID;
 		m_PreviousCameraID = previousID;
 		// Stop processing on Tween

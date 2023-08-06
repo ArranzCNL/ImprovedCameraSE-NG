@@ -26,7 +26,7 @@ namespace ImprovedCamera {
 		bool ProcessInput(const RE::InputEvent* const* a_event);
 
 		void UpdateSwitchPOV();
-		void UpdateCamera(std::uint8_t currentID, std::uint8_t previousID);
+		void UpdateCamera(std::uint8_t currentID, std::uint8_t previousID, float deltaTime);
 		void UpdateFirstPerson();
 		bool SmoothAnimationTransitions();
 		bool UpdateHeadTracking();
@@ -98,6 +98,7 @@ namespace ImprovedCamera {
 		Interface::ICamera* m_ICamera = nullptr;
 
 		std::uint8_t m_CameraEventID = CameraEvent::kFirstPerson;
+		float m_DeltaTime = 0.0f;
 		uint8_t m_PreviousCameraID = 255;
 		uint8_t m_CurrentCameraID = 255;
 

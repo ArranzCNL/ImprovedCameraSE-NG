@@ -14,6 +14,8 @@
 #include "skyrimse/ImprovedCameraSE.h"
 #include "utils/Log.h"
 
+#include <chrono>
+
 namespace Patch {
 
 	static ImprovedCamera::ImprovedCameraSE* ic = nullptr;
@@ -68,6 +70,12 @@ namespace Patch {
 
 		static void thunk(RE::TESCamera* tesCamera)
 		{
+			static std::chrono::steady_clock::time_point currentTime;
+			static std::chrono::steady_clock::time_point previousTime;
+			static float deltaTime;
+			currentTime = std::chrono::steady_clock::now();
+
+			// Call original function
 			func(tesCamera);
 
 			static bool init;
@@ -87,7 +95,10 @@ namespace Patch {
 				LOG_INFO("UpdateCamera: CurrentID: {} - PreviousID: {}", currID, prevID);
 #endif
 			}
-			ic->UpdateCamera(currID, prevID);
+			ic->UpdateCamera(currID, prevID, deltaTime);
+
+			deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - previousTime).count() / 1000000.0f;
+			previousTime = currentTime;
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
 
