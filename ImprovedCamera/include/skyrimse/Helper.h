@@ -183,7 +183,7 @@ namespace Helper {
 		return false;
 	}
 
-	static inline bool IsTorchOut(RE::Actor* actor)
+	static inline bool IsTorchEquipped(RE::Actor* actor)
 	{
 		using namespace Address::Function;
 

@@ -870,10 +870,10 @@ namespace ImprovedCamera {
 			return false;
 
 		if ((m_CurrentCameraID != RE::CameraState::kFirstPerson && !(m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kFirstPerson)) ||
-			Helper::IsOnMount(player) || (!playerState->IsWeaponDrawn() && !Helper::IsTorchOut(player)))
+			Helper::IsOnMount(player) || (!playerState->IsWeaponDrawn() && !Helper::IsTorchEquipped(player)))
 			return true;
 
-		if (Helper::IsSitting(player) && Helper::IsTorchOut(player))
+		if (Helper::IsSitting(player) && Helper::IsTorchEquipped(player))
 			return true;
 
 		if (Helper::IsAiming(player))
@@ -942,7 +942,7 @@ namespace ImprovedCamera {
 			return false;
 
 		// Torch fix
-		if (Helper::IsTorchOut(player) && !player->AsActorState()->IsWeaponDrawn())
+		if (Helper::IsTorchEquipped(player) && !player->AsActorState()->IsWeaponDrawn())
 			return true;
 
 		// Bow fix
