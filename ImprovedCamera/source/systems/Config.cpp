@@ -70,7 +70,6 @@ namespace Systems {
 				m_General.bEnableBodyConsole = std::stoi(ini.get("GENERAL").get("bEnableBodyConsole"));
 				m_General.bEnableShadows = std::stoi(ini.get("GENERAL").get("bEnableShadows"));
 				m_General.bAdjustPlayerScale = std::stoi(ini.get("GENERAL").get("bAdjustPlayerScale"));
-				m_General.fBodyHeightOffset = std::stof(ini.get("GENERAL").get("fBodyHeightOffset"));
 				m_General.bEnableHead = std::stoi(ini.get("GENERAL").get("bEnableHead"));
 				m_General.bEnableHeadCombat = std::stoi(ini.get("GENERAL").get("bEnableHeadCombat"));
 				m_General.bEnableHeadHorse = std::stoi(ini.get("GENERAL").get("bEnableHeadHorse"));
@@ -289,7 +288,6 @@ namespace Systems {
 			ini["GENERAL"]["bEnableBodyConsole"] = std::to_string(m_General.bEnableBodyConsole);
 			ini["GENERAL"]["bEnableShadows"] = std::to_string(m_General.bEnableShadows);
 			ini["GENERAL"]["bAdjustPlayerScale"] = std::to_string(m_General.bAdjustPlayerScale);
-			ini["GENERAL"]["fBodyHeightOffset"] = std::to_string(m_General.fBodyHeightOffset);
 			ini["GENERAL"]["bEnableHead"] = std::to_string(m_General.bEnableHead);
 			ini["GENERAL"]["bEnableHeadCombat"] = std::to_string(m_General.bEnableHeadCombat);
 			ini["GENERAL"]["bEnableHeadHorse"] = std::to_string(m_General.bEnableHeadHorse);

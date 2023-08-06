@@ -60,22 +60,21 @@ namespace Menu {
 				ImGui::TableItemToggleButton("Third Person Shield Block", "##EnableThirdPersonShieldBlock", &m_pluginConfig->m_General.bEnableThirdPersonShieldBlock, false);
 			}
 			{
-				ImGui::TableItemSliderFloat("Body Height Offset", "##BodyHeightOffset", &m_pluginConfig->m_General.fBodyHeightOffset, -500.0f, 500.0f, "%.1f");
+				ImGui::TableItemToggleButton("Head First Person", "##EnableHead", &m_pluginConfig->m_General.bEnableHead);
 				ImGui::TableItemToggleButton("Third Person Bow", "##EnableThirdPersonBow", &m_pluginConfig->m_General.bEnableThirdPersonBow, false);
 			}
 			{
-				ImGui::TableItemToggleButton("Head First Person", "##EnableHead", &m_pluginConfig->m_General.bEnableHead);
+				ImGui::TableItemToggleButton("Head First Person Combat", "##EnableHeadCombat", &m_pluginConfig->m_General.bEnableHeadCombat);
 				ImGui::TableItemToggleButton("Third Person Bow Aim", "##EnableThirdPersonBowAim", &m_pluginConfig->m_General.bEnableThirdPersonBowAim, false);
 			}
 			{
-				ImGui::TableItemToggleButton("Head First Person Combat", "##EnableHeadCombat", &m_pluginConfig->m_General.bEnableHeadCombat);
+				ImGui::TableItemToggleButton("Head First Person Horse", "##EnableHeadHorse", &m_pluginConfig->m_General.bEnableHeadHorse);
 				ImGui::TableItemToggleButton("Third Person Crossbow", "##EnableThirdPersonCrossbow", &m_pluginConfig->m_General.bEnableThirdPersonCrossbow, false);
 			}
 			{
-				ImGui::TableItemToggleButton("Head First Person Horse", "##EnableHeadHorse", &m_pluginConfig->m_General.bEnableHeadHorse);
+				ImGui::TableItemToggleButton("Head First Person Dragon", "##EnableHeadDragon", &m_pluginConfig->m_General.bEnableHeadDragon);
 				ImGui::TableItemToggleButton("Third Person Crossbow Aim", "##EnableThirdPersonCrossbowAim", &m_pluginConfig->m_General.bEnableThirdPersonCrossbowAim, false);
 			}
-			ImGui::TableItemToggleButton("Head First Person Dragon", "##EnableHeadDragon", &m_pluginConfig->m_General.bEnableHeadDragon);
 			ImGui::TableItemToggleButton("Head First Person Vampire Lord", "##EnableHeadVampireLord", &m_pluginConfig->m_General.bEnableHeadVampireLord);
 			ImGui::TableItemToggleButton("Head First Person Werewolf", "##EnableHeadWerewolf", &m_pluginConfig->m_General.bEnableHeadWerewolf);
 			ImGui::TableItemToggleButton("Head First Person Scripted", "##EnableHeadScripted", &m_pluginConfig->m_General.bEnableHeadScripted);

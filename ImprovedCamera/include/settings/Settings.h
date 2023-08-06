@@ -23,13 +23,12 @@ namespace Settings {
 		float fMenuFontSize;
 	};
 	// Data for ImprovedCameraSE.ini
-	// 20 Settings
+	// 19 Settings
 	struct General {
 		bool bEnableBody;
 		bool bEnableBodyConsole;
 		bool bEnableShadows;
 		bool bAdjustPlayerScale;
-		float fBodyHeightOffset;
 		bool bEnableHead;
 		bool bEnableHeadCombat;
 		bool bEnableHeadHorse;
