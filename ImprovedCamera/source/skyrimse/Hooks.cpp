@@ -471,11 +471,6 @@ namespace Patch {
 		auto pluginSkyrimSE = plugin->SkyrimSE();
 		ic = pluginSkyrimSE->Camera();
 
-		// No point activating this hook unless Menu is internal.
-		if (plugin->Config()->ModuleData().iMenuMode == Systems::Window::UIDisplay::kInternal)
-		{
-			stl::write_thunk_call<ProcessInput>(Address::Hook::ProcessInput);
-		}
 		stl::write_thunk_call<UpdateSwitchPOV>(Address::Hook::UpdateSwitchPOV);
 		stl::write_thunk_call<UpdateCamera>(Address::Hook::UpdateCamera);
 		stl::write_thunk_call<UpdateFirstPerson>(Address::Hook::UpdateFirstPerson);
@@ -512,6 +507,16 @@ namespace Patch {
 		}
 		else if (pluginSkyrimSE->Build() == SkyrimSE::BuildInfo::k15970)
 			REL::safe_write(Address::Hook::HorseLookingDownFix1, horsePayload, sizeof(horsePayload));
+	}
+
+	void Hooks::Input()
+	{
+		auto plugin = DLLMain::Plugin::Get();
+		// No point activating this hook unless Menu is internal.
+		if (plugin->Config()->ModuleData().iMenuMode == Systems::Window::UIDisplay::kInternal)
+		{
+			stl::write_thunk_call<ProcessInput>(Address::Hook::ProcessInput);
+		}
 	}
 
 	void Hooks::Setup()

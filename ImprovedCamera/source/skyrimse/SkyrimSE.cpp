@@ -41,6 +41,11 @@ namespace Patch {
 		m_Hooks->Install();
 	}
 
+	void SkyrimSE::InstallInput()
+	{
+		m_Hooks->Input();
+	}
+
 	void SkyrimSE::LoadGame()
 	{
 		Events::Observer::Register();

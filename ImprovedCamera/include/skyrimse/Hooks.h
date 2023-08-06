@@ -35,6 +35,7 @@ namespace Patch {
 
 	private:
 		void Install();
+		void Input();
 		void Setup();
 #ifdef _DEBUG
 		void AddressDump();
