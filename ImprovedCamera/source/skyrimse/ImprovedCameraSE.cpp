@@ -446,6 +446,8 @@ namespace ImprovedCamera {
 				rightarmNode->local.scale = 0.001f;
 
 			TranslateThirdPerson();
+			// Height offset
+			thirdpersonNode->local.translate.z += m_pluginConfig->General().fBodyHeightOffset;
 
 			UpdateSkeleton(false);
 			Helper::UpdateNode(thirdpersonNode);
@@ -455,7 +457,11 @@ namespace ImprovedCamera {
 
 			float headRot = 0.0f;
 			if (GetHeadRotation(&headRot) || m_IsFakeCamera)
+			{
 				TranslateFirstPerson();
+				// Height offset
+				firstpersonNode->local.translate.z += m_pluginConfig->General().fBodyHeightOffset;
+			}
 
 			// Fixes weapons drawing when sitting/sleeping
 			if (m_ICamera && m_ICamera->GetID() == RE::CameraStates::kFirstPerson && m_ICamera->GetStateID() >= CameraFirstPerson::State::kSittingEnter &&
@@ -469,7 +475,7 @@ namespace ImprovedCamera {
 			Helper::UpdateNode(firstpersonNode);
 		}
 		// Fix crosshair issue in Third Person due to firstpersonNode shrunk.
-		if (firstpersonNode->local.scale < 0.002f)
+		if (firstpersonNode->local.scale == 0.001f)
 			UpdateFirstPersonScale();
 	}
 
