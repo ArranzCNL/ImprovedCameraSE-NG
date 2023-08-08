@@ -475,7 +475,7 @@ namespace ImprovedCamera {
 			Helper::UpdateNode(firstpersonNode);
 		}
 		// Fix crosshair issue in Third Person due to firstpersonNode shrunk.
-		if (firstpersonNode->local.scale == 0.001f)
+		if (firstpersonNode->local.scale < 0.002f)
 			UpdateFirstPersonScale();
 	}
 
