@@ -45,6 +45,7 @@ namespace ImprovedCamera {
 
 		void SetElderScrollReading(bool reading);
 		void SetCartRiding(bool riding);
+		void SetPotionDrinking(bool drinking);
 		bool IsFirstPerson() { return m_IsFirstPerson; }
 
 		void RequestAPIs();
@@ -118,6 +119,7 @@ namespace ImprovedCamera {
 		bool m_TDMSnapshot = false;
 		bool m_ElderScrollReading = false;
 		bool m_CartRiding = false;
+		bool m_PotionDrinking = false;
 
 		// Need to shut these off when needed with TDM to stop horse issues.
 		//    Since we are doing this might as well do the same for Werewolf/VampireLord etc.

@@ -839,6 +839,11 @@ namespace ImprovedCamera {
 		m_CartRiding = riding;
 	}
 
+	void ImprovedCameraSE::SetPotionDrinking(bool drinking)
+	{
+		m_PotionDrinking = drinking;
+	}
+
 	void ImprovedCameraSE::RequestAPIs()
 	{
 		m_ICHandle = SKSE::GetPluginHandle();
@@ -868,7 +873,7 @@ namespace ImprovedCamera {
 		auto player = RE::PlayerCharacter::GetSingleton();
 		auto playerState = player->AsActorState();
 
-		if (m_ElderScrollReading)
+		if (m_ElderScrollReading || m_PotionDrinking)
 			return false;
 
 		if (m_CurrentCameraID == RE::CameraState::kFirstPerson && playerState->IsSprinting() && !playerState->IsWeaponDrawn() &&
@@ -908,15 +913,9 @@ namespace ImprovedCamera {
 		if (playerState->IsSprinting() && !playerState->IsWeaponDrawn() && !Helper::IsBeastMode() && m_pluginConfig->Fixes().bFirstPersonOverhaul)
 			return false;
 
-		// Fists fix
-		if (GetEquippedItemTypeID(player) == RE::EQUIPPED_ITEMTYPE_ID::kFist && GetEquippedItemTypeID(player, true) == RE::EQUIPPED_ITEMTYPE_ID::kFist)
-			return false;
-
-		if (GetEquippedItemTypeID(player) == RE::EQUIPPED_ITEMTYPE_ID::kTorch)
-		{
-			if (m_pluginConfig->General().bEnableThirdPersonTorch)
-				return true;
-		}
+		// Torch/Potion Drinking fix
+		if ((Helper::IsTorchEquipped(player) && m_pluginConfig->General().bEnableThirdPersonTorch) || m_PotionDrinking)
+			return true;
 
 		if (GetEquippedItemTypeID(player) == RE::EQUIPPED_ITEMTYPE_ID::kShield)
 		{
@@ -928,6 +927,10 @@ namespace ImprovedCamera {
 			if (m_pluginConfig->General().bEnableThirdPersonShieldBlock && player->IsBlocking())
 				return true;
 		}
+
+		// Fists fix
+		if (GetEquippedItemTypeID(player) == RE::EQUIPPED_ITEMTYPE_ID::kFist && GetEquippedItemTypeID(player, true) == RE::EQUIPPED_ITEMTYPE_ID::kFist)
+			return false;
 
 		// One Handed weapon fix
 		if (Helper::IsRighthandWeaponEquipped(player) && !player->IsBlocking() && !m_pluginConfig->Fixes().bFirstPersonOverhaul)
@@ -943,8 +946,9 @@ namespace ImprovedCamera {
 		auto player = RE::PlayerCharacter::GetSingleton();
 		auto playerState = player->AsActorState();
 
-		// CFPAO fix
-		if (playerState->IsSprinting() && !playerState->IsWeaponDrawn() && !Helper::IsBeastMode() && m_pluginConfig->Fixes().bFirstPersonOverhaul)
+		// CFPAO/Potion Drinking fix
+		if ((playerState->IsSprinting() && !playerState->IsWeaponDrawn() && !Helper::IsBeastMode() && m_pluginConfig->Fixes().bFirstPersonOverhaul) ||
+			m_PotionDrinking)
 			return false;
 
 		// Torch fix
