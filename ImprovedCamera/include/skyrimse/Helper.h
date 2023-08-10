@@ -10,6 +10,31 @@
 #include "skyrimse/Addresses.h"
 #include <RE/Skyrim.h>
 
+namespace RE {
+
+	struct WEAPON_IDS {
+
+		enum WEAPON_ID : std::int8_t
+		{
+			kFist = 0,
+			kSword,
+			kDagger,
+			kAxe,
+			kMace,
+			kGreatsword,
+			kWarhammer,
+			kBattleaxe = kWarhammer,
+			kBow,
+			kStaff,
+			kCrossbow,
+
+			kTotal = 10
+		};
+	};
+	using WEAPON_ID = WEAPON_IDS::WEAPON_ID;
+
+}
+
 namespace Helper {
 
 	static inline void* GetVTableAddress(void* object, std::uint32_t address)
@@ -133,19 +158,48 @@ namespace Helper {
 		return IsSitting(player) || IsSleeping(player);
 	}
 
+	static inline std::int8_t GetWeaponID(RE::PlayerCharacter* player, bool rightHand = false)
+	{
+		auto playerState = player->AsActorState();
+
+		if (playerState->IsWeaponDrawn())
+		{
+			std::int8_t weaponID = 0;
+
+			if (rightHand)
+			{
+				auto equippedRightHand = player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
+				auto rightWeapon = equippedRightHand ? equippedRightHand->As<RE::TESObjectWEAP>() : nullptr;
+
+				if (rightWeapon)
+					weaponID = static_cast<std::int8_t>(rightWeapon->GetWeaponType());
+
+				return weaponID;
+			}
+
+			auto equippedLeftHand = player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();
+			auto leftWeapon = equippedLeftHand ? equippedLeftHand->As<RE::TESObjectWEAP>() : nullptr;
+
+			if (leftWeapon)
+				weaponID = static_cast<std::int8_t>(leftWeapon->GetWeaponType());
+
+			return weaponID;
+		}
+		return -1;
+	}
+
 	static inline bool IsAiming(RE::PlayerCharacter* player, bool crossbow = false)
 	{
-		using namespace Address::Function;
-
 		if (!player)
 			return false;
 
-		std::int32_t equippedItemID = GetEquippedItemTypeID(player);
+		std::int8_t weaponID = GetWeaponID(player);
 
-		if ((crossbow && equippedItemID != RE::EQUIPPED_ITEMTYPE_ID::kCrossbow) || (!crossbow && equippedItemID != RE::EQUIPPED_ITEMTYPE_ID::kBow))
+		if ((crossbow && weaponID != RE::WEAPON_ID::kCrossbow) || (!crossbow && weaponID != RE::WEAPON_ID::kBow))
 			return false;
 
 		auto attackState = player->AsActorState()->GetAttackState();
+
 		if (attackState == RE::ATTACK_STATE_ENUM::kBowAttached && DLLMain::Plugin::Get()->Config()->Fixes().bArcheryGameplayOverhaul)
 			return false;
 
@@ -154,30 +208,43 @@ namespace Helper {
 
 	static inline bool IsRighthandWeaponEquipped(RE::PlayerCharacter* player)
 	{
-		using namespace Address::Function;
-
 		if (!player)
 			return false;
 
-		std::int32_t equippedLeftItemID = GetEquippedItemTypeID(player);
-		std::int32_t equippedRightItemID = GetEquippedItemTypeID(player, true);
+		std::int8_t leftWeaponID = GetWeaponID(player);
+		std::int8_t rightWeaponID = GetWeaponID(player, true);
 
-		return (equippedLeftItemID == RE::EQUIPPED_ITEMTYPE_ID::kFist && (equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kFist ||
-			equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kSword || equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kDagger ||
-			equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kAxe || equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kMace ||
-			equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kStaff));
+		return (leftWeaponID == RE::WEAPON_ID::kFist && (rightWeaponID == RE::WEAPON_ID::kFist || rightWeaponID == RE::WEAPON_ID::kSword ||
+			rightWeaponID == RE::WEAPON_ID::kDagger || rightWeaponID == RE::WEAPON_ID::kAxe || rightWeaponID == RE::WEAPON_ID::kMace ||
+			rightWeaponID == RE::WEAPON_ID::kStaff));
 	}
 
 	static inline bool IsRangedWeaponEquipped(RE::PlayerCharacter* player, bool crossbow = false)
 	{
-		using namespace Address::Function;
-
 		if (!player)
 			return false;
 
-		std::int32_t equippedItemID = GetEquippedItemTypeID(player);
+		std::int8_t weaponID = GetWeaponID(player);
 
-		if ((crossbow && equippedItemID == RE::EQUIPPED_ITEMTYPE_ID::kCrossbow) || (!crossbow && equippedItemID == RE::EQUIPPED_ITEMTYPE_ID::kBow))
+		if ((crossbow && weaponID == RE::WEAPON_ID::kCrossbow) || (!crossbow && weaponID == RE::WEAPON_ID::kBow))
+			return true;
+
+		return false;
+	}
+
+	static inline bool IsShieldEquipped(RE::PlayerCharacter* player)
+	{
+		auto thirdperson3D = player->Get3D(0);
+		if (!thirdperson3D)
+			return false;
+
+		auto thirdpersonNode = thirdperson3D->AsNode();
+		auto shieldObject = thirdpersonNode->GetObjectByName("Shield");
+		if (!shieldObject)
+			return false;
+
+		auto shieldNode = shieldObject->AsNode();
+		if (shieldNode->children.size() == 1)
 			return true;
 
 		return false;

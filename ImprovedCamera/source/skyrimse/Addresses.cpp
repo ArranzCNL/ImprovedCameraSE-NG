@@ -13,13 +13,6 @@ namespace Address {
 
 	namespace Function {
 
-		__declspec(noinline) static const std::int32_t GetEquippedItemType(void* arg1, std::int32_t arg2, RE::Actor* actor, bool rightHand)
-		{
-			using func_t = decltype(&GetEquippedItemType);
-			REL::Relocation<func_t> func{ REL::RelocationID(53876, 54685) };
-			return func(arg1, arg2, actor, rightHand);
-		}
-
 		void ModelReferenceEffect_Attach(void* arg)
 		{
 			using func_t = decltype(&ModelReferenceEffect_Attach);
@@ -46,11 +39,6 @@ namespace Address {
 			using func_t = decltype(&BipedAnim_GetTorchObject);
 			REL::Relocation<func_t> func{ REL::RelocationID(15517, 15694) };
 			return func(bipedData, value);
-		}
-
-		const std::int32_t GetEquippedItemTypeID(RE::Actor* actor, bool rightHand)
-		{
-			return GetEquippedItemType(nullptr, 0, actor, rightHand);
 		}
 
 		const bool Ragdoll_IsTaskPoolRequired()

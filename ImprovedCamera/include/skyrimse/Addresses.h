@@ -18,30 +18,6 @@ namespace RE {
 		};
 		BipedAnim* bipedData;
 	};
-
-	struct EQUIPPED_ITEMTYPE_IDS {
-
-		enum EQUIPPED_ITEMTYPE_ID : std::int32_t
-		{
-			kFist = 0,
-			kSword,
-			kDagger,
-			kAxe,
-			kMace,
-			kGreatsword,
-			kWarhammer,
-			kBattleaxe = kWarhammer,
-			kBow,
-			kStaff,
-			kMagic,
-			kShield,
-			kTorch,
-			kCrossbow,
-
-			kTotal = 13
-		};
-	};
-	using EQUIPPED_ITEMTYPE_ID = EQUIPPED_ITEMTYPE_IDS::EQUIPPED_ITEMTYPE_ID;
 }
 
 namespace Address {
@@ -79,7 +55,6 @@ namespace Address {
 		extern const bool ModelReferenceEffect_Sub_14057BCC0(void* arg);   // 1.6.640
 		extern const bool ShaderReferenceEffect_Sub_140584680(void* arg);  // 1.6.640
 		extern const bool BipedAnim_GetTorchObject(void* bipedData, std::int32_t value);
-		extern const std::int32_t GetEquippedItemTypeID(RE::Actor* actor, bool rightHand = false);
 		extern const bool Ragdoll_IsTaskPoolRequired();
 		extern RE::NiNode* Get3D(RE::TESObjectREFR* objectREFR);
 		extern void ResetNodes(RE::ActorMagicCaster* magicCaster);

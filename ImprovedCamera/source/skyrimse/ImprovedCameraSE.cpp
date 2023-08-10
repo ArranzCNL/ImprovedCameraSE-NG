@@ -904,20 +904,20 @@ namespace ImprovedCamera {
 
 	bool ImprovedCameraSE::UseThirdPersonLeftArm()
 	{
-		using namespace Address::Function;
-
 		auto player = RE::PlayerCharacter::GetSingleton();
 		auto playerState = player->AsActorState();
+		bool shieldEquipped = Helper::IsShieldEquipped(player);
+		bool torchEquipped = Helper::IsTorchEquipped(player);
 
 		// CFPAO fix
 		if (playerState->IsSprinting() && !playerState->IsWeaponDrawn() && !Helper::IsBeastMode() && m_pluginConfig->Fixes().bFirstPersonOverhaul)
 			return false;
 
 		// Torch/Potion Drinking fix
-		if ((Helper::IsTorchEquipped(player) && m_pluginConfig->General().bEnableThirdPersonTorch) || m_PotionDrinking)
+		if ((torchEquipped && m_pluginConfig->General().bEnableThirdPersonTorch) || m_PotionDrinking)
 			return true;
 
-		if (GetEquippedItemTypeID(player) == RE::EQUIPPED_ITEMTYPE_ID::kShield)
+		if (shieldEquipped)
 		{
 			// Shield fix
 			if (m_pluginConfig->General().bEnableThirdPersonShield && !player->IsBlocking())
@@ -929,11 +929,11 @@ namespace ImprovedCamera {
 		}
 
 		// Fists fix
-		if (GetEquippedItemTypeID(player) == RE::EQUIPPED_ITEMTYPE_ID::kFist && GetEquippedItemTypeID(player, true) == RE::EQUIPPED_ITEMTYPE_ID::kFist)
+		if (Helper::GetWeaponID(player) == RE::WEAPON_ID::kFist && Helper::GetWeaponID(player, true) == RE::WEAPON_ID::kFist)
 			return false;
 
 		// One Handed weapon fix
-		if (Helper::IsRighthandWeaponEquipped(player) && !player->IsBlocking() && !m_pluginConfig->Fixes().bFirstPersonOverhaul)
+		if (Helper::IsRighthandWeaponEquipped(player) && !torchEquipped && !shieldEquipped && !player->IsBlocking() && !m_pluginConfig->Fixes().bFirstPersonOverhaul)
 			return true;
 
 		return false;
@@ -941,8 +941,6 @@ namespace ImprovedCamera {
 
 	bool ImprovedCameraSE::UseThirdPersonRightArm()
 	{
-		using namespace Address::Function;
-
 		auto player = RE::PlayerCharacter::GetSingleton();
 		auto playerState = player->AsActorState();
 
@@ -956,7 +954,7 @@ namespace ImprovedCamera {
 			return true;
 
 		// Bow fix
-		if (GetEquippedItemTypeID(player) == RE::EQUIPPED_ITEMTYPE_ID::kBow && !Helper::IsAiming(player) && !m_pluginConfig->Fixes().bArcheryGameplayOverhaul)
+		if (Helper::GetWeaponID(player) == RE::WEAPON_ID::kBow && !Helper::IsAiming(player) && !m_pluginConfig->Fixes().bArcheryGameplayOverhaul)
 			return true;
 
 		return false;
