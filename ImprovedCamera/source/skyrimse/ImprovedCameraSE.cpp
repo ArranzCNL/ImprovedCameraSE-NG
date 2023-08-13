@@ -417,7 +417,7 @@ namespace ImprovedCamera {
 			auto headNode = Helper::GetHeadNode(thirdpersonNode);
 
 			if (isWerewolf)
-				headNode = thirdpersonNode->GetObjectByName("NPC Neck [Neck]")->AsNode();
+				headNode = Helper::FindNode(thirdpersonNode, "NPC Neck [Neck]");
 
 			if (headNode && headNode->local.scale < 0.002f)
 			{
@@ -432,8 +432,8 @@ namespace ImprovedCamera {
 			UpdateFirstPersonScale();
 
 			// Update arms
-			auto leftarmNode = firstpersonNode->GetObjectByName("NPC L UpperArm [LUar]")->AsNode();
-			auto rightarmNode = firstpersonNode->GetObjectByName("NPC R UpperArm [RUar]")->AsNode();
+			auto leftarmNode = Helper::FindNode(firstpersonNode, "NPC L UpperArm [LUar]");
+			auto rightarmNode = Helper::FindNode(firstpersonNode, "NPC R UpperArm [RUar]");
 			float armScale = UseThirdPersonArms() ? 0.001f : 1.0f;
 
 			leftarmNode->local.scale = armScale;
@@ -1017,7 +1017,7 @@ namespace ImprovedCamera {
 
 				if (hideHead && isWerewolf)
 				{
-					headNode = thirdpersonNode->GetObjectByName("NPC Neck [Neck]")->AsNode();
+					headNode = Helper::FindNode(thirdpersonNode, "NPC Neck [Neck]");
 
 					auto thirdpersonState = (RE::ThirdPersonState*)RE::PlayerCamera::GetSingleton()->currentState.get();
 
@@ -1039,32 +1039,26 @@ namespace ImprovedCamera {
 			if (isWerewolf || isVampireLord || isScripted)
 				return;
 
-			// Need this chunky block to check the calling Objects validity as calling AsNode on top will cause a crash if non-existent.
-			auto leftArmObject = thirdpersonNode->GetObjectByName("NPC L UpperArm [LUar]");
-			if (!leftArmObject)
+			// Check left arm
+			auto leftArmNode = Helper::FindNode(thirdpersonNode, "NPC L UpperArm [LUar]");
+			if (!leftArmNode)
 				return;
-
-			auto rightArmObject = thirdpersonNode->GetObjectByName("NPC R UpperArm [RUar]");
-			if (!rightArmObject)
+			// Check right arm
+			auto rightArmNode = Helper::FindNode(thirdpersonNode, "NPC R UpperArm [RUar]");
+			if (!rightArmNode)
 				return;
-
-			auto weaponBackObject = thirdpersonNode->GetObjectByName("WeaponBack");
-			if (!weaponBackObject)
+			// Check weapon back
+			auto weaponBackNode = Helper::FindNode(thirdpersonNode, "WeaponBack");
+			if (!weaponBackNode)
 				return;
-
-			auto weaponBowObject = thirdpersonNode->GetObjectByName("WeaponBow");
-			if (!weaponBowObject)
+			// Check weapon bow
+			auto weaponBowNode = Helper::FindNode(thirdpersonNode, "WeaponBow");
+			if (!weaponBowNode)
 				return;
-
-			auto quiverObject = thirdpersonNode->GetObjectByName("QUIVER");
-			if (!quiverObject)
+			// Check quiver
+			auto quiverNode = Helper::FindNode(thirdpersonNode, "QUIVER");
+			if (!quiverNode)
 				return;
-
-			auto leftArmNode = leftArmObject->AsNode();
-			auto rightArmNode = rightArmObject->AsNode();
-			auto weaponBackNode = weaponBackObject->AsNode();
-			auto weaponBowNode = weaponBowObject->AsNode();
-			auto quiverNode = quiverObject->AsNode();
 
 			if (!UseThirdPersonArms())
 			{
@@ -1217,7 +1211,8 @@ namespace ImprovedCamera {
 			{
 				if (m_ICamera->GetID() == RE::CameraStates::kThirdPerson && m_ICamera->GetStateID() == CameraThirdPerson::State::kWerewolfIdle)
 				{
-					headNode = thirdpersonNode->GetObjectByName("Camera3rd [Cam3]")->AsNode();
+					headNode = Helper::FindNode(thirdpersonNode, "Camera3rd [Cam3]");
+
 					if (player->AsActorState()->IsSprinting())
 						point1.z += -48.0f * thirdpersonNode->world.scale;
 					else if (player->AsActorState()->IsRunning())
@@ -1230,17 +1225,17 @@ namespace ImprovedCamera {
 		// Fix casting magic from the correct position - FIXME
 		if (player->AsActorState()->IsWeaponDrawn() && m_pluginConfig->Headbob().bCombat)
 		{
-			auto lefthandMagicNode = firstpersonNode->GetObjectByName("NPC L MagicNode [LMag]")->AsNode();
+			auto lefthandMagicNode = Helper::FindNode(firstpersonNode, "NPC L MagicNode [LMag]");
 			if (lefthandMagicNode)
 			{}
-			auto righthandMagicNode = firstpersonNode->GetObjectByName("NPC R MagicNode [RMag]")->AsNode();
+			auto righthandMagicNode = Helper::FindNode(firstpersonNode, "NPC R MagicNode [RMag]");
 			if (righthandMagicNode)
 			{}
 		}
 		// Fix shooting arrows from the correct position
 		if (UseThirdPersonArms() || m_pluginConfig->Headbob().bCombat)
 		{
-			auto weaponNode = firstpersonNode->GetObjectByName("WEAPON")->AsNode();
+			auto weaponNode = Helper::FindNode(firstpersonNode, "WEAPON");
 			if (weaponNode)
 			{
 				weaponNode->world.translate = cameraNI->world.translate;

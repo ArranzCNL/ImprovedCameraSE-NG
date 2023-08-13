@@ -42,6 +42,27 @@ namespace Helper {
 		std::uint64_t* vtbl = (std::uint64_t*)*(std::uint64_t*)object;
 		return (void*)(vtbl[address / 8]);
 	}
+	// Easier to work with than GetObjectByName
+	static inline RE::NiNode* FindNode(RE::NiNode* node, const char* name)
+	{
+		if (!node)
+			return nullptr;
+
+		if (strcmp(node->name.c_str(), name) == 0)
+			return node;
+
+		for (auto it = node->children.begin(); it != node->children.end(); ++it)
+		{
+			// Need this check as some containers can be null.
+			if (it->get() == nullptr)
+				continue;
+
+			auto findNode = FindNode(it->get()->AsNode(), name);
+			if (findNode)
+				return findNode;
+		}
+		return nullptr;
+	}
 
 	static inline void UpdateNode(RE::NiNode* node, SKSE::stl::enumeration<RE::NiUpdateData::Flag, std::uint32_t> flags = RE::NiUpdateData::Flag::kNone, float updateTime = 0.f)
 	{
@@ -66,6 +87,7 @@ namespace Helper {
 			"ElkScull",
 			"FireAtronach_Head [Head]",
 			"Goat_Head",
+			"HEAD",
 			"Head [Head]",
 			"Horker_Head01",
 			"HorseScull",
@@ -82,16 +104,11 @@ namespace Helper {
 			"Torso Main",
 			"Wisp Head",
 			"NPC UpperLid",
-			"Head",
 		};
 
 		for (const char* headName : headNames)
 		{
-			auto headObject = node->GetObjectByName(headName);
-			if (!headObject)
-				continue;
-
-			auto headNode = headObject->AsNode();
+			auto headNode = FindNode(node, headName);
 			if (headNode)
 				return headNode;
 		}
@@ -238,13 +255,8 @@ namespace Helper {
 		if (!thirdperson3D)
 			return false;
 
-		auto thirdpersonNode = thirdperson3D->AsNode();
-		auto shieldObject = thirdpersonNode->GetObjectByName("Shield");
-		if (!shieldObject)
-			return false;
-
-		auto shieldNode = shieldObject->AsNode();
-		if (shieldNode->children.size() == 1)
+		auto shieldNode = FindNode(thirdperson3D->AsNode(), "Shield");
+		if (shieldNode && shieldNode->children.size() == 1)
 			return true;
 
 		return false;
