@@ -829,19 +829,32 @@ namespace ImprovedCamera {
 		}
 	}
 
-	void ImprovedCameraSE::SetElderScrollReading(bool reading)
+	void ImprovedCameraSE::CheckAnimation(const std::string& filename)
 	{
-		m_ElderScrollReading = reading;
-	}
-
-	void ImprovedCameraSE::SetCartRiding(bool riding)
-	{
-		m_CartRiding = riding;
-	}
-
-	void ImprovedCameraSE::SetPotionDrinking(bool drinking)
-	{
-		m_PotionDrinking = drinking;
+		std::string elderscroll = "IdleReadElderScroll";
+		std::string cartRiding = "CartPrisonerCSway";
+		std::string potionDrinking = "DrinkPotion";
+		std::string takeItem = "TakeItem";
+		// Elderscroll Reading
+		if (filename.find(elderscroll) != std::string::npos)
+			m_ElderScrollReading = true;
+		else
+			m_ElderScrollReading = false;
+		// Touring Carriages
+		if (filename.find(cartRiding) != std::string::npos)
+			m_CartRiding = true;
+		else
+			m_CartRiding = false;
+		// Ultimate Animated Potions NG
+		if (filename.find(potionDrinking) != std::string::npos)
+			m_PotionDrinking = true;
+		else
+			m_PotionDrinking = false;
+		// Animated Interactions
+		if (filename.find(takeItem) != std::string::npos)
+			m_TakeItem = true;
+		else
+			m_TakeItem = false;
 	}
 
 	void ImprovedCameraSE::RequestAPIs()
@@ -873,7 +886,7 @@ namespace ImprovedCamera {
 		auto player = RE::PlayerCharacter::GetSingleton();
 		auto playerState = player->AsActorState();
 
-		if (m_ElderScrollReading || m_PotionDrinking)
+		if (m_ElderScrollReading || m_PotionDrinking || m_TakeItem)
 			return false;
 
 		if (m_CurrentCameraID == RE::CameraState::kFirstPerson && playerState->IsSprinting() && !playerState->IsWeaponDrawn() &&
@@ -909,8 +922,8 @@ namespace ImprovedCamera {
 		bool shieldEquipped = Helper::IsShieldEquipped(player);
 		bool torchEquipped = Helper::IsTorchEquipped(player);
 
-		// CFPAO fix
-		if (playerState->IsSprinting() && !playerState->IsWeaponDrawn() && !Helper::IsBeastMode() && m_pluginConfig->Fixes().bFirstPersonOverhaul)
+		// CFPAO/Animated Interactions fix
+		if ((playerState->IsSprinting() && !playerState->IsWeaponDrawn() && !Helper::IsBeastMode() && m_pluginConfig->Fixes().bFirstPersonOverhaul) || m_TakeItem)
 			return false;
 
 		// Torch/Potion Drinking fix
@@ -949,8 +962,8 @@ namespace ImprovedCamera {
 			m_PotionDrinking)
 			return false;
 
-		// Torch fix
-		if (Helper::IsTorchEquipped(player) && !player->AsActorState()->IsWeaponDrawn())
+		// Torch/Animated Interactions fix
+		if ((Helper::IsTorchEquipped(player) && !player->AsActorState()->IsWeaponDrawn()) || m_TakeItem)
 			return true;
 
 		// Bow fix

@@ -90,10 +90,8 @@ namespace ImprovedCamera {
 				SetData();
 				return true;
 			}
-			// Third party animations.
-			bool activate_enabled = 1;  // SkyrimFunction::IsActivateControlsEnabled();
-
-			if (Helper::IsScripted() || !activate_enabled || !controlMap->IsMovementControlsEnabled())
+			// Third party animations
+			if (Helper::IsScripted() || !controlMap->IsMovementControlsEnabled())
 			{
 				m_ThirdPersonState = CameraThirdPerson::State::kScriptedEnter;
 				SetData();

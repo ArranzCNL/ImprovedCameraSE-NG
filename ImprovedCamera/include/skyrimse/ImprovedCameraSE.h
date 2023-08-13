@@ -43,9 +43,7 @@ namespace ImprovedCamera {
 		bool Ragdoll_IsTaskPoolRequired(RE::Actor* actor);
 		void Ragdoll_UpdateObjectUpwards(RE::Actor* actor);
 
-		void SetElderScrollReading(bool reading);
-		void SetCartRiding(bool riding);
-		void SetPotionDrinking(bool drinking);
+		void CheckAnimation(const std::string& filename);
 		bool IsFirstPerson() { return m_IsFirstPerson; }
 
 		void RequestAPIs();
@@ -120,6 +118,7 @@ namespace ImprovedCamera {
 		bool m_ElderScrollReading = false;
 		bool m_CartRiding = false;
 		bool m_PotionDrinking = false;
+		bool m_TakeItem = false;
 
 		// Need to shut these off when needed with TDM to stop horse issues.
 		//    Since we are doing this might as well do the same for Werewolf/VampireLord etc.

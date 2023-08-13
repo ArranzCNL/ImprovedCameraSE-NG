@@ -126,24 +126,7 @@ namespace Events {
 							if (index == 0)
 							{
 								auto pluginCamera = DLLMain::Plugin::Get()->SkyrimSE()->Camera();
-								std::string elderscroll = "IdleReadElderScroll";
-								std::string cartRiding = "CartPrisonerCSway";
-								std::string potionDrinking = "DrinkPotion";
-
-								if (animationFile.find(elderscroll) != std::string::npos)
-									pluginCamera->SetElderScrollReading(true);
-								else
-									pluginCamera->SetElderScrollReading(false);
-
-								if (animationFile.find(cartRiding) != std::string::npos)
-									pluginCamera->SetCartRiding(true);
-								else
-									pluginCamera->SetCartRiding(false);
-
-								if (animationFile.find(potionDrinking) != std::string::npos)
-									pluginCamera->SetPotionDrinking(true);
-								else
-									pluginCamera->SetPotionDrinking(false);
+								pluginCamera->CheckAnimation(animationFile);
 							}
 						}
 					}
