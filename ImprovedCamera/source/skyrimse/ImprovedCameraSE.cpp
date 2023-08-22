@@ -230,7 +230,12 @@ namespace ImprovedCamera {
 			// We force cartride to use the alternative camera.
 			if (m_ICamera->GetStateID() >= CameraFirstPerson::State::kCartRideEnter)
 				m_IsFakeCamera = true;
-
+			// Correct furniture idles which should never play in first person
+			if (Helper::CorrectFurnitureIdle())
+			{
+				playerCamera->ForceThirdPerson();
+				return;
+			}
 			// Force Touring Carriages back to third person
 			if (m_CartRiding)
 			{
@@ -1419,8 +1424,7 @@ namespace ImprovedCamera {
 				camera->currentState->id == RE::CameraState::kPCTransition ||
 				camera->currentState->id == RE::CameraState::kAnimated ||
 				camera->currentState->id == RE::CameraState::kBleedout ||
-				m_ICamera->GetID() == RE::CameraState::kMount && m_ICamera->GetEventID() == CameraEvent::kHorseTransition ||
-				m_ICamera->GetID() == RE::CameraState::kFirstPerson && m_ICamera->GetStateID() == CameraFirstPerson::State::kSleepingIdle)
+				m_ICamera->GetID() == RE::CameraState::kMount && m_ICamera->GetEventID() == CameraEvent::kHorseTransition)
 			{
 				// Clamp the direction for crafting.
 				if (!thirdpersonState->IsInputEventHandlingEnabled())

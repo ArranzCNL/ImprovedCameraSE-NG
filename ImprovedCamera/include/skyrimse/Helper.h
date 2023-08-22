@@ -72,7 +72,7 @@ namespace Helper {
 		node->Update(updateData);
 	}
 
-	static RE::NiNode* GetHeadNode(RE::NiNode* node)
+	static inline RE::NiNode* GetHeadNode(RE::NiNode* node)
 	{
 		const char* headNames[] = {
 			"NPC Head [Head]",
@@ -113,6 +113,40 @@ namespace Helper {
 				return headNode;
 		}
 		return nullptr;
+	}
+
+	static inline bool CorrectFurnitureIdle()
+	{
+		auto player = RE::PlayerCharacter::GetSingleton();
+		auto furnitureIdle = player->GetActorRuntimeData().currentProcess->middleHigh->furnitureIdle;
+
+		if (furnitureIdle)
+		{
+			const char* parentIdle = furnitureIdle->parentIdle->formEditorID.c_str();
+			// Common furniture idles which should never be used in first person
+			const char* idleNames[] = {
+				"EnterBed",
+				"IdleJarlChair",
+				"IdleGreybeardMeditate",
+				"RailLeanRoot",
+				"WallLeanRoot",
+				"IdleSoldierWall",
+				"CounterRoot",
+				"LeanTableRoot",
+				"SitLedgeRoot",
+				"SitCrossLeggedRoot",
+				"IdleKneeling",
+				"LayDownRoot",
+				"IdleCartTravelDriver",
+			};
+
+			for (const char* idleName : idleNames)
+			{
+				if (strcmp(idleName, parentIdle) == 0)
+					return true;
+			}
+		}
+		return false;
 	}
 
 	static inline bool CanLook()

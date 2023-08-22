@@ -22,8 +22,6 @@ namespace ImprovedCamera {
 				kIdle,
 				kWeaponDrawnEnter,
 				kWeaponDrawnIdle,
-				kSleepingEnter,
-				kSleepingIdle,
 				kCraftingEnter,
 				kCraftingIdle,
 				kDeathCinematicEnter,

@@ -52,13 +52,6 @@ namespace ImprovedCamera {
 				SetData();
 				return true;
 			}
-			// Check for sleeping
-			if (Helper::IsSleeping(this->Player))
-			{
-				m_FirstPersonState = CameraFirstPerson::State::kSleepingEnter;
-				SetData();
-				return true;
-			}
 			// Check for looking around only
 			if (Helper::IsScripted() && Helper::CanLook() && !Helper::CanMove())
 			{
@@ -130,14 +123,6 @@ namespace ImprovedCamera {
 			{
 				m_FirstPersonState = CameraFirstPerson::State::kExit;
 				return false;
-			}
-			// Sleeping Entered
-			if (m_FirstPersonState == CameraFirstPerson::State::kSleepingEnter)
-			{
-				m_FirstPersonState = CameraFirstPerson::State::kSleepingIdle;
-				auto controlMap = RE::ControlMap::GetSingleton();
-				controlMap->enabledControls.reset(RE::UserEvents::USER_EVENT_FLAG::kLooking);  // Block Looking
-				return true;
 			}
 			// Looking around only Entered
 			if (m_FirstPersonState == CameraFirstPerson::State::kLookOnlyEnter)
