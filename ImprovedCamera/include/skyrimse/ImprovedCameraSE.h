@@ -72,7 +72,6 @@ namespace ImprovedCamera {
 		bool UseThirdPersonLeftArm();
 		bool UseThirdPersonRightArm();
 
-		void UpdateFirstPersonScale();
 		void UpdateSkeleton(bool show);
 		void DisplayShadows(bool show);
 

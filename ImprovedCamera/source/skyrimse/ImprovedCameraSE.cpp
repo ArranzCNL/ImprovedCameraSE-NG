@@ -426,10 +426,14 @@ namespace ImprovedCamera {
 			}
 		}
 
-		if (cameraID == RE::CameraStates::kFirstPerson || m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kFirstPerson || m_IsFakeCamera)
+		if (cameraID == RE::CameraStates::kFirstPerson || (m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kFirstPerson) || m_IsFakeCamera)
 		{
 			// Update player scale
-			UpdateFirstPersonScale();
+			if (m_pluginConfig->General().bAdjustPlayerScale)
+			{
+				if (firstpersonNode->local.scale != thirdpersonNode->local.scale)
+					firstpersonNode->local.scale = thirdpersonNode->local.scale;
+			}
 
 			// Update arms
 			auto leftarmNode = Helper::FindNode(firstpersonNode, "NPC L UpperArm [LUar]");
@@ -462,21 +466,7 @@ namespace ImprovedCamera {
 				// Height offset
 				firstpersonNode->local.translate.z += m_pluginConfig->General().fBodyHeightOffset;
 			}
-
-			// Fixes weapons drawing when sitting/sleeping
-			if (m_ICamera && m_ICamera->GetID() == RE::CameraStates::kFirstPerson && m_ICamera->GetStateID() >= CameraFirstPerson::State::kSittingEnter &&
-				firstpersonNode->local.scale > 0.002f)
-			{
-				firstpersonNode->local.scale = 0.001f;
-				Helper::UpdateNode(firstpersonNode, RE::NiUpdateData::Flag::kDisableCollision);
-				Helper::UpdateNode(thirdpersonNode, RE::NiUpdateData::Flag::kDisableCollision);
-				return;
-			}
-			Helper::UpdateNode(firstpersonNode);
 		}
-		// Fix crosshair issue in Third Person due to firstpersonNode shrunk.
-		if (firstpersonNode->local.scale < 0.002f)
-			UpdateFirstPersonScale();
 	}
 
 	bool ImprovedCameraSE::SmoothAnimationTransitions()
@@ -973,21 +963,6 @@ namespace ImprovedCamera {
 		return false;
 	}
 
-	void ImprovedCameraSE::UpdateFirstPersonScale()
-	{
-		auto player = RE::PlayerCharacter::GetSingleton();
-		auto firstpersonNode = player->Get3D(1)->AsNode();
-		auto thirdpersonNode = player->Get3D(0)->AsNode();
-
-		if (m_pluginConfig->General().bAdjustPlayerScale)
-		{
-			if (firstpersonNode->local.scale != thirdpersonNode->local.scale)
-				firstpersonNode->local.scale = thirdpersonNode->local.scale;
-		}
-		else
-			firstpersonNode->local.scale = 1.0f;
-	}
-
 	void ImprovedCameraSE::UpdateSkeleton(bool show)
 	{
 		auto player = RE::PlayerCharacter::GetSingleton();
@@ -1020,10 +995,10 @@ namespace ImprovedCamera {
 
 			if (headNode && !Helper::CannotMoveAndLook())
 			{
-				bool hideHead = !m_pluginConfig->General().bEnableHead && (m_CurrentCameraID == RE::CameraStates::kFirstPerson || m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kFirstPerson) && m_ICamera->GetStateID() != CameraFirstPerson::State::kWeaponDrawnIdle ||
-					!m_pluginConfig->General().bEnableHeadCombat &&	(m_CurrentCameraID == RE::CameraStates::kFirstPerson || m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kFirstPerson) && m_ICamera->GetStateID() == CameraFirstPerson::State::kWeaponDrawnIdle ||
-					!m_pluginConfig->General().bEnableHeadHorse && m_IsFakeCamera && (m_CurrentCameraID == RE::CameraStates::kMount || m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kMount) ||
-					!m_pluginConfig->General().bEnableHeadDragon && m_IsFakeCamera && (m_CurrentCameraID == RE::CameraStates::kDragon || m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kDragon) ||
+				bool hideHead = !m_pluginConfig->General().bEnableHead && (m_CurrentCameraID == RE::CameraStates::kFirstPerson || (m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kFirstPerson)) && m_ICamera->GetStateID() != CameraFirstPerson::State::kWeaponDrawnIdle ||
+					!m_pluginConfig->General().bEnableHeadCombat &&	(m_CurrentCameraID == RE::CameraStates::kFirstPerson || (m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kFirstPerson)) && m_ICamera->GetStateID() == CameraFirstPerson::State::kWeaponDrawnIdle ||
+					!m_pluginConfig->General().bEnableHeadHorse && m_IsFakeCamera && (m_CurrentCameraID == RE::CameraStates::kMount || (m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kMount)) ||
+					!m_pluginConfig->General().bEnableHeadDragon && m_IsFakeCamera && (m_CurrentCameraID == RE::CameraStates::kDragon || (m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kDragon)) ||
 					!m_pluginConfig->General().bEnableHeadScripted && m_IsFakeCamera && isScripted ||
 					!m_pluginConfig->General().bEnableHeadVampireLord && m_IsFakeCamera && isVampireLord ||
 					!m_pluginConfig->General().bEnableHeadWerewolf && m_IsFakeCamera && isWerewolf;
@@ -1265,7 +1240,7 @@ namespace ImprovedCamera {
 		auto firstpersonNode = player->Get3D(1)->AsNode();
 		auto thirdpersonNode = player->Get3D(0)->AsNode();
 		auto cameraNode = RE::PlayerCamera::GetSingleton()->cameraRoot->AsNode();
-		auto head = Helper::GetHeadNode(thirdpersonNode);
+		auto headNode = Helper::GetHeadNode(thirdpersonNode);
 		RE::NiPoint3 vFirstPerson{}, vThirdPerson{}, vTransformRoot{}, point1{}, point2{};
 
 		vFirstPerson = cameraNode->world.translate - firstpersonNode->world.translate;
@@ -1273,9 +1248,9 @@ namespace ImprovedCamera {
 		ScalePoint(&point1, thirdpersonNode->world.scale);
 		Utils::MatrixVectorMultiply(&point2, &thirdpersonNode->world.rotate, &point1);
 
-		vThirdPerson = (head->world.translate + point2) - thirdpersonNode->world.translate;
+		vThirdPerson = thirdpersonNode->world.translate - (headNode->world.translate + point2);
 		vTransformRoot = thirdpersonNode->local.translate - firstpersonNode->local.translate;
-		firstpersonNode->local.translate += vThirdPerson - vFirstPerson + vTransformRoot;
+		firstpersonNode->local.translate += vFirstPerson - (vThirdPerson + vTransformRoot);
 	}
 
 	void ImprovedCameraSE::TranslateThirdPerson()
@@ -1288,8 +1263,7 @@ namespace ImprovedCamera {
 		RE::NiPoint3 point1{}, point2{};
 		float headRot = 0.0f;
 
-		if (m_CurrentCameraID == RE::CameraStates::kFirstPerson ||
-			m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kFirstPerson)
+		if (m_CurrentCameraID == RE::CameraStates::kFirstPerson || (m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kFirstPerson))
 		{
 			if (!GetHeadRotation(&headRot) && !m_IsFakeCamera)
 			{
