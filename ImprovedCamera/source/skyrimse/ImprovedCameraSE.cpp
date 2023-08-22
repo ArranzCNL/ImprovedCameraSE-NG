@@ -1177,16 +1177,16 @@ namespace ImprovedCamera {
 	void ImprovedCameraSE::TranslateCamera()
 	{
 		auto player = RE::PlayerCharacter::GetSingleton();
-		auto camera = RE::PlayerCamera::GetSingleton();
-		auto cameraNode = camera->cameraRoot.get()->AsNode();
-
-		auto cameraNI = (RE::NiCamera*)((cameraNode->children.size() == 0) ? nullptr : cameraNode->children[0].get());
-		if (!cameraNI)
-			return;
-
 		auto firstpersonNode = player->Get3D(1)->AsNode();
 		auto thirdpersonNode = player->Get3D(0)->AsNode();
 		auto headNode = Helper::GetHeadNode(thirdpersonNode);
+		if (!headNode)
+			return;
+
+		auto cameraNode = RE::PlayerCamera::GetSingleton()->cameraRoot.get()->AsNode();
+		auto cameraNI = (RE::NiCamera*)((cameraNode->children.size() == 0) ? nullptr : cameraNode->children[0].get());
+		if (!cameraNI)
+			return;
 
 		RE::NiPoint3 point1{}, point2{};
 		ScalePoint(&point1, thirdpersonNode->world.scale);
@@ -1197,7 +1197,8 @@ namespace ImprovedCamera {
 		{
 			if (HeadRotation())
 			{
-				if (m_ICamera->GetID() == RE::CameraStates::kThirdPerson && m_ICamera->GetStateID() == CameraThirdPerson::State::kWerewolfIdle)
+				if (m_ICamera->GetID() == RE::CameraStates::kThirdPerson &&
+					(m_ICamera->GetStateID() == CameraThirdPerson::State::kWerewolfEnter || m_ICamera->GetStateID() == CameraThirdPerson::State::kWerewolfIdle))
 				{
 					headNode = Helper::FindNode(thirdpersonNode, "Camera3rd [Cam3]");
 
@@ -1239,8 +1240,11 @@ namespace ImprovedCamera {
 		auto player = RE::PlayerCharacter::GetSingleton();
 		auto firstpersonNode = player->Get3D(1)->AsNode();
 		auto thirdpersonNode = player->Get3D(0)->AsNode();
-		auto cameraNode = RE::PlayerCamera::GetSingleton()->cameraRoot->AsNode();
 		auto headNode = Helper::GetHeadNode(thirdpersonNode);
+		if (!headNode)
+			return;
+
+		auto cameraNode = RE::PlayerCamera::GetSingleton()->cameraRoot->AsNode();
 		RE::NiPoint3 vFirstPerson{}, vThirdPerson{}, vTransformRoot{}, point1{}, point2{};
 
 		vFirstPerson = cameraNode->world.translate - firstpersonNode->world.translate;
@@ -1258,8 +1262,10 @@ namespace ImprovedCamera {
 		auto player = RE::PlayerCharacter::GetSingleton();
 		auto thirdpersonNode = player->Get3D(0)->AsNode();
 		auto headNode = Helper::GetHeadNode(thirdpersonNode);
-		auto cameraNode = RE::PlayerCamera::GetSingleton()->cameraRoot->AsNode();
+		if (!headNode)
+			return;
 
+		auto cameraNode = RE::PlayerCamera::GetSingleton()->cameraRoot->AsNode();
 		RE::NiPoint3 point1{}, point2{};
 		float headRot = 0.0f;
 
@@ -1362,8 +1368,10 @@ namespace ImprovedCamera {
 		auto firstpersonState = (RE::FirstPersonState*)camera->cameraStates[RE::CameraState::kFirstPerson].get();
 		auto thirdpersonNode = player->Get3D(0)->AsNode();
 		auto headNode = Helper::GetHeadNode(thirdpersonNode);
-		auto cameraNode = camera->cameraRoot.get()->AsNode();
+		if (!headNode)
+			return false;
 
+		auto cameraNode = camera->cameraRoot.get()->AsNode();
 		auto cameraNI = (RE::NiCamera*)((cameraNode->children.size() == 0) ? nullptr : cameraNode->children[0].get());
 		if (!cameraNI)
 			return false;
@@ -1434,7 +1442,8 @@ namespace ImprovedCamera {
 			}
 			// Scripted and Animation
 			if (m_ICamera->GetID() == RE::CameraState::kThirdPerson &&
-				(m_ICamera->GetStateID() == CameraThirdPerson::State::kScriptedIdle || m_ICamera->GetStateID() == CameraThirdPerson::State::kAnimationIdle))
+				(m_ICamera->GetStateID() == CameraThirdPerson::State::kScriptedIdle || m_ICamera->GetStateID() == CameraThirdPerson::State::kAnimationIdle ||
+				m_ICamera->GetStateID() == CameraThirdPerson::State::kWerewolfEnter))
 			{
 				point.x = 0.5f * M_PI - player->data.angle.x;              // Pitch
 				point.y = 0.5f * M_PI - thirdpersonState->freeRotation.x;  // Yaw
