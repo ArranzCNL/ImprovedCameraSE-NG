@@ -105,6 +105,10 @@ namespace ImprovedCamera {
 		bool m_IsFirstPerson = false;
 		bool m_IsFakeCamera = false;
 		bool m_TweenShown = false;
+		bool m_CartRiding = false;
+		bool m_FirstPersonLeftArm = false;
+		bool m_FirstPersonRightArm = false;
+		bool m_FirstPersonBothArms = false;
 		uint8_t m_LastStateID = 0;
 		uint8_t m_iRagdollFrame = 0;
 		RE::NiPoint3 m_thirdpersonLocalTranslate{};
@@ -115,10 +119,6 @@ namespace ImprovedCamera {
 		static inline TDM_API::IVTDM2* m_TDMAPI = nullptr;
 		bool m_SmoothCamSnapshot = false;
 		bool m_TDMSnapshot = false;
-		bool m_ElderScrollReading = false;
-		bool m_CartRiding = false;
-		bool m_PotionDrinking = false;
-		bool m_TakeItem = false;
 
 		// Need to shut these off when needed with TDM to stop horse issues.
 		//    Since we are doing this might as well do the same for Werewolf/VampireLord etc.
