@@ -28,9 +28,6 @@ namespace Events {
 
 	void Observer::Register()
 	{
-		auto player = RE::PlayerCharacter::GetSingleton();
-		player->AddAnimationGraphEventSink(Observer::Get());
-
 		RE::UI::GetSingleton()->AddEventSink<RE::MenuOpenCloseEvent>(Observer::Get());
 		// Show Player In Menus
 		Observer::Get()->CheckSPIM();
@@ -40,24 +37,26 @@ namespace Events {
 	{
 		if (!a_event)
 			return EventResult::kContinue;
+
+		const char* menuName = a_event->menuName.c_str();
+
 #ifdef _DEBUG
 		auto pluginConf = DLLMain::Plugin::Get()->Config();
 		if (pluginConf->Logging().bMenus)
-			LOG_INFO("Menu: {} ({})", a_event->menuName.c_str(), a_event->opening ? "Opening" : "Closing");
+			LOG_INFO("Menu: {} ({})", menuName, a_event->opening ? "Opening" : "Closing");
 #endif
-		if (strcmp(a_event->menuName.c_str(), "InventoryMenu") == 0)
+		// AnimationGraphEventSink registration. Only reliable way I could think of.
+		if (strcmp(menuName, "Fader Menu") == 0 && !a_event->opening)
 		{
-			if (m_SPIMInventoryMenu && *m_SPIMInventoryMenu)
-				ResetArms();
+			auto player = RE::PlayerCharacter::GetSingleton();
+			if (player)
+			{
+				player->RemoveAnimationGraphEventSink(this);
+				player->AddAnimationGraphEventSink(this);
+			}
 		}
-
-		if (strcmp(a_event->menuName.c_str(), "MagicMenu") == 0)
-		{
-			if (m_SPIMMagicMenu && *m_SPIMMagicMenu)
-				ResetArms();
-		}
-
-		if (strcmp(a_event->menuName.c_str(), "Console") == 0)
+		// Fix displaying body in console
+		if (strcmp(menuName, "Console") == 0)
 		{
 			auto camera = RE::PlayerCamera::GetSingleton();
 
@@ -78,6 +77,16 @@ namespace Events {
 					thirdpersonNode->GetFlags().reset(RE::NiAVObject::Flag::kHidden);
 			}
 		}
+		// No need to monitor any other closing events
+		if (!a_event->opening)
+			return RE::BSEventNotifyControl::kContinue;
+		// Show Player in Menus fix
+		if (strcmp(menuName, "InventoryMenu") == 0 && m_SPIMInventoryMenu && *m_SPIMInventoryMenu)
+			ResetArms();
+		// Show Player in Menus fix
+		if (strcmp(menuName, "MagicMenu") == 0 && m_SPIMMagicMenu && *m_SPIMMagicMenu)
+			ResetArms();
+
 		return RE::BSEventNotifyControl::kContinue;
 	}
 
