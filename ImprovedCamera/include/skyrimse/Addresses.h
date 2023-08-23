@@ -30,7 +30,6 @@ namespace Address {
 		static std::uintptr_t UpdateFirstPerson;
 		static std::uintptr_t TESObjectCell_Get3D;
 		static std::uintptr_t SmoothAnimationTransitions;
-		static std::uintptr_t HeadTracking;
 		static std::uintptr_t ModelReferenceEffect_UpdatePosition;
 		static std::uintptr_t ModelReferenceEffect_Update;
 		static std::uintptr_t ShaderReferenceEffect1;

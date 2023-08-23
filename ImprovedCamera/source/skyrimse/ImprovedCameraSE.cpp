@@ -496,8 +496,8 @@ namespace ImprovedCamera {
 
 	bool ImprovedCameraSE::UpdateHeadTracking()
 	{
-		auto camera = RE::PlayerCamera::GetSingleton();
 		auto player = RE::PlayerCharacter::GetSingleton();
+		auto camera = RE::PlayerCamera::GetSingleton();
 
 		bool onMount = Helper::IsOnMount(player);
 		bool mounted = onMount && Helper::IsInteracting(player);
@@ -511,10 +511,8 @@ namespace ImprovedCamera {
 		// Ignore Scripted
 		if (m_CameraEventID == CameraEvent::kScripted && (camera->IsInFirstPerson() || m_IsFakeCamera))
 			return false;
-
-		/*// Only here for fun
-		auto player = RE::PlayerCharacter::GetSingleton();
-
+		// Only here for fun
+		/*
 		if (camera->IsInFirstPerson() && player->AsActorState()->IsWeaponDrawn())
 			return false;
 		*/

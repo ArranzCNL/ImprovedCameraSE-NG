@@ -109,7 +109,7 @@ namespace Patch {
 
 		static void thunk(RE::NiAVObject* firstpersonObject, RE::NiUpdateData* updateData)
 		{
-			firstpersonObject->Update(*updateData);
+			func(firstpersonObject, updateData);
 			ic->UpdateFirstPerson();
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
@@ -121,7 +121,7 @@ namespace Patch {
 
 		static RE::NiNode* thunk(RE::TESObjectREFR* objectREFR)
 		{
-			// Replace function with Get3D as a node
+			// Replace func with Get3D as a node
 			return Address::Function::Get3D(objectREFR);
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
@@ -149,20 +149,12 @@ namespace Patch {
 		static void thunk(void* arg1, void* arg2, void* arg3)
 		{
 			if (ic->UpdateHeadTracking())
-				Func23(arg1, arg2, arg3);
+				func(arg1, arg2, arg3);
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
 
 		static inline constexpr std::size_t index{ 0 };
 		static inline constexpr std::size_t offset{ 23 };
-
-	private:
-		static void Func23(void* arg1, void* arg2, void* arg3)
-		{
-			using func_t = decltype(&Func23);
-			REL::Relocation<func_t> function{ Address::Hook::HeadTracking };
-			return function(arg1, arg2, arg3);
-		}
 	};
 
 	struct ModelReferenceEffect_UpdatePosition {
@@ -317,16 +309,16 @@ namespace Patch {
 
 		static bool thunk(void*)
 		{
-			auto camera = RE::PlayerCamera::GetSingleton();
-			auto player = RE::PlayerCharacter::GetSingleton();
 			auto pluginConfig = DLLMain::Plugin::Get()->Config();
+			auto player = RE::PlayerCharacter::GetSingleton();
+			auto camera = RE::PlayerCamera::GetSingleton();
+			bool rtnVal = true;
 
 			if (camera->IsInFirstPerson())
 			{
-				bool rtnVal = player->AsActorState()->IsWeaponDrawn() ? pluginConfig->General().bEnableThirdPersonArms : 0;
-				return rtnVal;
+				rtnVal = player->AsActorState()->IsWeaponDrawn() ? pluginConfig->General().bEnableThirdPersonArms : false;
 			}
-			return true;
+			return rtnVal;
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
 
@@ -419,7 +411,7 @@ namespace Patch {
 			if (playerObject == object)
 				ic->Ragdoll_UpdateObjectUpwards(player);
 
-			object->Update(*updateData);
+			func(object, updateData);
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
 
@@ -538,7 +530,6 @@ namespace Patch {
 		Address::Hook::UpdateFirstPerson = REL::RelocationID(39446, 40522).address() + 0xD7;
 		Address::Hook::TESObjectCell_Get3D = REL::RelocationID(18683, 19165).address() + REL::VariantOffset(0x7C, 0x7B, 0).offset();
 		Address::Hook::SmoothAnimationTransitions = REL::RelocationID(40937, 41996).address() + REL::VariantOffset(0x2EA, 0x2F4, 0).offset();
-		Address::Hook::HeadTracking = REL::RelocationID(62337, 63278).address();
 		Address::Hook::ModelReferenceEffect_UpdatePosition = REL::RelocationID(33862, 34658).address() + REL::VariantOffset(0x9F, 0x11A, 0).offset();
 		Address::Hook::ModelReferenceEffect_Update = REL::RelocationID(33861, 34657).address() + REL::VariantOffset(0x86, 0x85, 0).offset();
 		Address::Hook::ShaderReferenceEffect1 = REL::RelocationID(34111, 34913).address() + REL::VariantOffset(0xE1, 0xE1, 0).offset();
@@ -587,7 +578,6 @@ namespace Patch {
 		LOG_DEBUG("Hook::UpdateFirstPerson:\t\t\t0x{:08X}", Address::Hook::UpdateFirstPerson - baseAddress);
 		LOG_DEBUG("Hook::TESObjectCell_Get3D:\t\t\t0x{:08X}", Address::Hook::TESObjectCell_Get3D - baseAddress);
 		LOG_DEBUG("Hook::SmoothAnimationTransitions:\t\t0x{:08X}", Address::Hook::SmoothAnimationTransitions - baseAddress);
-		LOG_DEBUG("Hook::HeadTracking:\t\t\t\t0x{:08X}", Address::Hook::HeadTracking - baseAddress);
 		LOG_DEBUG("Hook::ModelReferenceEffect_UpdatePosition:\t0x{:08X}", Address::Hook::ModelReferenceEffect_UpdatePosition - baseAddress);
 		LOG_DEBUG("Hook::ModelReferenceEffect_Update:\t\t0x{:08X}", Address::Hook::ModelReferenceEffect_Update - baseAddress);
 		LOG_DEBUG("Hook::ShaderReferenceEffect1:\t\t0x{:08X}", Address::Hook::ShaderReferenceEffect1 - baseAddress);
