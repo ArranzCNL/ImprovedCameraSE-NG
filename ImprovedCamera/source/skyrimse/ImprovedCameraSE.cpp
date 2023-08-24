@@ -382,8 +382,9 @@ namespace ImprovedCamera {
 		auto thirdpersonNode = player->Get3D(0)->AsNode();
 		auto camera = RE::PlayerCamera::GetSingleton();
 		auto cameraID = camera->currentState->id;
-		// Don't process on AutoVanity
-		if (cameraID == RE::CameraStates::kAutoVanity)
+		bool mapMenu = RE::UI::GetSingleton()->IsMenuOpen("MapMenu");
+		// Don't process on AutoVanity or MapMenu
+		if (cameraID == RE::CameraStates::kAutoVanity || mapMenu)
 			return;
 		// Don't process on TFC
 		static bool resetFOV;
