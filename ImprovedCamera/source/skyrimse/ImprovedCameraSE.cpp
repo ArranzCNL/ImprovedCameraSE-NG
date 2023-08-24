@@ -480,7 +480,14 @@ namespace ImprovedCamera {
 
 		if (!camera->IsInFirstPerson())
 		{
-			*fControllerBufferDepth = m_pluginConfig->Fixes().fControllerBufferDepth3rd;
+			auto player = RE::PlayerCharacter::GetSingleton();
+			auto playerState = player->AsActorState();
+
+			if (playerState->IsSprinting())
+				*fControllerBufferDepth = 0.14f;
+			else
+				*fControllerBufferDepth = m_pluginConfig->Fixes().fControllerBufferDepth3rd;
+
 			return true;
 		}
 		if (!m_pluginConfig->Fixes().bSmoothAnimationTransitions)
