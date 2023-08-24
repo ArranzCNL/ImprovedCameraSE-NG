@@ -70,7 +70,6 @@ namespace Address {
 		float* fDefaultWorldFOV;
 		float* fNearDistance;
 		float* fMinCurrentZoom;
-		bool* bJournalDisabled;
 		float* fSittingMaxLookingDown;
 		float* fMountedMaxLookingUp;
 		float* fMountedMaxLookingDown;

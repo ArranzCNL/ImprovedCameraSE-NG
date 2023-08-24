@@ -66,7 +66,6 @@ namespace Address {
 		extern float* fDefaultWorldFOV;
 		extern float* fNearDistance;
 		extern float* fMinCurrentZoom;
-		extern bool* bJournalDisabled;
 		extern float* fSittingMaxLookingDown;
 		extern float* fMountedMaxLookingUp;
 		extern float* fMountedMaxLookingDown;

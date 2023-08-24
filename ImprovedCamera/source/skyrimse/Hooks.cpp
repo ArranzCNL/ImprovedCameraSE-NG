@@ -552,7 +552,6 @@ namespace Patch {
 		Address::Variable::fDefaultWorldFOV = (float*)REL::RelocationID(512129, 388785).address();
 		Address::Variable::fNearDistance = (float*)REL::RelocationID(512125, 388779).address();
 		Address::Variable::fMinCurrentZoom = (float*)REL::RelocationID(509882, 382633).address();
-		Address::Variable::bJournalDisabled = (bool*)REL::RelocationID(520168, 406698).address();
 		Address::Variable::fSittingMaxLookingDown = (float*)REL::RelocationID(503108, 371032).address();
 		Address::Variable::fMountedMaxLookingUp = (float*)REL::RelocationID(509846, 382579).address();
 		Address::Variable::fMountedMaxLookingDown = (float*)REL::RelocationID(503104, 371026).address();
@@ -600,7 +599,6 @@ namespace Patch {
 		LOG_DEBUG("Variable::fDefaultWorldFOV:\t\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::fDefaultWorldFOV) - baseAddress);
 		LOG_DEBUG("Variable::fNearDistance:\t\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::fNearDistance) - baseAddress);
 		LOG_DEBUG("Variable::fMinCurrentZoom:\t\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::fMinCurrentZoom) - baseAddress);
-		LOG_DEBUG("Variable::bJournalDisabled:\t\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::bJournalDisabled) - baseAddress);
 		LOG_DEBUG("Variable::fSittingMaxLookingDown:\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::fSittingMaxLookingDown) - baseAddress);
 		LOG_DEBUG("Variable::fMountedMaxLookingUp:\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::fMountedMaxLookingUp) - baseAddress);
 		LOG_DEBUG("Variable::fMountedMaxLookingDown:\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::fMountedMaxLookingDown) - baseAddress);
