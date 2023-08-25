@@ -126,6 +126,7 @@ namespace Helper {
 			// Common furniture idles which should never be used in first person
 			const char* idleNames[] = {
 				"EnterBed",
+				"EnterBedRoll",
 				"IdleJarlChair",
 				"IdleGreybeardMeditate",
 				"RailLeanRoot",
