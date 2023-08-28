@@ -61,6 +61,13 @@ namespace Address {
 			REL::Relocation<func_t> func{ REL::RelocationID(33375, 34156) };
 			return func(magicCaster);
 		}
+
+		const bool IsInAir(RE::Actor* actor)
+		{
+			using func_t = decltype(&IsInAir);
+			REL::Relocation<func_t> func{ REL::RelocationID(36259, 37243) };
+			return func(actor);
+		}
 	}
 
 	namespace Variable {
