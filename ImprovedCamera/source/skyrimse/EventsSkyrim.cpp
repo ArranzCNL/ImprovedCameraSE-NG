@@ -55,17 +55,26 @@ namespace Events {
 				player->AddAnimationGraphEventSink(this);
 			}
 		}
+		// Fix RaceSex Menu hiding first person body upon exit
+		if (strcmp(menuName, "RaceSex Menu") == 0 && !a_event->opening)
+		{
+			auto camera = RE::PlayerCamera::GetSingleton();
+			if (camera->IsInFirstPerson())
+			{
+				auto firstperson3D = RE::PlayerCharacter::GetSingleton()->Get3D(1);
+				firstperson3D->GetFlags().reset(RE::NiAVObject::Flag::kHidden);
+			}
+		}
 		// Fix displaying body in console
 		if (strcmp(menuName, "Console") == 0)
 		{
 			auto camera = RE::PlayerCamera::GetSingleton();
-
 			if (camera->IsInFirstPerson())
 			{
 				auto pluginConfig = DLLMain::Plugin::Get()->Config();
 				auto bodyConsole = pluginConfig->General().bEnableBodyConsole;
-
 				auto thirdperson3D = RE::PlayerCharacter::GetSingleton()->Get3D(0);
+
 				if (!thirdperson3D)
 					return RE::BSEventNotifyControl::kContinue;
 
@@ -80,10 +89,10 @@ namespace Events {
 		// No need to monitor any other closing events
 		if (!a_event->opening)
 			return RE::BSEventNotifyControl::kContinue;
-		// Show Player in Menus fix
+		// Show Player in Menus InventoryMenu fix
 		if (strcmp(menuName, "InventoryMenu") == 0 && m_SPIMInventoryMenu && *m_SPIMInventoryMenu)
 			ResetArms();
-		// Show Player in Menus fix
+		// Show Player in Menus MagicMenu fix
 		if (strcmp(menuName, "MagicMenu") == 0 && m_SPIMMagicMenu && *m_SPIMMagicMenu)
 			ResetArms();
 
