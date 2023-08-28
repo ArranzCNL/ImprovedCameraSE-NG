@@ -18,6 +18,7 @@
 
 namespace ImprovedCamera {
 
+	using namespace Address::Function;
 	using namespace Address::Variable;
 
 	ImprovedCameraSE::ImprovedCameraSE()
@@ -896,13 +897,17 @@ namespace ImprovedCamera {
 		if (m_FirstPersonBothArms || m_FirstPersonLeftArm || m_FirstPersonRightArm)
 			return false;
 
-		if (m_CurrentCameraID == RE::CameraState::kFirstPerson && playerState->IsSprinting() && !playerState->IsWeaponDrawn() &&
-			!Helper::IsBeastMode() && !m_pluginConfig->General().bEnableThirdPersonArms && m_pluginConfig->Fixes().bFirstPersonOverhaul)
+		if (m_CurrentCameraID == RE::CameraState::kFirstPerson && (playerState->IsSprinting() || IsInAir(player) || playerState->IsSwimming()) &&
+			!playerState->IsWeaponDrawn() && !Helper::IsBeastMode() && !m_pluginConfig->General().bEnableThirdPersonArms && m_pluginConfig->Fixes().bFirstPersonOverhaul)
+		{
 			return false;
+		}
 
 		if ((m_CurrentCameraID != RE::CameraState::kFirstPerson && !(m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kFirstPerson)) ||
 			Helper::IsOnMount(player) || (!playerState->IsWeaponDrawn() && !Helper::IsTorchEquipped(player)))
+		{
 			return true;
+		}
 
 		if (Helper::IsSitting(player) && Helper::IsTorchEquipped(player))
 			return true;
