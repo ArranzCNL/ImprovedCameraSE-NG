@@ -790,6 +790,9 @@ namespace ImprovedCamera {
 			// Fixes being stuck in Scripted state
 			playerControls->data.povScriptMode = false;
 			player->NotifyAnimationGraph("IdleForceDefaultState");
+			// Push the actor away for good measure!
+			RE::NiPoint3 position = player->GetPosition();
+			player->GetActorRuntimeData().currentProcess->KnockExplosion(player, position, 10000.0f);
 		}
 		m_IsThirdPersonForced = false;
 		m_IsFirstPerson = false;
