@@ -571,7 +571,6 @@ namespace Patch {
 			pluginSkyrimSE->VersionMajor(), pluginSkyrimSE->VersionMinor(), pluginSkyrimSE->VersionRevision(), pluginSkyrimSE->VersionBuild());
 
 		LOG_DEBUG("Hook::ProcessInput:\t\t\t\t0x{:08X}", Address::Hook::ProcessInput - baseAddress);
-
 		LOG_DEBUG("Hook::UpdateSwitchPOV:\t\t\t0x{:08X}", Address::Hook::UpdateSwitchPOV - baseAddress);
 		LOG_DEBUG("Hook::UpdateCamera:\t\t\t\t0x{:08X}", Address::Hook::UpdateCamera - baseAddress);
 		LOG_DEBUG("Hook::UpdateFirstPerson:\t\t\t0x{:08X}", Address::Hook::UpdateFirstPerson - baseAddress);
@@ -593,6 +592,15 @@ namespace Patch {
 		LOG_DEBUG("Hook::HorseLookingDownFix1:\t\t\t0x{:08X}", Address::Hook::HorseLookingDownFix1 - baseAddress);
 		LOG_DEBUG("Hook::HorseLookingDownFix2:\t\t\t0x{:08X}", Address::Hook::HorseLookingDownFix2 - baseAddress);
 		LOG_DEBUG("Hook::HorseLookingDownFix3:\t\t\t0x{:08X}", Address::Hook::HorseLookingDownFix3 - baseAddress);
+
+		LOG_DEBUG("Function::ModelReferenceEffect_Attach:\t0x{:08X}", REL::RelocationID(33872, 34668).address() - baseAddress);
+		LOG_DEBUG("Function::ModelReferenceEffect_Sub_57BCC0:\t0x{:08X}", REL::RelocationID(33873, 34669).address() - baseAddress);
+		LOG_DEBUG("Function::ShaderReferenceEffect_Sub_584680:\t0x{:08X}", REL::RelocationID(34131, 34933).address() - baseAddress);
+		LOG_DEBUG("Function::BipedAnim_GetTorchObject:\t\t0x{:08X}", REL::RelocationID(15517, 15694).address() - baseAddress);
+		LOG_DEBUG("Function::Ragdoll_IsTaskPoolRequired:\t0x{:08X}", REL::RelocationID(38079, 39033).address() - baseAddress);
+		LOG_DEBUG("Function::Get3D:\t\t\t\t0x{:08X}", REL::RelocationID(19308, 19735).address() - baseAddress);
+		LOG_DEBUG("Function::ResetNodes:\t\t\t0x{:08X}", REL::RelocationID(33375, 34156).address() - baseAddress);
+		LOG_DEBUG("Function::IsInAir:\t\t\t\t0x{:08X}", REL::RelocationID(36259, 37243).address() - baseAddress);
 
 		LOG_DEBUG("Variable::NiNodeGlobalTime:\t\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::NiNodeGlobalTime) - baseAddress);
 		LOG_DEBUG("Variable::fControllerBufferDepth:\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::fControllerBufferDepth) - baseAddress);
