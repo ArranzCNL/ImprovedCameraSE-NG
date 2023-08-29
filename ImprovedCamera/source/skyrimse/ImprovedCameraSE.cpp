@@ -1182,9 +1182,12 @@ namespace ImprovedCamera {
 			if (camera->firstPersonFOV != fovHands)
 				camera->firstPersonFOV = fovHands;
 		}
-		// Don't update during Dialogue Menu
-		bool dialogueMenu = RE::UI::GetSingleton()->IsMenuOpen("Dialogue Menu");
-		if (!dialogueMenu)
+		// Don't update during Dialogue/KeyHole menus
+		auto ui = RE::UI::GetSingleton();
+		bool dialogueMenu = ui->IsMenuOpen("Dialogue Menu");
+		bool keyHole = ui->IsMenuOpen("Keyhole");
+
+		if (!dialogueMenu && !keyHole)
 		{
 			if (m_pluginConfig->FOV().bEnableOverride && *m_ICamera->GetData().EventActive)
 			{
