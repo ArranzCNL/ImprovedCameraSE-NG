@@ -1279,6 +1279,7 @@ namespace ImprovedCamera {
 	void ImprovedCameraSE::TranslateThirdPerson()
 	{
 		auto player = RE::PlayerCharacter::GetSingleton();
+		auto playerState = player->AsActorState();
 		auto thirdpersonNode = player->Get3D(0)->AsNode();
 		auto headNode = Helper::GetHeadNode(thirdpersonNode);
 		if (!headNode)
@@ -1304,24 +1305,24 @@ namespace ImprovedCamera {
 					point1.y = m_pluginConfig->Camera().fFirstPersonPosY;
 					point1.z = m_pluginConfig->Camera().fFirstPersonPosZ;
 				}
-
+				// Combat correction
+				if (playerState->IsWeaponDrawn() && !playerState->IsSneaking())
+				{
+					point1.z += 10.0f;
+				}
 				Utils::MatrixVectorMultiply(&point2, &thirdpersonNode->world.rotate, &point1);
 				thirdpersonNode->local.translate += cameraNode->world.translate - (headNode->world.translate + point2);
 			}
 			else
 			{
-				auto checkNode = (thirdpersonNode->local.translate * thirdpersonNode->local.scale) * thirdpersonNode->world.scale;
-				if (checkNode.Length() > 0.95f)
-					return;
+				if (playerState->IsSprinting() || playerState->IsSneaking())
+					point1.y = (-m_pluginConfig->Camera().fFirstPersonPosY - 10.0f) * thirdpersonNode->world.scale;
 
-				if (player->AsActorState()->IsSprinting() && !player->AsActorState()->IsSneaking())
-					point1.y = -25.0f * thirdpersonNode->world.scale;
-
-				else if (Helper::IsSittingOrSleeping(player))
+				if (Helper::IsSittingOrSleeping(player))
 					point1.y = m_pluginConfig->Camera().fFirstPersonPosY * thirdpersonNode->world.scale;
 
-				if (player->AsActorState()->IsWeaponDrawn())
-					point1.y -= m_pluginConfig->Camera().fFirstPersonCombatPosY * thirdpersonNode->world.scale;
+				if (playerState->IsWeaponDrawn() && !playerState->IsSneaking())
+					point1.y -= (m_pluginConfig->Camera().fFirstPersonCombatPosY + 10.0f) * thirdpersonNode->world.scale;
 				else
 					point1.y -= m_pluginConfig->Camera().fFirstPersonPosY * thirdpersonNode->world.scale;
 
