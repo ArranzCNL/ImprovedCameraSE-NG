@@ -179,15 +179,9 @@ namespace ImprovedCamera {
 		m_DeltaTime = deltaTime;
 		m_CurrentCameraID = currentID;
 		m_PreviousCameraID = previousID;
-		// Stop processing on Tween
-		if (m_CurrentCameraID == RE::CameraStates::kTween)
-		{
-			UpdateFirstPerson();  // Force update
-			return;
-		}
-		// Stop processing on MapMenu
+		// Stop processing on Tween/MapMenu
 		bool mapMenu = RE::UI::GetSingleton()->IsMenuOpen("MapMenu");
-		if (mapMenu)
+		if (m_CurrentCameraID == RE::CameraStates::kTween || mapMenu)
 			return;
 
 		auto player = RE::PlayerCharacter::GetSingleton();

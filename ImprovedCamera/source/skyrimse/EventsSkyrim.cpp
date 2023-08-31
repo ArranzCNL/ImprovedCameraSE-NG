@@ -55,9 +55,14 @@ namespace Events {
 				player->AddAnimationGraphEventSink(this);
 			}
 		}
-		// Fix RaceSex Menu hiding first person body upon exit
+		// Fix RaceSex Menu
 		if (strcmp(menuName, "RaceSex Menu") == 0 && !a_event->opening)
 		{
+			// Fix weapon missing if it was drawn
+			auto playerState = RE::PlayerCharacter::GetSingleton()->AsActorState();
+			if (playerState->IsWeaponDrawn())
+				playerState->actorState2.weaponState = RE::WEAPON_STATE::kWantToSheathe;
+			// Fix first person body being hidden
 			auto camera = RE::PlayerCamera::GetSingleton();
 			if (camera->IsInFirstPerson())
 			{
