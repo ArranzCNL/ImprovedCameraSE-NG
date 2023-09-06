@@ -284,6 +284,17 @@ namespace Helper {
 		return false;
 	}
 
+	static inline bool IsCastingMagic(RE::PlayerCharacter* player)
+	{
+		auto leftSpell = player->GetActorRuntimeData().selectedSpells[RE::Actor::SlotTypes::kLeftHand];
+		auto rightSpell = player->GetActorRuntimeData().selectedSpells[RE::Actor::SlotTypes::kRightHand];
+
+		if ((leftSpell && player->IsCasting(leftSpell)) || (rightSpell && player->IsCasting(rightSpell)))
+			return true;
+
+		return false;
+	}
+
 	static inline bool IsShieldEquipped(RE::PlayerCharacter* player)
 	{
 		auto thirdperson3D = player->Get3D(0);

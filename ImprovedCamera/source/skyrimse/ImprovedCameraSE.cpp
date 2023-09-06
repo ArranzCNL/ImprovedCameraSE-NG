@@ -278,10 +278,12 @@ namespace ImprovedCamera {
 				m_LastStateID = 0;
 				m_IsFirstPerson = false;
 			}
-			// Ignore DeathCinematic for first person bows
-			if (m_ICamera->GetID() == RE::CameraStates::kVATS && previousID == RE::CameraStates::kFirstPerson && (Helper::IsAiming(player) || Helper::IsAiming(player, true)))
+			// Ignore DeathCinematic for first person bows and magic.
+			if (m_ICamera->GetID() == RE::CameraStates::kVATS && previousID == RE::CameraStates::kFirstPerson &&
+				(Helper::IsAiming(player) || Helper::IsAiming(player, true) || Helper::IsCastingMagic(player)))
+			{
 				m_IsFirstPerson = false;
-
+			}
 			// Ignore unknown state, happens due to camera's switching and doesn't know the real event was disabled.
 			if (m_ICamera->GetID() == RE::CameraStates::kPCTransition && m_ICamera->GetStateID() == CameraTransition::State::kPlaying ||
 				currentID == RE::CameraStates::kAnimated && m_CameraEventID == CameraEvent::kScripted)
