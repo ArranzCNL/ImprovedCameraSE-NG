@@ -891,7 +891,7 @@ namespace ImprovedCamera {
 		if (m_FirstPersonBothArms || m_FirstPersonLeftArm || m_FirstPersonRightArm)
 			return false;
 
-		if (m_CurrentCameraID == RE::CameraState::kFirstPerson && (playerState->IsSprinting() || IsInAir(player) || playerState->IsSwimming()) &&
+		if (m_CurrentCameraID == RE::CameraState::kFirstPerson && (playerState->IsSprinting() || player->IsInMidair() || playerState->IsSwimming()) &&
 			!playerState->IsWeaponDrawn() && !Helper::IsBeastMode() && !m_pluginConfig->General().bEnableThirdPersonArms && m_pluginConfig->Fixes().bFirstPersonOverhaul)
 		{
 			return false;
@@ -929,9 +929,11 @@ namespace ImprovedCamera {
 		bool torchEquipped = Helper::IsTorchEquipped(player);
 
 		// CFPAO/First Person Left Arm fix
-		if ((playerState->IsSprinting() && !playerState->IsWeaponDrawn() && !Helper::IsBeastMode() && m_pluginConfig->Fixes().bFirstPersonOverhaul) || m_FirstPersonLeftArm)
+		if (((playerState->IsSprinting() || player->IsInMidair()) && !playerState->IsWeaponDrawn() && !Helper::IsBeastMode() && m_pluginConfig->Fixes().bFirstPersonOverhaul) ||
+			m_FirstPersonLeftArm)
+		{
 			return false;
-
+		}
 		// Torch/First Person Right Arm fix
 		if ((torchEquipped && m_pluginConfig->General().bEnableThirdPersonTorch) || m_FirstPersonRightArm)
 			return true;
@@ -964,10 +966,11 @@ namespace ImprovedCamera {
 		auto playerState = player->AsActorState();
 
 		// CFPAO/First Person Right Arm fix
-		if ((playerState->IsSprinting() && !playerState->IsWeaponDrawn() && !Helper::IsBeastMode() && m_pluginConfig->Fixes().bFirstPersonOverhaul) ||
+		if (((playerState->IsSprinting() || player->IsInMidair()) && !playerState->IsWeaponDrawn() && !Helper::IsBeastMode() && m_pluginConfig->Fixes().bFirstPersonOverhaul) ||
 			m_FirstPersonRightArm)
+		{
 			return false;
-
+		}
 		// Torch/First Person Left Arm fix
 		if ((Helper::IsTorchEquipped(player) && !player->AsActorState()->IsWeaponDrawn()) || m_FirstPersonLeftArm)
 			return true;

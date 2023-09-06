@@ -57,7 +57,6 @@ namespace Address {
 		extern const bool Ragdoll_IsTaskPoolRequired();
 		extern RE::NiNode* Get3D(RE::TESObjectREFR* objectREFR);
 		extern void ResetNodes(RE::ActorMagicCaster* magicCaster);
-		extern const bool IsInAir(RE::Actor* actor);
 	}
 
 	namespace Variable {
