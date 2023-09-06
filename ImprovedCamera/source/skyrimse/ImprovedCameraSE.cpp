@@ -1295,28 +1295,27 @@ namespace ImprovedCamera {
 			{
 				if (player->AsActorState()->IsWeaponDrawn())
 				{
-					point1.x = m_pluginConfig->Camera().fFirstPersonCombatPosX;
-					point1.y = m_pluginConfig->Camera().fFirstPersonCombatPosY;
-					point1.z = m_pluginConfig->Camera().fFirstPersonCombatPosZ;
+					point1.x = m_pluginConfig->Camera().fFirstPersonCombatPosX * thirdpersonNode->world.scale;
+					point1.y = m_pluginConfig->Camera().fFirstPersonCombatPosY * thirdpersonNode->world.scale;
+					point1.z = m_pluginConfig->Camera().fFirstPersonCombatPosZ * thirdpersonNode->world.scale;
 				}
 				else
 				{
-					point1.x = m_pluginConfig->Camera().fFirstPersonPosX;
-					point1.y = m_pluginConfig->Camera().fFirstPersonPosY;
-					point1.z = m_pluginConfig->Camera().fFirstPersonPosZ;
+					point1.x = m_pluginConfig->Camera().fFirstPersonPosX * thirdpersonNode->world.scale;
+					point1.y = m_pluginConfig->Camera().fFirstPersonPosY * thirdpersonNode->world.scale;
+					point1.z = m_pluginConfig->Camera().fFirstPersonPosZ * thirdpersonNode->world.scale;
 				}
 				// Combat correction
 				if (playerState->IsWeaponDrawn() && !playerState->IsSneaking())
-				{
 					point1.z += 10.0f;
-				}
+
 				Utils::MatrixVectorMultiply(&point2, &thirdpersonNode->world.rotate, &point1);
 				thirdpersonNode->local.translate += cameraNode->world.translate - (headNode->world.translate + point2);
 			}
 			else
 			{
 				if (playerState->IsSprinting() || playerState->IsSneaking())
-					point1.y = (-m_pluginConfig->Camera().fFirstPersonPosY - 10.0f) * thirdpersonNode->world.scale;
+					point1.y -= (m_pluginConfig->Camera().fFirstPersonPosY - 10.0f) * thirdpersonNode->world.scale;
 
 				if (Helper::IsSittingOrSleeping(player))
 					point1.y = m_pluginConfig->Camera().fFirstPersonPosY * thirdpersonNode->world.scale;
