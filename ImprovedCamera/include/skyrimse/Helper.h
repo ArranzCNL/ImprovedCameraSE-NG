@@ -150,6 +150,42 @@ namespace Helper {
 		return false;
 	}
 
+	static inline float GetHighHeelsOffset(RE::PlayerCharacter* player)
+	{
+		auto& biped = player->GetBiped(0);
+		float heelsOffset = 0.0f;
+
+		if (biped)
+		{
+			auto& bipedData = biped->objects[RE::BIPED_OBJECT::kFeet];
+
+			if (bipedData.partClone)
+			{
+				auto feetObject = bipedData.partClone.get();
+				if (!feetObject)
+					return heelsOffset;
+
+				auto feetNode = feetObject->AsNode();
+				if (feetNode)
+				{
+					for (auto& childNode : feetNode->GetChildren())
+					{
+						if (childNode.get())
+						{
+							if (childNode->HasExtraData("HH_OFFSET"))
+							{
+								auto hhOffset = childNode->GetExtraData<RE::NiFloatExtraData>("HH_OFFSET");
+								if (hhOffset)
+									return heelsOffset = hhOffset->value;
+							}
+						}
+					}
+				}
+			}
+		}
+		return heelsOffset;
+	}
+
 	static inline bool CanLook()
 	{
 		auto controlMap = RE::ControlMap::GetSingleton();

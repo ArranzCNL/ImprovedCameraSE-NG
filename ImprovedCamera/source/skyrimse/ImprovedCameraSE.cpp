@@ -1201,6 +1201,7 @@ namespace ImprovedCamera {
 	void ImprovedCameraSE::TranslateCamera()
 	{
 		auto player = RE::PlayerCharacter::GetSingleton();
+		auto playerState = player->AsActorState();
 		auto firstpersonNode = player->Get3D(1)->AsNode();
 		auto thirdpersonNode = player->Get3D(0)->AsNode();
 		auto headNode = Helper::GetHeadNode(thirdpersonNode);
@@ -1214,10 +1215,44 @@ namespace ImprovedCamera {
 
 		RE::NiPoint3 point1{}, point2{};
 		ScalePoint(&point1, thirdpersonNode->world.scale);
-		Utils::MatrixVectorMultiply(&point2, &thirdpersonNode->world.rotate, &point1);
-		float headRot = 0.0f;
 
-		if (GetHeadRotation(&headRot) || m_IsFakeCamera)
+		float headRot = 0.0f;
+		bool isHeadbob = (!GetHeadRotation(&headRot) && !m_IsFakeCamera) ? false : true;
+		// Adjust height for high heels.
+		if (!isHeadbob)
+		{
+			float heelsOffset = (Helper::GetHighHeelsOffset(player) - 1.0f) * thirdpersonNode->world.scale;
+			if (heelsOffset < 0.0f)
+				heelsOffset = 0.0f;
+
+			point1.y -= 19.0f;
+			if (playerState->IsSneaking())
+			{
+				point1.z -= (5.0f - heelsOffset) * thirdpersonNode->world.scale;
+				if (playerState->IsSprinting() || playerState->IsRunning() || playerState->IsWalking())
+				{
+					if (heelsOffset > 0.0f)
+						point1.z -= (3.0f - heelsOffset) * thirdpersonNode->world.scale;
+					else
+						point1.z += 5.0f * thirdpersonNode->world.scale;
+				}
+			}
+			else if (playerState->IsWeaponDrawn())
+			{
+				point1.z -= (12.0f - heelsOffset) * thirdpersonNode->world.scale;
+				if (playerState->IsWalking())
+					point1.z += 3.0f * thirdpersonNode->world.scale;
+			}
+			else
+			{
+				point1.z += ((playerState->IsSprinting() ? -12.0f : playerState->IsRunning() ? -6.0f :
+																playerState->IsWalking()     ? -1.0f :
+																							   0.0f) + heelsOffset) * thirdpersonNode->world.scale;
+			}
+		}
+		Utils::MatrixVectorMultiply(&point2, &thirdpersonNode->world.rotate, &point1);
+
+		if (isHeadbob)
 		{
 			if (HeadRotation())
 			{
@@ -1235,24 +1270,38 @@ namespace ImprovedCamera {
 			}
 			cameraNI->world.translate = cameraNode->world.translate = cameraNode->local.translate = headNode->world.translate + point2;
 		}
-		// Fix casting magic from the correct position - FIXME
-		if (player->AsActorState()->IsWeaponDrawn() && m_pluginConfig->Headbob().bCombat)
+		else
+			cameraNI->world.translate = cameraNode->world.translate = cameraNode->local.translate + point2;
+		// Fix casting magic from the correct position.
+		if (playerState->IsWeaponDrawn())
 		{
 			auto lefthandMagicNode = Helper::FindNode(firstpersonNode, "NPC L MagicNode [LMag]");
 			if (lefthandMagicNode)
-			{}
+			{
+				if (!isHeadbob)
+					lefthandMagicNode->world.translate.z += point2.z;
+				// FIXME: Headbob Combat Magic
+				else
+				{}
+			}
 			auto righthandMagicNode = Helper::FindNode(firstpersonNode, "NPC R MagicNode [RMag]");
 			if (righthandMagicNode)
-			{}
-		}
-		// Fix shooting arrows from the correct position
-		if (UseThirdPersonArms() || m_pluginConfig->Headbob().bCombat)
-		{
-			auto weaponNode = Helper::FindNode(firstpersonNode, "WEAPON");
-			if (weaponNode)
 			{
-				weaponNode->world.translate = cameraNI->world.translate;
-				weaponNode->world.translate.z -= m_pluginConfig->Camera().fFirstPersonCombatPosZ;
+				if (!isHeadbob)
+					righthandMagicNode->world.translate.z += point2.z;
+				// FIXME: Headbob Combat Magic
+				else
+				{}
+			}
+			// Fix shooting arrows from the correct position. Note: Likely needs fixing/reviewing.
+			if (UseThirdPersonArms() || isHeadbob)
+			{
+				auto weaponNode = Helper::FindNode(firstpersonNode, "WEAPON");
+				if (weaponNode)
+				{
+					weaponNode->world.translate = cameraNI->world.translate;
+					weaponNode->world.translate.z -= m_pluginConfig->Camera().fFirstPersonCombatPosZ;
+				}
 			}
 		}
 		// For floating quest markers
@@ -1269,16 +1318,16 @@ namespace ImprovedCamera {
 			return;
 
 		auto cameraNode = RE::PlayerCamera::GetSingleton()->cameraRoot->AsNode();
-		RE::NiPoint3 vFirstPerson{}, vThirdPerson{}, vTransformRoot{}, point1{}, point2{};
+		RE::NiPoint3 vFirstPerson{}, vThirdPerson{}, vTranslateRoot{}, point1{}, point2{};
 
 		vFirstPerson = cameraNode->world.translate - firstpersonNode->world.translate;
 
 		ScalePoint(&point1, thirdpersonNode->world.scale);
 		Utils::MatrixVectorMultiply(&point2, &thirdpersonNode->world.rotate, &point1);
 
-		vThirdPerson = thirdpersonNode->world.translate - (headNode->world.translate + point2);
-		vTransformRoot = thirdpersonNode->local.translate - firstpersonNode->local.translate;
-		firstpersonNode->local.translate += vFirstPerson - (vThirdPerson + vTransformRoot);
+		vThirdPerson = (headNode->world.translate + point2) - thirdpersonNode->world.translate;
+		vTranslateRoot = thirdpersonNode->local.translate - firstpersonNode->local.translate;
+		firstpersonNode->local.translate += vThirdPerson - vFirstPerson + vTranslateRoot;
 	}
 
 	void ImprovedCameraSE::TranslateThirdPerson()
@@ -1310,25 +1359,26 @@ namespace ImprovedCamera {
 					point1.y = m_pluginConfig->Camera().fFirstPersonPosY * thirdpersonNode->world.scale;
 					point1.z = m_pluginConfig->Camera().fFirstPersonPosZ * thirdpersonNode->world.scale;
 				}
-				// Combat correction
-				if (playerState->IsWeaponDrawn() && !playerState->IsSneaking())
-					point1.z += 10.0f;
-
 				Utils::MatrixVectorMultiply(&point2, &thirdpersonNode->world.rotate, &point1);
+				// Update body position
 				thirdpersonNode->local.translate += cameraNode->world.translate - (headNode->world.translate + point2);
 			}
 			else
 			{
-				if (playerState->IsSprinting() || playerState->IsSneaking())
-					point1.y -= (m_pluginConfig->Camera().fFirstPersonPosY - 10.0f) * thirdpersonNode->world.scale;
+				if (!m_IsFakeCamera)
+				{
+					point1.x = 0.0f * thirdpersonNode->world.scale;
+					point1.z = 0.0f * thirdpersonNode->world.scale;
 
-				if (Helper::IsSittingOrSleeping(player))
-					point1.y = m_pluginConfig->Camera().fFirstPersonPosY * thirdpersonNode->world.scale;
+					if (playerState->IsSprinting() || playerState->IsSneaking())
+						point1.y = -40.0f * thirdpersonNode->world.scale;
 
-				if (playerState->IsWeaponDrawn() && !playerState->IsSneaking())
-					point1.y -= (m_pluginConfig->Camera().fFirstPersonCombatPosY + 10.0f) * thirdpersonNode->world.scale;
-				else
-					point1.y -= m_pluginConfig->Camera().fFirstPersonPosY * thirdpersonNode->world.scale;
+					else if (!Helper::IsSittingOrSleeping(player))
+						point1.y = -30.0f * thirdpersonNode->world.scale;
+				}
+				// Fix the model position for headbob when running/walking backwards.
+				if (GetHeadRotation(&headRot) && playerState->actorState1.movingBack && (playerState->IsWalking() || playerState->IsRunning()))
+					point1.y += 19.0f * thirdpersonNode->world.scale;
 
 				Utils::MatrixVectorMultiply(&point2, &thirdpersonNode->world.rotate, &point1);
 				thirdpersonNode->local.translate += point2;
