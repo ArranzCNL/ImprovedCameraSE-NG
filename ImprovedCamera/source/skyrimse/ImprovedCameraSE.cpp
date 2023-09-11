@@ -113,9 +113,6 @@ namespace ImprovedCamera {
 				m_LastStateID = 0;
 				m_IsFirstPerson = true;
 				m_IsThirdPersonForced = false;
-				// Reset head tracking position
-				RE::NiPoint3 headTrackingPosition = { 0.0f, 0.0f, 0.0f };
-				player->GetActorRuntimeData().currentProcess->SetHeadtrackTarget(player, headTrackingPosition);
 				break;
 			}
 			case RE::CameraStates::kThirdPerson:
