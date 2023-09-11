@@ -836,21 +836,25 @@ namespace ImprovedCamera {
 		std::string elderscroll = "IdleReadElderScroll";
 		std::string potionDrinking = "DrinkPotion";
 		std::string takeItem = "TakeItem";
+		// Misc
 		// Touring Carriages
 		if (filename.find(cartRiding) != std::string::npos)
 			m_CartRiding = true;
 		else
 			m_CartRiding = false;
+		// Both Arms
 		// Elderscroll Reading
 		if (filename.find(elderscroll) != std::string::npos)
 			m_FirstPersonBothArms = true;
 		else
 			m_FirstPersonBothArms = false;
+		// Right Arm
 		// Ultimate Animated Potions NG
 		if (filename.find(potionDrinking) != std::string::npos)
 			m_FirstPersonRightArm = true;
 		else
 			m_FirstPersonRightArm = false;
+		// Left Arm
 		// Animated Interactions
 		if (filename.find(takeItem) != std::string::npos)
 			m_FirstPersonLeftArm = true;
@@ -1006,7 +1010,7 @@ namespace ImprovedCamera {
 		if (!show)
 		{
 			// Tween comes in here for 1 frame, need to account for this so it doesn't screw up what has been done to the model(s).
-			if (m_IsFakeCamera || m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kFirstPerson)
+			if (m_IsFakeCamera || (m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kFirstPerson))
 				m_TweenShown = true;
 
 			auto headNode = Helper::GetHeadNode(thirdpersonNode);
@@ -1258,9 +1262,9 @@ namespace ImprovedCamera {
 				{
 					headNode = Helper::FindNode(thirdpersonNode, "Camera3rd [Cam3]");
 
-					if (player->AsActorState()->IsSprinting())
+					if (playerState->IsSprinting())
 						point1.z += -48.0f * thirdpersonNode->world.scale;
-					else if (player->AsActorState()->IsRunning())
+					else if (playerState->IsRunning())
 						point1.y += 12.0f * thirdpersonNode->world.scale;
 				}
 				Utils::MatrixVectorMultiply(&point2, &headNode->world.rotate, &point1);
@@ -1344,7 +1348,7 @@ namespace ImprovedCamera {
 		{
 			if (!GetHeadRotation(&headRot) && !m_IsFakeCamera)
 			{
-				if (player->AsActorState()->IsWeaponDrawn())
+				if (playerState->IsWeaponDrawn())
 				{
 					point1.x = m_pluginConfig->Camera().fFirstPersonCombatPosX * thirdpersonNode->world.scale;
 					point1.y = m_pluginConfig->Camera().fFirstPersonCombatPosY * thirdpersonNode->world.scale;
