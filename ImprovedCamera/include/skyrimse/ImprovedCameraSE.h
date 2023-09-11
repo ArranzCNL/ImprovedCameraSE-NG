@@ -82,6 +82,7 @@ namespace ImprovedCamera {
 		void TranslateFirstPerson();
 		void TranslateThirdPerson();
 
+		void UpdateLootAtPosition();
 		bool GetHeadRotation(float* rotation);
 		bool HeadRotation();
 		void ScalePoint(RE::NiPoint3* point, float scale);

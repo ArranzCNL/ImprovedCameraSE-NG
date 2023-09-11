@@ -1362,6 +1362,8 @@ namespace ImprovedCamera {
 				Utils::MatrixVectorMultiply(&point2, &thirdpersonNode->world.rotate, &point1);
 				// Update body position
 				thirdpersonNode->local.translate += cameraNode->world.translate - (headNode->world.translate + point2);
+				// Update LootAt position
+				UpdateLootAtPosition();
 			}
 			else
 			{
@@ -1375,6 +1377,9 @@ namespace ImprovedCamera {
 
 					else if (!Helper::IsSittingOrSleeping(player))
 						point1.y = -30.0f * thirdpersonNode->world.scale;
+
+					// Update LootAt position
+					UpdateLootAtPosition();
 				}
 				// Fix the model position for headbob when running/walking backwards.
 				if (GetHeadRotation(&headRot) && playerState->actorState1.movingBack && (playerState->IsWalking() || playerState->IsRunning()))
@@ -1384,6 +1389,24 @@ namespace ImprovedCamera {
 				thirdpersonNode->local.translate += point2;
 			}
 		}
+	}
+
+	void ImprovedCameraSE::UpdateLootAtPosition()
+	{
+		auto player = RE::PlayerCharacter::GetSingleton();
+		auto thirdpersonNode = player->Get3D(0)->AsNode();
+		auto headNode = Helper::GetHeadNode(thirdpersonNode);
+		if (!headNode)
+			return;
+
+		RE::NiPoint3 point1{}, point2{}, lookAtPosition{};
+		point1.x = 0.0f;
+		point1.y = 500.0f;
+		point1.z = 0.0f;
+		Utils::MatrixVectorMultiply(&point2, &thirdpersonNode->world.rotate, &point1);
+
+		lookAtPosition = headNode->world.translate + point2;
+		player->GetActorRuntimeData().currentProcess->SetHeadtrackTarget(player, lookAtPosition);
 	}
 
 	bool ImprovedCameraSE::GetHeadRotation(float* rotation)
