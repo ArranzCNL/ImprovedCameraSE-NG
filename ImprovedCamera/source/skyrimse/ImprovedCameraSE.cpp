@@ -453,8 +453,6 @@ namespace ImprovedCamera {
 				rightarmNode->local.scale = 0.001f;
 
 			TranslateThirdPerson();
-			// Height offset
-			thirdpersonNode->local.translate.z += m_pluginConfig->General().fBodyHeightOffset;
 
 			UpdateSkeleton(false);
 			Helper::UpdateNode(thirdpersonNode);
@@ -464,11 +462,7 @@ namespace ImprovedCamera {
 
 			float headRot = 0.0f;
 			if (GetHeadRotation(&headRot) || m_IsFakeCamera)
-			{
 				TranslateFirstPerson();
-				// Height offset
-				firstpersonNode->local.translate.z += m_pluginConfig->General().fBodyHeightOffset;
-			}
 		}
 	}
 
@@ -1329,12 +1323,15 @@ namespace ImprovedCamera {
 		vThirdPerson = (headNode->world.translate + point2) - thirdpersonNode->world.translate;
 		vTranslateRoot = thirdpersonNode->local.translate - firstpersonNode->local.translate;
 		firstpersonNode->local.translate += vThirdPerson - vFirstPerson + vTranslateRoot;
+		// Height offset
+		firstpersonNode->local.translate.z += m_pluginConfig->General().fBodyHeightOffset;
 	}
 
 	void ImprovedCameraSE::TranslateThirdPerson()
 	{
 		auto player = RE::PlayerCharacter::GetSingleton();
 		auto playerState = player->AsActorState();
+		auto firstpersonNode = player->Get3D(1)->AsNode();
 		auto thirdpersonNode = player->Get3D(0)->AsNode();
 		auto headNode = Helper::GetHeadNode(thirdpersonNode);
 		if (!headNode)
@@ -1389,6 +1386,11 @@ namespace ImprovedCamera {
 				Utils::MatrixVectorMultiply(&point2, &thirdpersonNode->world.rotate, &point1);
 				thirdpersonNode->local.translate += point2;
 			}
+			// Height offset
+			if (thirdpersonNode->local.translate.z != firstpersonNode->local.translate.z)
+				thirdpersonNode->local.translate.z = firstpersonNode->local.translate.z;
+
+			thirdpersonNode->local.translate.z += m_pluginConfig->General().fBodyHeightOffset;
 		}
 	}
 
