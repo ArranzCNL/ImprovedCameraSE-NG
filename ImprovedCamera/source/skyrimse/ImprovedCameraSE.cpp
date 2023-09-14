@@ -1129,11 +1129,11 @@ namespace ImprovedCamera {
 				{
 					nearDistance = m_pluginConfig->NearDistance().fSitting;
 				}
-				else if (player->AsActorState()->IsWeaponDrawn())
+				else if (m_ICamera->GetEventID() == CameraEvent::kFirstPersonCombat)
 				{
 					nearDistance = *m_ICamera->GetData().NearDistance;
 				}
-				else if (firstpersonState->currentPitchOffset <= maxPitch)
+				else if (m_ICamera->GetEventID() == CameraEvent::kFirstPerson && firstpersonState->currentPitchOffset <= maxPitch)
 				{
 					nearDistance = *m_ICamera->GetData().NearDistance;
 				}
