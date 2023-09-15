@@ -222,17 +222,11 @@ namespace ImprovedCamera {
 			if (m_ICamera->GetStateID() == CameraFirstPerson::State::kFishingIdle)
 				m_LastStateID = CameraFirstPerson::State::kFishingIdle;
 
-			// We force cartride to use the alternative camera.
-			if (m_ICamera->GetStateID() >= CameraFirstPerson::State::kCartRideEnter)
+			// Force cartride/paragliding to use the alternative camera.
+			if (m_ICamera->GetStateID() >= CameraFirstPerson::State::kCartRideEnter || m_Paragliding)
 				m_IsFakeCamera = true;
 			// Correct furniture idles which should never play in first person
-			if (Helper::CorrectFurnitureIdle())
-			{
-				playerCamera->ForceThirdPerson();
-				return;
-			}
-			// Force Touring Carriages back to third person
-			if (m_CartRiding)
+			if (Helper::CorrectFurnitureIdle() || m_CartRiding)
 			{
 				playerCamera->ForceThirdPerson();
 				return;
@@ -538,7 +532,7 @@ namespace ImprovedCamera {
 		}
 		else
 		{
-			if (!m_pluginConfig->Fixes().bQuickLightLighting || tfcMode)
+			if (!m_pluginConfig->Fixes().bQuickLightLighting || tfcMode || m_Paragliding)
 			{
 				stl::enumeration<RE::PlayerCharacter::FlagBDB, std::uint8_t> saveState = player->GetPlayerRuntimeData().unkBDB;
 				player->GetPlayerRuntimeData().unkBDB.set(RE::PlayerCharacter::FlagBDB::kIsInThirdPersonMode);
@@ -571,7 +565,7 @@ namespace ImprovedCamera {
 		}
 		else
 		{
-			if (!m_pluginConfig->Fixes().bQuickLightLighting || tfcMode)
+			if (!m_pluginConfig->Fixes().bQuickLightLighting || tfcMode || m_Paragliding)
 			{
 				stl::enumeration<RE::PlayerCharacter::FlagBDB, std::uint8_t> saveState = player->GetPlayerRuntimeData().unkBDB;
 				player->GetPlayerRuntimeData().unkBDB.set(RE::PlayerCharacter::FlagBDB::kIsInThirdPersonMode);
@@ -827,6 +821,7 @@ namespace ImprovedCamera {
 	void ImprovedCameraSE::CheckAnimation(const std::string& filename)
 	{
 		std::string cartRiding = "CartPrisonerCSway";
+		std::string paragliding = "ParaGlide";
 		std::string elderscroll = "IdleReadElderScroll";
 		std::string potionDrinking = "DrinkPotion";
 		std::string takeItem = "TakeItem";
@@ -836,6 +831,11 @@ namespace ImprovedCamera {
 			m_CartRiding = true;
 		else
 			m_CartRiding = false;
+		// Paragliding
+		if (filename.find(paragliding) != std::string::npos)
+			m_Paragliding = true;
+		else
+			m_Paragliding = false;
 		// Both Arms
 		// Elderscroll Reading
 		if (filename.find(elderscroll) != std::string::npos)
@@ -888,14 +888,14 @@ namespace ImprovedCamera {
 		if (m_FirstPersonBothArms || m_FirstPersonLeftArm || m_FirstPersonRightArm)
 			return false;
 
-		if (m_CurrentCameraID == RE::CameraState::kFirstPerson && (playerState->IsSprinting() || player->IsInMidair() || playerState->IsSwimming()) &&
+		if (m_CurrentCameraID == RE::CameraState::kFirstPerson && (playerState->IsSprinting() || player->IsInMidair() || playerState->IsSwimming()) && !m_Paragliding &&
 			!playerState->IsWeaponDrawn() && !Helper::IsBeastMode() && !m_pluginConfig->General().bEnableThirdPersonArms && m_pluginConfig->Fixes().bFirstPersonOverhaul)
 		{
 			return false;
 		}
 
 		if ((m_CurrentCameraID != RE::CameraState::kFirstPerson && !(m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kFirstPerson)) ||
-			Helper::IsOnMount(player) || (!playerState->IsWeaponDrawn() && !Helper::IsTorchEquipped(player)))
+			Helper::IsOnMount(player) || m_Paragliding || (!playerState->IsWeaponDrawn() && !Helper::IsTorchEquipped(player)))
 		{
 			return true;
 		}
@@ -1220,7 +1220,7 @@ namespace ImprovedCamera {
 			if (heelsOffset < 0.0f)
 				heelsOffset = 0.0f;
 
-			point1.y -= 19.0f;
+			point1.y -= 19.0f * thirdpersonNode->world.scale;
 			if (playerState->IsSneaking())
 			{
 				point1.z -= (5.0f - heelsOffset) * thirdpersonNode->world.scale;

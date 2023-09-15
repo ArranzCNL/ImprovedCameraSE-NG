@@ -105,7 +105,9 @@ namespace ImprovedCamera {
 		bool m_IsFirstPerson = false;
 		bool m_IsFakeCamera = false;
 		bool m_TweenShown = false;
+
 		bool m_CartRiding = false;
+		bool m_Paragliding = false;
 		bool m_FirstPersonLeftArm = false;
 		bool m_FirstPersonRightArm = false;
 		bool m_FirstPersonBothArms = false;
