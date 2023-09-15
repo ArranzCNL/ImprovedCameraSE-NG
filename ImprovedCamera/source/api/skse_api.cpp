@@ -41,6 +41,8 @@ namespace SKSE {
 			{
 				if (plugin->Config()->ModuleData().iMenuMode > Systems::Window::UIDisplay::kNone)
 				{
+					plugin->SkyrimSE()->InstallInput();
+
 					if (plugin->Graphics()->IsInitalized())
 						plugin->m_GraphicsInitialized = true;
 				}

@@ -14,6 +14,8 @@
 #include "skyrimse/ImprovedCameraSE.h"
 #include "utils/Log.h"
 
+#include <chrono>
+
 namespace Patch {
 
 	static ImprovedCamera::ImprovedCameraSE* ic = nullptr;
@@ -68,6 +70,12 @@ namespace Patch {
 
 		static void thunk(RE::TESCamera* tesCamera)
 		{
+			static std::chrono::steady_clock::time_point currentTime;
+			static std::chrono::steady_clock::time_point previousTime;
+			static float deltaTime;
+			currentTime = std::chrono::steady_clock::now();
+
+			// Call original function
 			func(tesCamera);
 
 			static bool init;
@@ -87,7 +95,10 @@ namespace Patch {
 				LOG_INFO("UpdateCamera: CurrentID: {} - PreviousID: {}", currID, prevID);
 #endif
 			}
-			ic->UpdateCamera(currID, prevID);
+			ic->UpdateCamera(currID, prevID, deltaTime);
+
+			deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - previousTime).count() / 1000000.0f;
+			previousTime = currentTime;
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
 
@@ -98,7 +109,7 @@ namespace Patch {
 
 		static void thunk(RE::NiAVObject* firstpersonObject, RE::NiUpdateData* updateData)
 		{
-			firstpersonObject->Update(*updateData);
+			func(firstpersonObject, updateData);
 			ic->UpdateFirstPerson();
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
@@ -110,7 +121,7 @@ namespace Patch {
 
 		static RE::NiNode* thunk(RE::TESObjectREFR* objectREFR)
 		{
-			// Replace function with Get3D as a node
+			// Replace func with Get3D as a node
 			return Address::Function::Get3D(objectREFR);
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
@@ -138,20 +149,12 @@ namespace Patch {
 		static void thunk(void* arg1, void* arg2, void* arg3)
 		{
 			if (ic->UpdateHeadTracking())
-				Func23(arg1, arg2, arg3);
+				func(arg1, arg2, arg3);
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
 
 		static inline constexpr std::size_t index{ 0 };
 		static inline constexpr std::size_t offset{ 23 };
-
-	private:
-		static void Func23(void* arg1, void* arg2, void* arg3)
-		{
-			using func_t = decltype(&Func23);
-			REL::Relocation<func_t> function{ Address::Hook::HeadTracking };
-			return function(arg1, arg2, arg3);
-		}
 	};
 
 	struct ModelReferenceEffect_UpdatePosition {
@@ -306,16 +309,16 @@ namespace Patch {
 
 		static bool thunk(void*)
 		{
-			auto camera = RE::PlayerCamera::GetSingleton();
-			auto player = RE::PlayerCharacter::GetSingleton();
 			auto pluginConfig = DLLMain::Plugin::Get()->Config();
+			auto player = RE::PlayerCharacter::GetSingleton();
+			auto camera = RE::PlayerCamera::GetSingleton();
+			bool rtnVal = true;
 
 			if (camera->IsInFirstPerson())
 			{
-				bool rtnVal = player->AsActorState()->IsWeaponDrawn() ? pluginConfig->General().bEnableThirdPersonArms : 0;
-				return rtnVal;
+				rtnVal = player->AsActorState()->IsWeaponDrawn() ? pluginConfig->General().bEnableThirdPersonArms : false;
 			}
-			return true;
+			return rtnVal;
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
 
@@ -408,7 +411,7 @@ namespace Patch {
 			if (playerObject == object)
 				ic->Ragdoll_UpdateObjectUpwards(player);
 
-			object->Update(*updateData);
+			func(object, updateData);
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
 
@@ -471,11 +474,6 @@ namespace Patch {
 		auto pluginSkyrimSE = plugin->SkyrimSE();
 		ic = pluginSkyrimSE->Camera();
 
-		// No point activating this hook unless Menu is internal.
-		if (plugin->Config()->ModuleData().iMenuMode == Systems::Window::UIDisplay::kInternal)
-		{
-			stl::write_thunk_call<ProcessInput>(Address::Hook::ProcessInput);
-		}
 		stl::write_thunk_call<UpdateSwitchPOV>(Address::Hook::UpdateSwitchPOV);
 		stl::write_thunk_call<UpdateCamera>(Address::Hook::UpdateCamera);
 		stl::write_thunk_call<UpdateFirstPerson>(Address::Hook::UpdateFirstPerson);
@@ -514,6 +512,16 @@ namespace Patch {
 			REL::safe_write(Address::Hook::HorseLookingDownFix1, horsePayload, sizeof(horsePayload));
 	}
 
+	void Hooks::Input()
+	{
+		auto plugin = DLLMain::Plugin::Get();
+		// No point activating this hook unless Menu is internal.
+		if (plugin->Config()->ModuleData().iMenuMode == Systems::Window::UIDisplay::kInternal)
+		{
+			stl::write_thunk_call<ProcessInput>(Address::Hook::ProcessInput);
+		}
+	}
+
 	void Hooks::Setup()
 	{
 		Address::Hook::ProcessInput = REL::RelocationID(67315, 68617).address() + 0x7B;
@@ -522,7 +530,6 @@ namespace Patch {
 		Address::Hook::UpdateFirstPerson = REL::RelocationID(39446, 40522).address() + 0xD7;
 		Address::Hook::TESObjectCell_Get3D = REL::RelocationID(18683, 19165).address() + REL::VariantOffset(0x7C, 0x7B, 0).offset();
 		Address::Hook::SmoothAnimationTransitions = REL::RelocationID(40937, 41996).address() + REL::VariantOffset(0x2EA, 0x2F4, 0).offset();
-		Address::Hook::HeadTracking = REL::RelocationID(62337, 63278).address();
 		Address::Hook::ModelReferenceEffect_UpdatePosition = REL::RelocationID(33862, 34658).address() + REL::VariantOffset(0x9F, 0x11A, 0).offset();
 		Address::Hook::ModelReferenceEffect_Update = REL::RelocationID(33861, 34657).address() + REL::VariantOffset(0x86, 0x85, 0).offset();
 		Address::Hook::ShaderReferenceEffect1 = REL::RelocationID(34111, 34913).address() + REL::VariantOffset(0xE1, 0xE1, 0).offset();
@@ -545,7 +552,6 @@ namespace Patch {
 		Address::Variable::fDefaultWorldFOV = (float*)REL::RelocationID(512129, 388785).address();
 		Address::Variable::fNearDistance = (float*)REL::RelocationID(512125, 388779).address();
 		Address::Variable::fMinCurrentZoom = (float*)REL::RelocationID(509882, 382633).address();
-		Address::Variable::bJournalDisabled = (bool*)REL::RelocationID(520168, 406698).address();
 		Address::Variable::fSittingMaxLookingDown = (float*)REL::RelocationID(503108, 371032).address();
 		Address::Variable::fMountedMaxLookingUp = (float*)REL::RelocationID(509846, 382579).address();
 		Address::Variable::fMountedMaxLookingDown = (float*)REL::RelocationID(503104, 371026).address();
@@ -565,13 +571,11 @@ namespace Patch {
 			pluginSkyrimSE->VersionMajor(), pluginSkyrimSE->VersionMinor(), pluginSkyrimSE->VersionRevision(), pluginSkyrimSE->VersionBuild());
 
 		LOG_DEBUG("Hook::ProcessInput:\t\t\t\t0x{:08X}", Address::Hook::ProcessInput - baseAddress);
-
 		LOG_DEBUG("Hook::UpdateSwitchPOV:\t\t\t0x{:08X}", Address::Hook::UpdateSwitchPOV - baseAddress);
 		LOG_DEBUG("Hook::UpdateCamera:\t\t\t\t0x{:08X}", Address::Hook::UpdateCamera - baseAddress);
 		LOG_DEBUG("Hook::UpdateFirstPerson:\t\t\t0x{:08X}", Address::Hook::UpdateFirstPerson - baseAddress);
 		LOG_DEBUG("Hook::TESObjectCell_Get3D:\t\t\t0x{:08X}", Address::Hook::TESObjectCell_Get3D - baseAddress);
 		LOG_DEBUG("Hook::SmoothAnimationTransitions:\t\t0x{:08X}", Address::Hook::SmoothAnimationTransitions - baseAddress);
-		LOG_DEBUG("Hook::HeadTracking:\t\t\t\t0x{:08X}", Address::Hook::HeadTracking - baseAddress);
 		LOG_DEBUG("Hook::ModelReferenceEffect_UpdatePosition:\t0x{:08X}", Address::Hook::ModelReferenceEffect_UpdatePosition - baseAddress);
 		LOG_DEBUG("Hook::ModelReferenceEffect_Update:\t\t0x{:08X}", Address::Hook::ModelReferenceEffect_Update - baseAddress);
 		LOG_DEBUG("Hook::ShaderReferenceEffect1:\t\t0x{:08X}", Address::Hook::ShaderReferenceEffect1 - baseAddress);
@@ -589,12 +593,20 @@ namespace Patch {
 		LOG_DEBUG("Hook::HorseLookingDownFix2:\t\t\t0x{:08X}", Address::Hook::HorseLookingDownFix2 - baseAddress);
 		LOG_DEBUG("Hook::HorseLookingDownFix3:\t\t\t0x{:08X}", Address::Hook::HorseLookingDownFix3 - baseAddress);
 
+		LOG_DEBUG("Function::ModelReferenceEffect_Attach:\t0x{:08X}", REL::RelocationID(33872, 34668).address() - baseAddress);
+		LOG_DEBUG("Function::ModelReferenceEffect_Sub_57BCC0:\t0x{:08X}", REL::RelocationID(33873, 34669).address() - baseAddress);
+		LOG_DEBUG("Function::ShaderReferenceEffect_Sub_584680:\t0x{:08X}", REL::RelocationID(34131, 34933).address() - baseAddress);
+		LOG_DEBUG("Function::BipedAnim_GetTorchObject:\t\t0x{:08X}", REL::RelocationID(15517, 15694).address() - baseAddress);
+		LOG_DEBUG("Function::Ragdoll_IsTaskPoolRequired:\t0x{:08X}", REL::RelocationID(38079, 39033).address() - baseAddress);
+		LOG_DEBUG("Function::Get3D:\t\t\t\t0x{:08X}", REL::RelocationID(19308, 19735).address() - baseAddress);
+		LOG_DEBUG("Function::ResetNodes:\t\t\t0x{:08X}", REL::RelocationID(33375, 34156).address() - baseAddress);
+		LOG_DEBUG("Function::IsInAir:\t\t\t\t0x{:08X}", REL::RelocationID(36259, 37243).address() - baseAddress);
+
 		LOG_DEBUG("Variable::NiNodeGlobalTime:\t\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::NiNodeGlobalTime) - baseAddress);
 		LOG_DEBUG("Variable::fControllerBufferDepth:\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::fControllerBufferDepth) - baseAddress);
 		LOG_DEBUG("Variable::fDefaultWorldFOV:\t\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::fDefaultWorldFOV) - baseAddress);
 		LOG_DEBUG("Variable::fNearDistance:\t\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::fNearDistance) - baseAddress);
 		LOG_DEBUG("Variable::fMinCurrentZoom:\t\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::fMinCurrentZoom) - baseAddress);
-		LOG_DEBUG("Variable::bJournalDisabled:\t\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::bJournalDisabled) - baseAddress);
 		LOG_DEBUG("Variable::fSittingMaxLookingDown:\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::fSittingMaxLookingDown) - baseAddress);
 		LOG_DEBUG("Variable::fMountedMaxLookingUp:\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::fMountedMaxLookingUp) - baseAddress);
 		LOG_DEBUG("Variable::fMountedMaxLookingDown:\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::fMountedMaxLookingDown) - baseAddress);

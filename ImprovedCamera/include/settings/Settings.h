@@ -208,5 +208,10 @@ namespace Settings {
 		float fScriptedPosY;
 		float fScriptedPosZ;
 	};
-
+	// 3 Settings
+	struct Logging {
+		bool bAnimations;
+		bool bCameraDelta;
+		bool bMenus;
+	};
 }

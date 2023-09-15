@@ -18,30 +18,6 @@ namespace RE {
 		};
 		BipedAnim* bipedData;
 	};
-
-	struct EQUIPPED_ITEMTYPE_IDS {
-
-		enum EQUIPPED_ITEMTYPE_ID : std::int32_t
-		{
-			kFist = 0,
-			kSword,
-			kDagger,
-			kAxe,
-			kMace,
-			kGreatsword,
-			kWarhammer,
-			kBattleaxe = kWarhammer,
-			kBow,
-			kStaff,
-			kMagic,
-			kShield,
-			kTorch,
-			kCrossbow,
-
-			kTotal = 13
-		};
-	};
-	using EQUIPPED_ITEMTYPE_ID = EQUIPPED_ITEMTYPE_IDS::EQUIPPED_ITEMTYPE_ID;
 }
 
 namespace Address {
@@ -54,7 +30,6 @@ namespace Address {
 		static std::uintptr_t UpdateFirstPerson;
 		static std::uintptr_t TESObjectCell_Get3D;
 		static std::uintptr_t SmoothAnimationTransitions;
-		static std::uintptr_t HeadTracking;
 		static std::uintptr_t ModelReferenceEffect_UpdatePosition;
 		static std::uintptr_t ModelReferenceEffect_Update;
 		static std::uintptr_t ShaderReferenceEffect1;
@@ -79,7 +54,6 @@ namespace Address {
 		extern const bool ModelReferenceEffect_Sub_14057BCC0(void* arg);   // 1.6.640
 		extern const bool ShaderReferenceEffect_Sub_140584680(void* arg);  // 1.6.640
 		extern const bool BipedAnim_GetTorchObject(void* bipedData, std::int32_t value);
-		extern const std::int32_t GetEquippedItemTypeID(RE::Actor* actor, bool rightHand = false);
 		extern const bool Ragdoll_IsTaskPoolRequired();
 		extern RE::NiNode* Get3D(RE::TESObjectREFR* objectREFR);
 		extern void ResetNodes(RE::ActorMagicCaster* magicCaster);
@@ -92,7 +66,6 @@ namespace Address {
 		extern float* fDefaultWorldFOV;
 		extern float* fNearDistance;
 		extern float* fMinCurrentZoom;
-		extern bool* bJournalDisabled;
 		extern float* fSittingMaxLookingDown;
 		extern float* fMountedMaxLookingUp;
 		extern float* fMountedMaxLookingDown;

@@ -26,7 +26,7 @@ namespace ImprovedCamera {
 		bool ProcessInput(const RE::InputEvent* const* a_event);
 
 		void UpdateSwitchPOV();
-		void UpdateCamera(std::uint8_t currentID, std::uint8_t previousID);
+		void UpdateCamera(std::uint8_t currentID, std::uint8_t previousID, float deltaTime);
 		void UpdateFirstPerson();
 		bool SmoothAnimationTransitions();
 		bool UpdateHeadTracking();
@@ -43,8 +43,7 @@ namespace ImprovedCamera {
 		bool Ragdoll_IsTaskPoolRequired(RE::Actor* actor);
 		void Ragdoll_UpdateObjectUpwards(RE::Actor* actor);
 
-		void SetElderScrollReading(bool reading);
-		void SetCartRiding(bool riding);
+		void CheckAnimation(const std::string& filename);
 		bool IsFirstPerson() { return m_IsFirstPerson; }
 
 		void RequestAPIs();
@@ -73,7 +72,6 @@ namespace ImprovedCamera {
 		bool UseThirdPersonLeftArm();
 		bool UseThirdPersonRightArm();
 
-		void UpdateFirstPersonScale();
 		void UpdateSkeleton(bool show);
 		void DisplayShadows(bool show);
 
@@ -84,6 +82,7 @@ namespace ImprovedCamera {
 		void TranslateFirstPerson();
 		void TranslateThirdPerson();
 
+		void UpdateLootAtPosition();
 		bool GetHeadRotation(float* rotation);
 		bool HeadRotation();
 		void ScalePoint(RE::NiPoint3* point, float scale);
@@ -98,6 +97,7 @@ namespace ImprovedCamera {
 		Interface::ICamera* m_ICamera = nullptr;
 
 		std::uint8_t m_CameraEventID = CameraEvent::kFirstPerson;
+		float m_DeltaTime = 0.0f;
 		uint8_t m_PreviousCameraID = 255;
 		uint8_t m_CurrentCameraID = 255;
 
@@ -105,6 +105,12 @@ namespace ImprovedCamera {
 		bool m_IsFirstPerson = false;
 		bool m_IsFakeCamera = false;
 		bool m_TweenShown = false;
+
+		bool m_CartRiding = false;
+		bool m_Paragliding = false;
+		bool m_FirstPersonLeftArm = false;
+		bool m_FirstPersonRightArm = false;
+		bool m_FirstPersonBothArms = false;
 		uint8_t m_LastStateID = 0;
 		uint8_t m_iRagdollFrame = 0;
 		RE::NiPoint3 m_thirdpersonLocalTranslate{};
@@ -115,8 +121,6 @@ namespace ImprovedCamera {
 		static inline TDM_API::IVTDM2* m_TDMAPI = nullptr;
 		bool m_SmoothCamSnapshot = false;
 		bool m_TDMSnapshot = false;
-		bool m_ElderScrollReading = false;
-		bool m_CartRiding = false;
 
 		// Need to shut these off when needed with TDM to stop horse issues.
 		//    Since we are doing this might as well do the same for Werewolf/VampireLord etc.

@@ -41,9 +41,14 @@ namespace Patch {
 		m_Hooks->Install();
 	}
 
+	void SkyrimSE::InstallInput()
+	{
+		m_Hooks->Input();
+		Events::Observer::Register();
+	}
+
 	void SkyrimSE::LoadGame()
 	{
-		Events::Observer::Register();
 		m_Camera->ResetState();
 	}
 

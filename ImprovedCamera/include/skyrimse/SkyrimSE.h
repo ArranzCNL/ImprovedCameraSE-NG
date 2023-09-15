@@ -68,6 +68,7 @@ namespace Patch {
 
 	private:
 		void OnLoad();
+		void InstallInput();
 		void LoadGame();
 		void ExecutableInfo();
 		void BuildInfo();

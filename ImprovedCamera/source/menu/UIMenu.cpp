@@ -398,6 +398,16 @@ namespace Menu {
 #endif
 				ImGui::EndMenu();
 			}
+#ifdef _DEBUG
+			if (ImGui::BeginMenu("Logging"))
+			{
+				ImGui::Checkbox("Animations", &m_pluginConfig->m_Logging.bAnimations);
+				ImGui::Checkbox("Menus", &m_pluginConfig->m_Logging.bMenus);
+				ImGui::Checkbox("Camera Delta", &m_pluginConfig->m_Logging.bCameraDelta);
+
+				ImGui::EndMenu();
+			}
+#endif
 			if (ImGui::BeginMenu("Help"))
 			{
 				if (ImGui::MenuItem("Reset State"))

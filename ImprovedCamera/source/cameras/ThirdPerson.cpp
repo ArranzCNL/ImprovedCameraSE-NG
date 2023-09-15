@@ -39,12 +39,6 @@ namespace ImprovedCamera {
 		{
 			m_ThirdPersonState = this->Player->AsActorState()->IsWeaponDrawn() ? CameraThirdPerson::State::kWeaponDrawnEnter : CameraThirdPerson::State::kEnter;
 			SetData();
-			// Sleeping check
-			if (Helper::IsSleeping(this->Player))
-			{
-				m_ThirdPersonState = CameraThirdPerson::State::kSleepingEnter;
-				return true;
-			}
 			// Crafting check
 			auto thirdpersonState = (RE::ThirdPersonState*)RE::PlayerCamera::GetSingleton()->currentState.get();
 			if (!thirdpersonState->IsInputEventHandlingEnabled())
@@ -90,10 +84,8 @@ namespace ImprovedCamera {
 				SetData();
 				return true;
 			}
-			// Third party animations.
-			bool activate_enabled = 1;  // SkyrimFunction::IsActivateControlsEnabled();
-
-			if (Helper::IsScripted() || !activate_enabled || !controlMap->IsMovementControlsEnabled())
+			// Third party animations
+			if (Helper::IsScripted() || !controlMap->IsMovementControlsEnabled() || Helper::CorrectFurnitureIdle())
 			{
 				m_ThirdPersonState = CameraThirdPerson::State::kScriptedEnter;
 				SetData();
@@ -120,13 +112,6 @@ namespace ImprovedCamera {
 			if (m_ThirdPersonState == CameraThirdPerson::State::kWeaponDrawnEnter)
 			{
 				m_ThirdPersonState = CameraThirdPerson::State::kWeaponDrawnIdle;
-				return true;
-			}
-			// Sleeping Entered
-			if (m_ThirdPersonState == CameraThirdPerson::State::kSleepingEnter)
-			{
-				m_ThirdPersonState = CameraThirdPerson::State::kSleepingIdle;
-				controlMap->enabledControls.set(RE::UserEvents::USER_EVENT_FLAG::kLooking);  // Allow Looking
 				return true;
 			}
 			// Crafting Entered
@@ -211,7 +196,7 @@ namespace ImprovedCamera {
 					return true;
 				}
 				// Scripted detection
-				if (Helper::IsScripted() || !controlMap->IsMovementControlsEnabled())
+				if (Helper::IsScripted() || !controlMap->IsMovementControlsEnabled() || Helper::CorrectFurnitureIdle())
 				{
 					m_ThirdPersonState = CameraThirdPerson::State::kExit;
 					return true;
@@ -323,7 +308,7 @@ namespace ImprovedCamera {
 				return true;
 			}
 			// Exit Scripted detection
-			if (m_ThirdPersonState == CameraThirdPerson::State::kScriptedIdle && !Helper::IsScripted() && controlMap->IsMovementControlsEnabled())
+			if (m_ThirdPersonState == CameraThirdPerson::State::kScriptedIdle && !Helper::IsScripted() && controlMap->IsMovementControlsEnabled() && !Helper::CorrectFurnitureIdle())
 			{
 				m_ThirdPersonState = CameraThirdPerson::State::kExit;
 				return true;

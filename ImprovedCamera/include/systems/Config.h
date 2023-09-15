@@ -55,6 +55,7 @@ namespace Systems {
 		const Settings::NearDistance& NearDistance() const { return m_NearDistance; };
 		const Settings::Headbob& Headbob() const { return m_Headbob; };
 		const Settings::Camera& Camera() const { return m_Camera; };
+		const Settings::Logging& Logging() const { return m_Logging; };
 
 	private:
 		bool ReadIni(std::string& name);
@@ -82,6 +83,7 @@ namespace Systems {
 		Settings::NearDistance m_NearDistance{};
 		Settings::Headbob m_Headbob{};
 		Settings::Camera m_Camera{};
+		Settings::Logging m_Logging{};
 
 	private:
 		friend class DLLMain::Plugin;

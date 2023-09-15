@@ -35,8 +35,6 @@ namespace ImprovedCamera {
 				kCartRideDismounting,
 				kSittingEnter,
 				kSittingIdle,
-				kSleepingEnter,
-				kSleepingIdle,
 
 				kTotal
 			};

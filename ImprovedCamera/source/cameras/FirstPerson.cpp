@@ -52,13 +52,6 @@ namespace ImprovedCamera {
 				SetData();
 				return true;
 			}
-			// Check for sleeping
-			if (Helper::IsSleeping(this->Player))
-			{
-				m_FirstPersonState = CameraFirstPerson::State::kSleepingEnter;
-				SetData();
-				return true;
-			}
 			// Check for looking around only
 			if (Helper::IsScripted() && Helper::CanLook() && !Helper::CanMove())
 			{
@@ -97,24 +90,34 @@ namespace ImprovedCamera {
 			if (m_FirstPersonState == CameraFirstPerson::State::kEnter)
 			{
 				m_FirstPersonState = CameraFirstPerson::State::kIdle;
+				// Unfade first person body due to stool/table fix.
+				auto firstpersonNode = this->Player->Get3D(1)->AsNode();
+				firstpersonNode->fadeAmount = 1.0f;
 				return true;
 			}
 			// Weapon Drawn Entered
 			if (m_FirstPersonState == CameraFirstPerson::State::kWeaponDrawnEnter)
 			{
 				m_FirstPersonState = CameraFirstPerson::State::kWeaponDrawnIdle;
+				// Unfade first person body due to stool/table fix.
+				auto firstpersonNode = this->Player->Get3D(1)->AsNode();
+				firstpersonNode->fadeAmount = 1.0f;
 				return true;
 			}
 			// Sitting Entered
 			if (m_FirstPersonState == CameraFirstPerson::State::kSittingEnter)
 			{
 				m_FirstPersonState = CameraFirstPerson::State::kSittingIdle;
+				// Fades first person body so it is not shown when sitting on stools/at tables.
+				auto firstpersonNode = this->Player->Get3D(1)->AsNode();
+				firstpersonNode->fadeAmount = 0.0f;
 				return true;
 			}
 			// Cartride Entered
 			if (m_FirstPersonState == CameraFirstPerson::State::kCartRideEnter)
 			{
 				m_FirstPersonState = CameraFirstPerson::State::kCartRideIdle;
+				// Show third person body during cartride.
 				auto thirdpersonNode = this->Player->Get3D(0)->AsNode();
 				thirdpersonNode->GetFlags().reset(RE::NiAVObject::Flag::kHidden);
 				return true;
@@ -130,14 +133,6 @@ namespace ImprovedCamera {
 			{
 				m_FirstPersonState = CameraFirstPerson::State::kExit;
 				return false;
-			}
-			// Sleeping Entered
-			if (m_FirstPersonState == CameraFirstPerson::State::kSleepingEnter)
-			{
-				m_FirstPersonState = CameraFirstPerson::State::kSleepingIdle;
-				auto controlMap = RE::ControlMap::GetSingleton();
-				controlMap->enabledControls.reset(RE::UserEvents::USER_EVENT_FLAG::kLooking);  // Block Looking
-				return true;
 			}
 			// Looking around only Entered
 			if (m_FirstPersonState == CameraFirstPerson::State::kLookOnlyEnter)
