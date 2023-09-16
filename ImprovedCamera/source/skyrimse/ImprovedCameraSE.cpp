@@ -1045,45 +1045,35 @@ namespace ImprovedCamera {
 
 			// Check left arm
 			auto leftArmNode = Helper::FindNode(thirdpersonNode, "NPC L UpperArm [LUar]");
-			if (!leftArmNode)
-				return;
 			// Check right arm
 			auto rightArmNode = Helper::FindNode(thirdpersonNode, "NPC R UpperArm [RUar]");
-			if (!rightArmNode)
-				return;
 			// Check weapon back
 			auto weaponBackNode = Helper::FindNode(thirdpersonNode, "WeaponBack");
-			if (!weaponBackNode)
-				return;
 			// Check weapon bow
 			auto weaponBowNode = Helper::FindNode(thirdpersonNode, "WeaponBow");
-			if (!weaponBowNode)
-				return;
 			// Check quiver
 			auto quiverNode = Helper::FindNode(thirdpersonNode, "QUIVER");
-			if (!quiverNode)
-				return;
 
 			if (!UseThirdPersonArms())
 			{
-				if (!UseThirdPersonLeftArm() && leftArmNode->local.scale > 0.002f)
+				if (leftArmNode && !UseThirdPersonLeftArm() && leftArmNode->local.scale > 0.002f)
 				{
 					overrides.push_back(std::make_unique<NodeOverride>(leftArmNode, 0.001f));
 				}
-				if (!UseThirdPersonRightArm() && rightArmNode->local.scale > 0.002f)
+				if (rightArmNode && !UseThirdPersonRightArm() && rightArmNode->local.scale > 0.002f)
 				{
 					overrides.push_back(std::make_unique<NodeOverride>(rightArmNode, 0.001f));
 				}
 			}
-			if (m_pluginConfig->Hide().b2HWeapon && weaponBackNode->local.scale > 0.002f)
+			if (weaponBackNode && m_pluginConfig->Hide().b2HWeapon && weaponBackNode->local.scale > 0.002f)
 			{
 				overrides.push_back(std::make_unique<NodeOverride>(weaponBackNode, 0.001f));
 			}
-			if (m_pluginConfig->Hide().bBow && weaponBowNode->local.scale > 0.002f)
+			if (weaponBackNode && m_pluginConfig->Hide().bBow && weaponBowNode->local.scale > 0.002f)
 			{
 				overrides.push_back(std::make_unique<NodeOverride>(weaponBowNode, 0.001f));
 			}
-			if (m_pluginConfig->Hide().bQuiver && quiverNode->local.scale > 0.002f)
+			if (quiverNode && m_pluginConfig->Hide().bQuiver && quiverNode->local.scale > 0.002f)
 			{
 				overrides.push_back(std::make_unique<NodeOverride>(quiverNode, 0.001f));
 			}
@@ -1223,26 +1213,11 @@ namespace ImprovedCamera {
 			point1.y -= 19.0f * thirdpersonNode->world.scale;
 			if (playerState->IsSneaking())
 			{
-				point1.z -= (5.0f - heelsOffset) * thirdpersonNode->world.scale;
-				if (playerState->IsSprinting() || playerState->IsRunning() || playerState->IsWalking())
-				{
-					if (heelsOffset > 0.0f)
-						point1.z -= (3.0f - heelsOffset) * thirdpersonNode->world.scale;
-					else
-						point1.z += 5.0f * thirdpersonNode->world.scale;
-				}
-			}
-			else if (playerState->IsWeaponDrawn())
-			{
-				point1.z -= (12.0f - heelsOffset) * thirdpersonNode->world.scale;
-				if (playerState->IsWalking())
-					point1.z += 3.0f * thirdpersonNode->world.scale;
+				point1.z -= heelsOffset * thirdpersonNode->world.scale;
 			}
 			else
 			{
-				point1.z += ((playerState->IsSprinting() ? -12.0f : playerState->IsRunning() ? -6.0f :
-																playerState->IsWalking()     ? -1.0f :
-																							   0.0f) + heelsOffset) * thirdpersonNode->world.scale;
+				point1.z += heelsOffset * thirdpersonNode->world.scale;
 			}
 		}
 		Utils::MatrixVectorMultiply(&point2, &thirdpersonNode->world.rotate, &point1);
