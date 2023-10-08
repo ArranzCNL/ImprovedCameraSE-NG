@@ -62,10 +62,11 @@ namespace Settings {
 		bool bAttackBow;
 		bool bKillmove;
 	};
-	// 7 Settings
+	// 8 Settings
 	struct Fixes {
 		bool bQuickLightLighting;
 		bool bFirstPersonOverhaul;
+		bool bFirstPersonOverhaulEnableArmsOnSprint; // Temporary Location for Config Option. Move to new UI TAB for First Person Overhaul Fixes?
 		bool bArcheryGameplayOverhaul;
 		float fSwitchPOVDetectDistance;
 		bool bSmoothAnimationTransitions;
