@@ -26,6 +26,14 @@ namespace Menu {
 		{
 			ImGui::TableItemToggleButton("QuickLight Lighting", "##QuickLightLighting", &m_pluginConfig->m_Fixes.bQuickLightLighting);
 			ImGui::TableItemToggleButton("First Person Overhaul", "##FirstPersonOverhaul", &m_pluginConfig->m_Fixes.bFirstPersonOverhaul);
+			if (!m_pluginConfig->m_Fixes.bFirstPersonOverhaul)
+				ImGui::BeginDisabled();
+
+			ImGui::TableItemToggleButton("First Person Overhaul: Enable Arms on Sprint", "##FirstPersonOverhaulEnableArmsOnSprint", &m_pluginConfig->m_Fixes.bFirstPersonOverhaulEnableArmsOnSprint);
+
+			if (!m_pluginConfig->m_Fixes.bFirstPersonOverhaul)
+				ImGui::EndDisabled();
+
 			ImGui::TableItemToggleButton("Archery Gameplay Overhaul", "##ArcheryGameplayOverhaul", &m_pluginConfig->m_Fixes.bArcheryGameplayOverhaul);
 			ImGui::TableItemSliderFloat("Switch POV Detect Distance", "##SwitchPOVDetectDistance", &m_pluginConfig->m_Fixes.fSwitchPOVDetectDistance, 0.01f, 0.20f, "%.2f");
 			ImGui::NewLine();

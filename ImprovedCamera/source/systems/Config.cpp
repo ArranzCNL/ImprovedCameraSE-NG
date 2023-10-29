@@ -103,6 +103,7 @@ namespace Systems {
 
 				m_Fixes.bQuickLightLighting = std::stoi(ini.get("FIXES").get("bQuickLightLighting"));
 				m_Fixes.bFirstPersonOverhaul = std::stoi(ini.get("FIXES").get("bFirstPersonOverhaul"));
+				m_Fixes.bFirstPersonOverhaulEnableArmsOnSprint = std::stoi(ini.get("FIXES").get("bFirstPersonOverhaulEnableArmsOnSprint"));
 				m_Fixes.bArcheryGameplayOverhaul = std::stoi(ini.get("FIXES").get("bArcheryGameplayOverhaul"));
 				m_Fixes.fSwitchPOVDetectDistance = std::stof(ini.get("FIXES").get("fSwitchPOVDetectDistance"));
 				m_Fixes.bSmoothAnimationTransitions = std::stoi(ini.get("FIXES").get("bSmoothAnimationTransitions"));
@@ -321,6 +322,7 @@ namespace Systems {
 
 			ini["FIXES"]["bQuickLightLighting"] = std::to_string(m_Fixes.bQuickLightLighting);
 			ini["FIXES"]["bFirstPersonOverhaul"] = std::to_string(m_Fixes.bFirstPersonOverhaul);
+			ini["FIXES"]["bFirstPersonOverhaulEnableArmsOnSprint"] = std::to_string(m_Fixes.bFirstPersonOverhaulEnableArmsOnSprint);
 			ini["FIXES"]["bArcheryGameplayOverhaul"] = std::to_string(m_Fixes.bArcheryGameplayOverhaul);
 			ini["FIXES"]["fSwitchPOVDetectDistance"] = std::to_string(m_Fixes.fSwitchPOVDetectDistance);
 			ini["FIXES"]["bSmoothAnimationTransitions"] = std::to_string(m_Fixes.bSmoothAnimationTransitions);
