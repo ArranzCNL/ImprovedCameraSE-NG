@@ -29,7 +29,7 @@ namespace Menu {
 			if (!m_pluginConfig->m_Fixes.bFirstPersonOverhaul)
 				ImGui::BeginDisabled();
 
-			ImGui::TableItemToggleButton("First Person Overhaul: Enable Arms on Sprint", "##FirstPersonOverhaulEnableArmsOnSprint", &m_pluginConfig->m_Fixes.bFirstPersonOverhaulEnableArmsOnSprint);
+			ImGui::TableItemToggleButton("First Person Overhaul: Enable Vanilla Arms on Movement", "##FirstPersonOverhaulEnableVanillaArmsOnMovement", &m_pluginConfig->m_Fixes.bFirstPersonOverhaulEnableVanillaArmsOnMovement);
 
 			if (!m_pluginConfig->m_Fixes.bFirstPersonOverhaul)
 				ImGui::EndDisabled();

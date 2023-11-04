@@ -66,7 +66,7 @@ namespace Settings {
 	struct Fixes {
 		bool bQuickLightLighting;
 		bool bFirstPersonOverhaul;
-		bool bFirstPersonOverhaulEnableArmsOnSprint; // Temporary Location for Config Option. Move to new UI TAB for First Person Overhaul Fixes?
+		bool bFirstPersonOverhaulEnableVanillaArmsOnMovement;
 		bool bArcheryGameplayOverhaul;
 		float fSwitchPOVDetectDistance;
 		bool bSmoothAnimationTransitions;
