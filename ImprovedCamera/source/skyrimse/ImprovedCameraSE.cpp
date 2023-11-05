@@ -889,7 +889,7 @@ namespace ImprovedCamera {
 			return false;
 
 		if (m_CurrentCameraID == RE::CameraState::kFirstPerson && (playerState->IsSprinting() || player->IsInMidair() || playerState->IsSwimming()) && !m_Paragliding &&
-			!playerState->IsWeaponDrawn() && !Helper::IsBeastMode() && !m_pluginConfig->General().bEnableThirdPersonArms && m_pluginConfig->Fixes().bFirstPersonOverhaul && !m_pluginConfig->Fixes().bFirstPersonOverhaulEnableArmsOnSprint)
+			!playerState->IsWeaponDrawn() && !Helper::IsBeastMode() && !m_pluginConfig->General().bEnableThirdPersonArms && m_pluginConfig->Fixes().bFirstPersonOverhaul && !m_pluginConfig->Fixes().bFirstPersonOverhaulEnableVanillaArmsOnMovement)
 		{
 			return false;
 		}
@@ -926,7 +926,7 @@ namespace ImprovedCamera {
 		bool torchEquipped = Helper::IsTorchEquipped(player);
 
 		// CFPAO/First Person Left Arm fix
-		if (((playerState->IsSprinting() || player->IsInMidair()) && !playerState->IsWeaponDrawn() && !Helper::IsBeastMode() && m_pluginConfig->Fixes().bFirstPersonOverhaul && !m_pluginConfig->Fixes().bFirstPersonOverhaulEnableArmsOnSprint) ||
+		if (((playerState->IsSprinting() || player->IsInMidair()) && !playerState->IsWeaponDrawn() && !Helper::IsBeastMode() && m_pluginConfig->Fixes().bFirstPersonOverhaul && !m_pluginConfig->Fixes().bFirstPersonOverhaulEnableVanillaArmsOnMovement) ||
 			m_FirstPersonLeftArm)
 		{
 			return false;
@@ -963,7 +963,7 @@ namespace ImprovedCamera {
 		auto playerState = player->AsActorState();
 
 		// CFPAO/First Person Right Arm fix
-		if (((playerState->IsSprinting() || player->IsInMidair()) && !playerState->IsWeaponDrawn() && !Helper::IsBeastMode() && m_pluginConfig->Fixes().bFirstPersonOverhaul && !m_pluginConfig->Fixes().bFirstPersonOverhaulEnableArmsOnSprint) ||
+		if (((playerState->IsSprinting() || player->IsInMidair()) && !playerState->IsWeaponDrawn() && !Helper::IsBeastMode() && m_pluginConfig->Fixes().bFirstPersonOverhaul && !m_pluginConfig->Fixes().bFirstPersonOverhaulEnableVanillaArmsOnMovement) ||
 			m_FirstPersonRightArm)
 		{
 			return false;
