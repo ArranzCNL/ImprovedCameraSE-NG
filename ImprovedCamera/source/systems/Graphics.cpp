@@ -5,7 +5,7 @@
  */
 
 // Precompiled Header
-#include "stdafx.h"
+#include "PCH.h"
 
 #include "systems/Graphics.h"
 
@@ -64,9 +64,10 @@ namespace Systems {
 
 			if (!pluginGraphics->m_Initialized)
 			{
-				const auto renderer = RE::BSRenderManager::GetSingleton();
+				const auto renderer = RE::BSGraphics::Renderer::GetSingleton();
+				auto swapChain = renderer->GetRuntimeData().renderWindows[0].swapChain;
 
-				if (SUCCEEDED(renderer->swapChain->GetDevice(IID_PPV_ARGS(&pluginGraphics->m_Device))))
+				if (SUCCEEDED(swapChain->GetDevice(IID_PPV_ARGS(&pluginGraphics->m_Device))))
 				{
 					pluginGraphics->m_Device->GetImmediateContext(&pluginGraphics->m_DeviceContext);
 					pluginGraphics->m_UI = UI::CreateMenu(pluginGraphics->m_OutputWindow);

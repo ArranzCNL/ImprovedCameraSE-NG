@@ -5,7 +5,7 @@
  */
 
 // Precompiled Header
-#include "stdafx.h"
+#include "PCH.h"
 
 #include "skyrimse/SkyrimSE.h"
 
@@ -22,9 +22,13 @@ namespace Patch {
 
 		m_FullName = pluginConfig->ModuleData().sFileName;
 		m_Name = m_FullName.substr(0, m_FullName.size() - 4);
+		m_WindowName = "Skyrim Special Edition";
 
 		ExecutableInfo();
 		BuildInfo();
+
+		if (m_Build == BuildInfo::k16659)
+			m_WindowName += " GOG";
 	}
 
 	void SkyrimSE::OnLoad()
@@ -44,11 +48,11 @@ namespace Patch {
 	void SkyrimSE::InstallInput()
 	{
 		m_Hooks->Input();
-		Events::Observer::Register();
 	}
 
 	void SkyrimSE::LoadGame()
 	{
+		Events::Observer::Register();
 		m_Camera->ResetState();
 	}
 
@@ -104,17 +108,20 @@ namespace Patch {
 
 	void SkyrimSE::BuildInfo()
 	{
-		if (m_VersionMajor == 1 && m_VersionMinor == 5 && m_VersionRevision >= 39 && m_VersionRevision <= 97)
+		if (m_VersionMajor == 1 && m_VersionMinor == 5 && m_VersionRevision == 97)
 			m_Build = BuildInfo::k15970;
 
 		else if (m_VersionMajor == 1 && m_VersionMinor == 6 && m_VersionRevision >= 317 && m_VersionRevision <= 353)
 			m_Build = BuildInfo::k16353;
 
-		else if (m_VersionMajor == 1 && m_VersionMinor == 6 && m_VersionRevision >= 629 && m_VersionRevision < 659)
+		else if (m_VersionMajor == 1 && m_VersionMinor == 6 && m_VersionRevision >= 629 && m_VersionRevision <= 640)
 			m_Build = BuildInfo::k16640;
-
+		// GOG
 		else if (m_VersionMajor == 1 && m_VersionMinor == 6 && m_VersionRevision == 659)
 			m_Build = BuildInfo::k16659;
+
+		else if (m_VersionMajor == 1 && m_VersionMinor == 6 && m_VersionRevision >= 1130)
+			m_Build = BuildInfo::k161130;
 
 		else
 			m_Build = BuildInfo::kInvalid;

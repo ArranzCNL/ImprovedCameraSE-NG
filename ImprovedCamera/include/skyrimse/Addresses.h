@@ -6,20 +6,6 @@
 
 #pragma once
 
-namespace RE {
-
-	class BipedModel {
-
-	public:
-		enum
-		{
-			kWeightModel_Small = 0,
-			kWeightModel_Large = 1
-		};
-		BipedAnim* bipedData;
-	};
-}
-
 namespace Address {
 
 	namespace Hook {
@@ -30,8 +16,6 @@ namespace Address {
 		static std::uintptr_t UpdateFirstPerson;
 		static std::uintptr_t TESObjectCell_Get3D;
 		static std::uintptr_t SmoothAnimationTransitions;
-		static std::uintptr_t ModelReferenceEffect_UpdatePosition;
-		static std::uintptr_t ModelReferenceEffect_Update;
 		static std::uintptr_t ShaderReferenceEffect1;
 		static std::uintptr_t ShaderReferenceEffect2;
 		static std::uintptr_t GetEffectNode_IsThirdPerson;
@@ -50,10 +34,8 @@ namespace Address {
 
 	namespace Function {
 
-		extern void ModelReferenceEffect_Attach(void* arg);
-		extern const bool ModelReferenceEffect_Sub_14057BCC0(void* arg);   // 1.6.640
 		extern const bool ShaderReferenceEffect_Sub_140584680(void* arg);  // 1.6.640
-		extern const bool BipedAnim_GetTorchObject(void* bipedData, std::int32_t value);
+		extern const std::int32_t GetEquippedItemTypeID(RE::Actor* actor, bool rightHand = false, void* arg1 = nullptr, std::int32_t = 0);
 		extern const bool Ragdoll_IsTaskPoolRequired();
 		extern RE::NiNode* Get3D(RE::TESObjectREFR* objectREFR);
 		extern void ResetNodes(RE::ActorMagicCaster* magicCaster);

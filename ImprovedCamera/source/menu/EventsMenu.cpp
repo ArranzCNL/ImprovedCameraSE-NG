@@ -5,11 +5,88 @@
  */
 
 // Precompiled Header
-#include "stdafx.h"
+#include "PCH.h"
 
 #include "menu/EventsMenu.h"
 
 namespace Menu {
+
+	struct MENU_IDS {
+
+		enum MENU_ID : std::int32_t
+		{
+			kFirstPerson = 1,
+			kFirstPersonCombat,
+			kFurniture,
+			kCrafting,
+			kKillmove,
+			kRagdoll,
+			kDeath,
+			kCannibal,
+			kHorse,
+			kHorseCombat,
+			kHorseTransition,
+			// Table 2
+			kDragon,
+			kDragonCombat,
+			kDragonTransition,
+			kTransform,
+			kVampireLord,
+			kWerewolf,
+			kNecroLich,
+			kScripted,
+			kThirdPerson,
+
+			kTotal = 21
+		};
+	};
+	using MENU_ID = MENU_IDS::MENU_ID;
+
+	MenuEvents::MenuEvents()
+	{
+		// Table 1
+		m_MenuNodes.emplace_back(1, "First Person", "Enables First Person Where Third Person Would normally take over",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_Events.bFirstPerson);
+		m_MenuNodes.emplace_back(1, "First Person Combat", "Enables First Person Combat Where Third Person Would normally take over",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_Events.bFirstPersonCombat);
+		m_MenuNodes.emplace_back(1, "Furniture", "Enables First Person Furniture Where Third Person Would normally take over",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_Events.bFurniture);
+		m_MenuNodes.emplace_back(1, "Crafting", "Enables First Person Crafting Where Third Person Would normally take over",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_Events.bCrafting);
+		m_MenuNodes.emplace_back(1, "Killmove", "Enables First Person Killmove Where Third Person Would normally take over",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_Events.bKillmove);
+		m_MenuNodes.emplace_back(1, "Ragdoll", "Enables First Person Ragdoll Where Third Person Would normally take over",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_Events.bRagdoll);
+		m_MenuNodes.emplace_back(1, "Death", "Enables First Person death Where Third Person Would normally take over",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_Events.bDeath);
+		m_MenuNodes.emplace_back(1, "Cannibal", "Enables First Person cannibal Where Third Person Would normally take over",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_Events.bCannibal);
+		m_MenuNodes.emplace_back(1, "Horse", "Enables First Person Horse (Mounted) Where Third Person Would normally take over",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_Events.bHorse);
+		m_MenuNodes.emplace_back(1, "Horse Combat", "Enables First Person Horse Combat (Mounted) Where Third Person Would normally take over",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_Events.bHorseCombat);
+		m_MenuNodes.emplace_back(1, "Horse Transition", "Enables First Person Horse Trasition (Mount/Dismount) Where Third Person Would normally take over",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_Events.bHorseTransition);
+		// Table 2
+		m_MenuNodes.emplace_back(2, "Dragon", "Enables First Person Dragon (Mounted) Where Third Person Would normally take over",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_Events.bDragon);
+		m_MenuNodes.emplace_back(2, "Dragon Combat", "Enables First Person Dragon Combat (Mounted) Where Third Person Would normally take over",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_Events.bDragonCombat);
+		m_MenuNodes.emplace_back(2, "Dragon Transition", "Enables First Person dragon Transition (Mount/Dismount) Where Third Person Would normally take over",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_Events.bDragonTransition);
+		m_MenuNodes.emplace_back(2, "Transform", "Enables First Person Transform Where Third Person Would normally take over",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_Events.bTransform);
+		m_MenuNodes.emplace_back(2, "Vampire Lord", "Enables First Person Vampire Lord Where Third Person Would normally take over",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_Events.bVampireLord);
+		m_MenuNodes.emplace_back(2, "Werewolf", "Enables First Person Werewolf Where Third Person Would normally take over",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_Events.bWerewolf);
+		m_MenuNodes.emplace_back(2, "Lich", "Enables First Person lich Where Third Person Would normally take over",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_Events.bNecroLich);
+		m_MenuNodes.emplace_back(2, "Scripted", "Enables First Person Scripted Where Third Person Would normally take over",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_Events.bScripted);
+		m_MenuNodes.emplace_back(2, "Third Person", "",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_Events.bThirdPerson);
+	}
 
 	void MenuEvents::OnOpen()
 	{
@@ -21,51 +98,11 @@ namespace Menu {
 		if (!m_Window)
 			return;
 
-		ImGui::Begin("[EVENTS]", &m_Window, ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse);
-		if (ImGui::BeginTable("EventsTable", 4, ImGuiTableFlags_::ImGuiTableFlags_SizingFixedFit))
-		{
-			{
-				ImGui::TableItemToggleButton("First Person", "##EventFirstPerson", &m_pluginConfig->m_Events.bFirstPerson);
-				ImGui::TableItemToggleButton("Dragon", "##EventDragon", &m_pluginConfig->m_Events.bDragon, false);
-			}
-			{
-				ImGui::TableItemToggleButton("First Person Combat", "##EventFirstPersonCombat", &m_pluginConfig->m_Events.bFirstPersonCombat);
-				ImGui::TableItemToggleButton("Dragon Combat", "##EventDragonCombat", &m_pluginConfig->m_Events.bDragonCombat, false);
-			}
-			{
-				ImGui::TableItemToggleButton("Furniture", "##EventFurniture", &m_pluginConfig->m_Events.bFurniture);
-				ImGui::TableItemToggleButton("Dragon Transition", "##EventDragonTransition", &m_pluginConfig->m_Events.bDragonTransition, false);
-			}
-			{
-				ImGui::TableItemToggleButton("Crafting", "##EventCrafting", &m_pluginConfig->m_Events.bCrafting);
-				ImGui::TableItemToggleButton("Transform", "##EventTransform", &m_pluginConfig->m_Events.bTransform, false);
-			}
-			{
-				ImGui::TableItemToggleButton("Killmove", "##EventKillmove", &m_pluginConfig->m_Events.bKillmove);
-				ImGui::TableItemToggleButton("Vampire Lord", "##EventVampireLord", &m_pluginConfig->m_Events.bVampireLord, false);
-			}
-			{
-				ImGui::TableItemToggleButton("Ragdoll", "##EventRagdoll", &m_pluginConfig->m_Events.bRagdoll);
-				ImGui::TableItemToggleButton("Werewolf", "##EventWerewolf", &m_pluginConfig->m_Events.bWerewolf, false);
-			}
-			{
-				ImGui::TableItemToggleButton("Death", "##EventDeath", &m_pluginConfig->m_Events.bDeath);
-				ImGui::TableItemToggleButton("Lich", "##EventNecroLich", &m_pluginConfig->m_Events.bNecroLich, false);
-			}
-			{
-				ImGui::TableItemToggleButton("Cannibal", "##EventCannibal", &m_pluginConfig->m_Events.bCannibal);
-				ImGui::TableItemToggleButton("Scripted", "##EventScripted", &m_pluginConfig->m_Events.bScripted, false);
-			}
-			{
-				ImGui::TableItemToggleButton("Horse", "##EventHorse", &m_pluginConfig->m_Events.bHorse);
-				ImGui::TableItemToggleButton("Third Person", "##EventThirdPerson", &m_pluginConfig->m_Events.bThirdPerson, false);
-			}
+		ImGui::Begin("[EVENTS]", &m_Window, ImGuiWindowFlags_NoCollapse);
 
-			ImGui::TableItemToggleButton("Horse Combat", "##EventHorseCombat", &m_pluginConfig->m_Events.bHorseCombat);
-			ImGui::TableItemToggleButton("Horse Transition", "##EventHorseTransition", &m_pluginConfig->m_Events.bHorseTransition);
-
-			ImGui::EndTable();
-		}
+		DisplayMenuNodes("EventsTable");
+		ImGui::SameLine();
+		DisplayMenuNodes("EventsTable", 2);
 
 		if (ImGui::Button("Close"))
 			m_Window = false;

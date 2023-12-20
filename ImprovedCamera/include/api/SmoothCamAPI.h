@@ -2,7 +2,7 @@
 #include <functional>
 #include <stdint.h>
 
-#include "stdafx.h"
+#include "PCH.h"
 
 #define SMOOTHCAM_API_COMMONLIB if using CommonLibSSE
 

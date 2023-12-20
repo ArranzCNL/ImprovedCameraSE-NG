@@ -1,7 +1,7 @@
-# <img align="left" width="150" height="150" src="https://github.com/ArranzCNL/ImprovedCameraSE-NG/blob/main/assets/Artwork/ic_logo2.png"> ImprovedCameraSE-NG
+# <img align="left" width="150" height="150" src="https://github.com/ArranzCNL/ImprovedCameraSE-NG-Dev/blob/main/assets/Artwork/ic_logo2.png"> ImprovedCameraSE-NG
 
 Improved Camera SE is an immersive first person camera modification for [The Elder Scrolls V: Skyrim Special Edition](https://store.steampowered.com/app/489830/The_Elder_Scrolls_V_Skyrim_Special_Edition/).
-NG version allows this modification to work across multiple SkyrimSE versions from 1.5.97 to 1.6.659 (GOG) thanks to [CommonLibSSE-NG](https://github.com/CharmedBaryon/CommonLibSSE-NG) and [Address Library](https://github.com/meh321/AddressLibraryDatabase).
+NG version allows this modification to work across multiple SkyrimSE versions from 1.5.97 to 1.6.1130 thanks to [CommonLibSSE-NG](https://github.com/CharmedBaryon/CommonLibSSE-NG) and [Address Library](https://github.com/meh321/AddressLibraryDatabase).
 
 ## Showcase
 [![Improved Camera SE](https://img.youtube.com/vi/SGQNoSJBfSk/maxresdefault.jpg)](https://www.youtube.com/watch?v=SGQNoSJBfSk "Improved Camera SE")
@@ -17,7 +17,7 @@ Credits: [Capt. Panda](https://www.youtube.com/@CaptPanda)
     * MSVC v143 - VS 2022 C++ x64/x86 build tools (Latest)
 	* Windows 10 SDK (10.0.20348.0)
 
-Main solution can be found inside of _build/VC17/ImprovedCameraSE_VS2022.sln.
+Main solution can be found inside of build/VC17/ImprovedCameraSE_VS2022.sln.
 
 ## Credits
 * LogicDragon for [Enhanced Camera](https://www.nexusmods.com/skyrim/mods/57859/).

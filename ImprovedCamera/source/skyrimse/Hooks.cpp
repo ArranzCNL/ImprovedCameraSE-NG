@@ -5,7 +5,7 @@
  */
 
 // Precompiled Header
-#include "stdafx.h"
+#include "PCH.h"
 
 #include "skyrimse/Hooks.h"
 
@@ -47,7 +47,6 @@ namespace Patch {
 			func(a_dispatcher, a_event);
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
-
 		static inline constexpr std::size_t size{ 5 };
 	};
 
@@ -62,7 +61,6 @@ namespace Patch {
 			ic->UpdateSwitchPOV();
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
-
 		static inline constexpr std::size_t size{ 5 };
 	};
 
@@ -101,7 +99,6 @@ namespace Patch {
 			previousTime = currentTime;
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
-
 		static inline constexpr std::size_t size{ 5 };
 	};
 
@@ -113,7 +110,6 @@ namespace Patch {
 			ic->UpdateFirstPerson();
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
-
 		static inline constexpr std::size_t size{ 5 };
 	};
 
@@ -125,7 +121,6 @@ namespace Patch {
 			return Address::Function::Get3D(objectREFR);
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
-
 		static inline constexpr std::size_t size{ 6 };
 	};
 
@@ -140,7 +135,6 @@ namespace Patch {
 			return false;
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
-
 		static inline constexpr std::size_t size{ 6 };
 	};
 
@@ -152,84 +146,7 @@ namespace Patch {
 				func(arg1, arg2, arg3);
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
-
-		static inline constexpr std::size_t index{ 0 };
-		static inline constexpr std::size_t offset{ 23 };
-	};
-
-	struct ModelReferenceEffect_UpdatePosition {
-
-		static void Install()
-		{
-			struct Patch : Xbyak::CodeGenerator {
-
-				DLLMain::Plugin* g_plugin = DLLMain::Plugin::Get();
-
-				Patch(std::uintptr_t func)
-				{
-					Xbyak::Label f;
-
-					if (g_plugin->SkyrimSE()->Build() > SkyrimSE::BuildInfo::k15970)
-						mov(rcx, r14);  // arg1
-
-					mov(rdx, rbx);  // RE::Actor*
-					jmp(ptr[rip + f]);
-
-					L(f);
-					dq(func);
-				}
-			};
-
-			Patch patch{ reinterpret_cast<std::uintptr_t>(Effect) };
-			patch.ready();
-
-			auto& trampoline = SKSE::GetTrampoline();
-			SKSE::AllocTrampoline(64);
-
-			_Effect = trampoline.write_call<5>(Address::Hook::ModelReferenceEffect_UpdatePosition, trampoline.allocate(patch));
-		}
-
-	private:
-		static void Effect(void* arg1, RE::Actor* actor)
-		{
-			ic->ModelReferenceEffectFix1(arg1, actor);
-		}
-		static inline REL::Relocation<void()> _Effect;
-	};
-
-	struct ModelReferenceEffect_Update {
-
-		static void Install()
-		{
-			struct Patch : Xbyak::CodeGenerator {
-
-				Patch(std::uintptr_t func)
-				{
-					Xbyak::Label f;
-
-					mov(rdx, rbx);  // RE::Actor*
-					jmp(ptr[rip + f]);
-
-					L(f);
-					dq(func);
-				}
-			};
-
-			Patch patch{ reinterpret_cast<std::uintptr_t>(Effect) };
-			patch.ready();
-
-			auto& trampoline = SKSE::GetTrampoline();
-			SKSE::AllocTrampoline(32);
-
-			_Effect = trampoline.write_call<5>(Address::Hook::ModelReferenceEffect_Update, trampoline.allocate(patch));
-		}
-
-	private:
-		static bool Effect(void* arg1, RE::Actor* actor)
-		{
-			return ic->ModelReferenceEffectFix2(arg1, actor);
-		}
-		static inline REL::Relocation<bool()> _Effect;
+		static inline constexpr std::size_t index{ 23 };
 	};
 
 	struct ShaderReferenceEffect_Update {
@@ -316,12 +233,11 @@ namespace Patch {
 
 			if (camera->IsInFirstPerson())
 			{
-				rtnVal = player->AsActorState()->IsWeaponDrawn() ? pluginConfig->General().bEnableThirdPersonArms : false;
+				rtnVal = player->AsActorState()->IsWeaponDrawn() ? pluginConfig->General().bEnableThirdPersonArms : 0;
 			}
 			return rtnVal;
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
-
 		static inline constexpr std::size_t size{ 6 };
 	};
 
@@ -359,7 +275,6 @@ namespace Patch {
 			return func(BSTaskPool, actor, arg3, arg4, arg5, arg6);
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
-
 		static inline constexpr std::size_t size{ 5 };
 	};
 
@@ -414,7 +329,6 @@ namespace Patch {
 			func(object, updateData);
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
-
 		static inline constexpr std::size_t size{ 5 };
 	};
 
@@ -426,7 +340,6 @@ namespace Patch {
 			return func(BSTaskPool, actor, arg3, arg4, arg5, arg6);
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
-
 		static inline constexpr std::size_t size{ 5 };
 	};
 
@@ -438,7 +351,6 @@ namespace Patch {
 			return func(actor, arg2, arg3, arg4, arg5);
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
-
 		static inline constexpr std::size_t size{ 5 };
 	};
 
@@ -457,9 +369,7 @@ namespace Patch {
 			func(povHandler, buttonEvent, controlsData);
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
-
-		static inline constexpr std::size_t index{ 0 };
-		static inline constexpr std::size_t offset{ 4 };
+		static inline constexpr std::size_t index{ 4 };
 	};
 
 	Hooks::~Hooks()
@@ -490,9 +400,7 @@ namespace Patch {
 		stl::write_thunk_call<Ragdoll_UpdateObjectUpwards>(Address::Hook::Ragdoll_UpdateObjectUpwards);
 		stl::write_thunk_call<RagdollDeath>(Address::Hook::RagdollDeath);
 		stl::write_thunk_call<KillActor>(Address::Hook::KillActor);
-		// Lighting/Shader fixes
-		ModelReferenceEffect_UpdatePosition::Install();
-		ModelReferenceEffect_Update::Install();
+		// Shader fixes
 		ShaderReferenceEffect_Update::Patch1::Install();
 		ShaderReferenceEffect_Update::Patch2::Install();
 
@@ -530,8 +438,6 @@ namespace Patch {
 		Address::Hook::UpdateFirstPerson = REL::RelocationID(39446, 40522).address() + 0xD7;
 		Address::Hook::TESObjectCell_Get3D = REL::RelocationID(18683, 19165).address() + REL::VariantOffset(0x7C, 0x7B, 0).offset();
 		Address::Hook::SmoothAnimationTransitions = REL::RelocationID(40937, 41996).address() + REL::VariantOffset(0x2EA, 0x2F4, 0).offset();
-		Address::Hook::ModelReferenceEffect_UpdatePosition = REL::RelocationID(33862, 34658).address() + REL::VariantOffset(0x9F, 0x11A, 0).offset();
-		Address::Hook::ModelReferenceEffect_Update = REL::RelocationID(33861, 34657).address() + REL::VariantOffset(0x86, 0x85, 0).offset();
 		Address::Hook::ShaderReferenceEffect1 = REL::RelocationID(34111, 34913).address() + REL::VariantOffset(0xE1, 0xE1, 0).offset();
 		Address::Hook::ShaderReferenceEffect2 = REL::RelocationID(34111, 34913).address() + REL::VariantOffset(0x18A, 0x1F5, 0).offset();
 		Address::Hook::GetEffectNode_IsThirdPerson = REL::RelocationID(33361, 34142).address() + REL::VariantOffset(0x51, 0x51, 0).offset();
@@ -571,13 +477,12 @@ namespace Patch {
 			pluginSkyrimSE->VersionMajor(), pluginSkyrimSE->VersionMinor(), pluginSkyrimSE->VersionRevision(), pluginSkyrimSE->VersionBuild());
 
 		LOG_DEBUG("Hook::ProcessInput:\t\t\t\t0x{:08X}", Address::Hook::ProcessInput - baseAddress);
+
 		LOG_DEBUG("Hook::UpdateSwitchPOV:\t\t\t0x{:08X}", Address::Hook::UpdateSwitchPOV - baseAddress);
 		LOG_DEBUG("Hook::UpdateCamera:\t\t\t\t0x{:08X}", Address::Hook::UpdateCamera - baseAddress);
 		LOG_DEBUG("Hook::UpdateFirstPerson:\t\t\t0x{:08X}", Address::Hook::UpdateFirstPerson - baseAddress);
 		LOG_DEBUG("Hook::TESObjectCell_Get3D:\t\t\t0x{:08X}", Address::Hook::TESObjectCell_Get3D - baseAddress);
 		LOG_DEBUG("Hook::SmoothAnimationTransitions:\t\t0x{:08X}", Address::Hook::SmoothAnimationTransitions - baseAddress);
-		LOG_DEBUG("Hook::ModelReferenceEffect_UpdatePosition:\t0x{:08X}", Address::Hook::ModelReferenceEffect_UpdatePosition - baseAddress);
-		LOG_DEBUG("Hook::ModelReferenceEffect_Update:\t\t0x{:08X}", Address::Hook::ModelReferenceEffect_Update - baseAddress);
 		LOG_DEBUG("Hook::ShaderReferenceEffect1:\t\t0x{:08X}", Address::Hook::ShaderReferenceEffect1 - baseAddress);
 		LOG_DEBUG("Hook::ShaderReferenceEffect2:\t\t0x{:08X}", Address::Hook::ShaderReferenceEffect2 - baseAddress);
 		LOG_DEBUG("Hook::GetEffectNode_IsThirdPerson:\t\t0x{:08X}", Address::Hook::GetEffectNode_IsThirdPerson - baseAddress);
@@ -592,15 +497,6 @@ namespace Patch {
 		LOG_DEBUG("Hook::HorseLookingDownFix1:\t\t\t0x{:08X}", Address::Hook::HorseLookingDownFix1 - baseAddress);
 		LOG_DEBUG("Hook::HorseLookingDownFix2:\t\t\t0x{:08X}", Address::Hook::HorseLookingDownFix2 - baseAddress);
 		LOG_DEBUG("Hook::HorseLookingDownFix3:\t\t\t0x{:08X}", Address::Hook::HorseLookingDownFix3 - baseAddress);
-
-		LOG_DEBUG("Function::ModelReferenceEffect_Attach:\t0x{:08X}", REL::RelocationID(33872, 34668).address() - baseAddress);
-		LOG_DEBUG("Function::ModelReferenceEffect_Sub_57BCC0:\t0x{:08X}", REL::RelocationID(33873, 34669).address() - baseAddress);
-		LOG_DEBUG("Function::ShaderReferenceEffect_Sub_584680:\t0x{:08X}", REL::RelocationID(34131, 34933).address() - baseAddress);
-		LOG_DEBUG("Function::BipedAnim_GetTorchObject:\t\t0x{:08X}", REL::RelocationID(15517, 15694).address() - baseAddress);
-		LOG_DEBUG("Function::Ragdoll_IsTaskPoolRequired:\t0x{:08X}", REL::RelocationID(38079, 39033).address() - baseAddress);
-		LOG_DEBUG("Function::Get3D:\t\t\t\t0x{:08X}", REL::RelocationID(19308, 19735).address() - baseAddress);
-		LOG_DEBUG("Function::ResetNodes:\t\t\t0x{:08X}", REL::RelocationID(33375, 34156).address() - baseAddress);
-		LOG_DEBUG("Function::IsInAir:\t\t\t\t0x{:08X}", REL::RelocationID(36259, 37243).address() - baseAddress);
 
 		LOG_DEBUG("Variable::NiNodeGlobalTime:\t\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::NiNodeGlobalTime) - baseAddress);
 		LOG_DEBUG("Variable::fControllerBufferDepth:\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::fControllerBufferDepth) - baseAddress);

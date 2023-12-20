@@ -5,7 +5,7 @@
  */
 
 // Precompiled Header
-#include "stdafx.h"
+#include "PCH.h"
 
 #include "plugin.h"
 
@@ -20,7 +20,11 @@ namespace DLLMain {
 	Plugin::Plugin()
 	{
 		if (s_Instance)
+		{
+			MessageBox(nullptr, TEXT("An unexpected error occurred within plugin initialization."), TEXT(VERSION_PRODUCTNAME_DESCRIPTION_STR), MB_ICONERROR | MB_OK);
+			s_Instance = nullptr;
 			return;
+		}
 
 		s_Instance = this;
 
@@ -48,7 +52,14 @@ namespace DLLMain {
 
 		// Append " GOG" to the window name for 1.6.659
 		if (m_SkyrimSE->Build() == Patch::SkyrimSE::BuildInfo::k16659)
+		{
+			std::string temp = m_Config->m_ModuleData.sWindowName;
 			m_Config->m_ModuleData.sWindowName += " GOG";
+
+			// Check to see if Window names match if not then Custom Window mod is at play!
+			if (m_Config->m_ModuleData.sWindowName.compare(m_SkyrimSE->WindowName()) != 0)
+				m_Config->m_ModuleData.sWindowName = temp;
+		}
 	}
 
 	Plugin::~Plugin()

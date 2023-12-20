@@ -13,7 +13,7 @@ namespace Menu {
 	class MenuEvents : public Interface::IMenu {
 
 	public:
-		MenuEvents() = default;
+		MenuEvents();
 		virtual ~MenuEvents() = default;
 
 		virtual void OnOpen() override;

@@ -2,7 +2,7 @@
 #include <functional>
 #include <stdint.h>
 
-#include "stdafx.h"
+#include "PCH.h"
 
 /*
 * For modders: Copy this file into your own project if you wish to use this API

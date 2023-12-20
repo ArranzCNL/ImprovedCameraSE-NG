@@ -5,7 +5,7 @@
  */
 
 // Precompiled Header
-#include "stdafx.h"
+#include "PCH.h"
 
 #include "skyrimse/EventsSkyrim.h"
 
@@ -28,6 +28,9 @@ namespace Events {
 
 	void Observer::Register()
 	{
+		auto player = RE::PlayerCharacter::GetSingleton();
+		player->AddAnimationGraphEventSink(Observer::Get());
+
 		RE::UI::GetSingleton()->AddEventSink<RE::MenuOpenCloseEvent>(Observer::Get());
 		// Show Player In Menus
 		Observer::Get()->CheckSPIM();
@@ -74,6 +77,7 @@ namespace Events {
 		if (strcmp(menuName, "Console") == 0)
 		{
 			auto camera = RE::PlayerCamera::GetSingleton();
+
 			if (camera->IsInFirstPerson())
 			{
 				auto pluginConfig = DLLMain::Plugin::Get()->Config();
@@ -129,7 +133,7 @@ namespace Events {
 #ifdef _DEBUG
 				auto pluginConfig = DLLMain::Plugin::Get()->Config();
 				if (pluginConfig->Logging().bAnimations)
-					LOG_DEBUG("Behavior Project: {}", project->projectName);
+					LOG_DEBUG("Behavior Project: {}", project->projectName.c_str());
 #endif
 				for (auto nodeInfo : activeNodes)
 				{
@@ -148,8 +152,12 @@ namespace Events {
 #endif
 							if (index == 0)
 							{
-								auto pluginCamera = DLLMain::Plugin::Get()->SkyrimSE()->Camera();
-								pluginCamera->CheckAnimation(animationFile);
+								if (strcmp(m_PreviousAnimation.c_str(), m_CurrentAnimation.c_str()) != 0)
+									m_PreviousAnimation = m_CurrentAnimation;
+
+								m_CurrentAnimation = animationFile;
+								//auto pluginCamera = DLLMain::Plugin::Get()->SkyrimSE()->Camera();
+								//pluginCamera->CheckAnimation(animationFile);
 							}
 						}
 					}
@@ -166,6 +174,22 @@ namespace Events {
 		auto SPIMMagicMenu = Utils::FindPattern("ShowPlayerInMenus.dll", "62 45 6E 61 62 6C 65 49 6E 4D 61 67");
 		m_SPIMInventoryMenu = (std::uint32_t*)SPIMInventoryMenu;
 		m_SPIMMagicMenu = (std::uint32_t*)SPIMMagicMenu;
+	}
+
+	bool Observer::IsCurrentAnimation(const std::string& animation)
+	{
+		if (m_CurrentAnimation.find(animation) != std::string::npos)
+			return true;
+
+		return false;
+	}
+
+	bool Observer::IsPreviousAnimation(const std::string& animation)
+	{
+		if (m_PreviousAnimation.find(animation) != std::string::npos)
+			return true;
+
+		return false;
 	}
 
 	void Observer::ResetArms()

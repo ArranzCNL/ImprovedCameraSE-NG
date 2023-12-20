@@ -13,7 +13,7 @@ namespace Menu {
 	class MenuHeadbob : public Interface::IMenu {
 
 	public:
-		MenuHeadbob() = default;
+		MenuHeadbob();
 		virtual ~MenuHeadbob() = default;
 
 		virtual void OnOpen() override;
@@ -21,6 +21,8 @@ namespace Menu {
 		virtual void OnClose() override{};
 
 		virtual void OnShutdown() override{};
+
+		static void OnCallback(std::uint32_t node, bool begin);
 	};
 
 }

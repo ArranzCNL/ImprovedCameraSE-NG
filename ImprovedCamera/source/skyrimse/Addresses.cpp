@@ -5,27 +5,13 @@
  */
 
 // Precompiled Header
-#include "stdafx.h"
+#include "PCH.h"
 
 #include "skyrimse/Addresses.h"
 
 namespace Address {
 
 	namespace Function {
-
-		void ModelReferenceEffect_Attach(void* arg)
-		{
-			using func_t = decltype(&ModelReferenceEffect_Attach);
-			REL::Relocation<func_t> func{ REL::RelocationID(33872, 34668) };
-			return func(arg);
-		}
-
-		const bool ModelReferenceEffect_Sub_14057BCC0(void* arg)
-		{
-			using func_t = decltype(&ModelReferenceEffect_Sub_14057BCC0);
-			REL::Relocation<func_t> func{ REL::RelocationID(33873, 34669) };
-			return func(arg);
-		}
 
 		const bool ShaderReferenceEffect_Sub_140584680(void* arg)
 		{
@@ -34,11 +20,14 @@ namespace Address {
 			return func(arg);
 		}
 
-		const bool BipedAnim_GetTorchObject(void* bipedData, std::int32_t value)
+		__declspec(noinline) const std::int32_t GetEquippedItemTypeID(RE::Actor* actor, bool rightHand, void* arg1, std::int32_t arg2)
 		{
-			using func_t = decltype(&BipedAnim_GetTorchObject);
-			REL::Relocation<func_t> func{ REL::RelocationID(15517, 15694) };
-			return func(bipedData, value);
+			// Make sure arg1 and arg2 are not changed.
+			arg1 = nullptr; arg2 = 0;
+
+			using func_t = const std::int32_t(*)(void* arg1, std::int32_t arg2, RE::Actor* actor, bool rightHand);
+			REL::Relocation<func_t> func{ REL::RelocationID(53876, 54685) };
+			return func(arg1, arg2, actor, rightHand);
 		}
 
 		const bool Ragdoll_IsTaskPoolRequired()

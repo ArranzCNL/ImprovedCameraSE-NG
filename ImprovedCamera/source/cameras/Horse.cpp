@@ -5,7 +5,7 @@
  */
 
 // Precompiled Header
-#include "stdafx.h"
+#include "PCH.h"
 
 #include "cameras/Horse.h"
 
@@ -115,7 +115,7 @@ namespace ImprovedCamera {
 				if (m_pluginConfig->Events().bHorse && m_HorseState == CameraHorse::State::kRiding ||
 					m_pluginConfig->Events().bHorseCombat && m_HorseState == CameraHorse::State::kWeaponDrawnIdle)
 				{
-					float zoom = *fMinCurrentZoom + m_pluginConfig->Fixes().fSwitchPOVDetectDistance;
+					float zoom = *fMinCurrentZoom + 0.03f;
 
 					if (isFirstPerson && thirdpersonState->currentZoomOffset <= zoom)
 					{

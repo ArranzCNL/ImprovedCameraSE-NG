@@ -29,9 +29,7 @@ namespace ImprovedCamera {
 		void UpdateCamera(std::uint8_t currentID, std::uint8_t previousID, float deltaTime);
 		void UpdateFirstPerson();
 		bool SmoothAnimationTransitions();
-		bool UpdateHeadTracking();
-		void ModelReferenceEffectFix1(void* pThis, RE::Actor* actor);
-		bool ModelReferenceEffectFix2(void* pThis, RE::Actor* actor);
+		bool UpdateHeadTracking() const;
 		bool ShaderReferenceEffectFix1(void* pThis, RE::Actor* actor);
 		void ShaderReferenceEffectFix2(void* pThis, RE::Actor* actor);
 		void ResetPlayerNodes();
@@ -40,10 +38,9 @@ namespace ImprovedCamera {
 		void TogglePOV();
 		void ResetState(bool forced = false);
 		void Ragdoll(RE::Actor* actor);
-		bool Ragdoll_IsTaskPoolRequired(RE::Actor* actor);
+		bool Ragdoll_IsTaskPoolRequired(RE::Actor* actor) const;
 		void Ragdoll_UpdateObjectUpwards(RE::Actor* actor);
 
-		void CheckAnimation(const std::string& filename);
 		bool IsFirstPerson() { return m_IsFirstPerson; }
 
 		void RequestAPIs();
@@ -105,12 +102,6 @@ namespace ImprovedCamera {
 		bool m_IsFirstPerson = false;
 		bool m_IsFakeCamera = false;
 		bool m_TweenShown = false;
-
-		bool m_CartRiding = false;
-		bool m_Paragliding = false;
-		bool m_FirstPersonLeftArm = false;
-		bool m_FirstPersonRightArm = false;
-		bool m_FirstPersonBothArms = false;
 		uint8_t m_LastStateID = 0;
 		uint8_t m_iRagdollFrame = 0;
 		RE::NiPoint3 m_thirdpersonLocalTranslate{};

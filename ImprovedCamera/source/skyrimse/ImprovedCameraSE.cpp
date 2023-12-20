@@ -5,11 +5,12 @@
  */
 
 // Precompiled Header
-#include "stdafx.h"
+#include "PCH.h"
 
 #include "skyrimse/ImprovedCameraSE.h"
 
 #include "cameras/Cameras.h"
+#include "skyrimse/EventsSkyrim.h"
 #include "skyrimse/Helper.h"
 #include "utils/ICMath.h"
 #include "utils/Log.h"
@@ -18,7 +19,6 @@
 
 namespace ImprovedCamera {
 
-	using namespace Address::Function;
 	using namespace Address::Variable;
 
 	ImprovedCameraSE::ImprovedCameraSE()
@@ -222,11 +222,17 @@ namespace ImprovedCamera {
 			if (m_ICamera->GetStateID() == CameraFirstPerson::State::kFishingIdle)
 				m_LastStateID = CameraFirstPerson::State::kFishingIdle;
 
-			// Force cartride/paragliding to use the alternative camera.
-			if (m_ICamera->GetStateID() >= CameraFirstPerson::State::kCartRideEnter || m_Paragliding)
+			// We force cartride to use the alternative camera.
+			if (m_ICamera->GetStateID() >= CameraFirstPerson::State::kCartRideEnter)
 				m_IsFakeCamera = true;
 			// Correct furniture idles which should never play in first person
-			if (Helper::CorrectFurnitureIdle() || m_CartRiding)
+			if (Helper::CorrectFurnitureIdle())
+			{
+				playerCamera->ForceThirdPerson();
+				return;
+			}
+			// Force Touring Carriages/ParaGliding back to third person
+			if (Events::Observer::Get()->IsCurrentAnimation("CartPrisonerCSway") || Events::Observer::Get()->IsCurrentAnimation("ParaGlide"))
 			{
 				playerCamera->ForceThirdPerson();
 				return;
@@ -301,7 +307,7 @@ namespace ImprovedCamera {
 				if (m_IsFirstPerson)
 				{
 					auto thirdpersonState = (RE::ThirdPersonState*)playerCamera->currentState.get();
-					float zoom = *fMinCurrentZoom + m_pluginConfig->Fixes().fSwitchPOVDetectDistance;
+					float zoom = *fMinCurrentZoom + 0.03f;
 					m_LastStateID = m_ICamera->GetStateID();
 					m_IsFakeCamera = false;
 					m_IsThirdPersonForced = false;
@@ -423,7 +429,7 @@ namespace ImprovedCamera {
 			}
 		}
 
-		if (cameraID == RE::CameraStates::kFirstPerson || (m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kFirstPerson) || m_IsFakeCamera)
+		if (cameraID == RE::CameraStates::kFirstPerson || m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kFirstPerson || m_IsFakeCamera)
 		{
 			// Update player scale
 			if (m_pluginConfig->General().bAdjustPlayerScale)
@@ -463,31 +469,35 @@ namespace ImprovedCamera {
 	bool ImprovedCameraSE::SmoothAnimationTransitions()
 	{
 		const auto camera = RE::PlayerCamera::GetSingleton();
+		const auto controlMap = RE::ControlMap::GetSingleton();
+		const auto player = RE::PlayerCharacter::GetSingleton();
 
-		if (!camera->IsInFirstPerson())
+		if (camera->IsInFirstPerson())
 		{
-			auto player = RE::PlayerCharacter::GetSingleton();
-			auto playerState = player->AsActorState();
+			if (m_pluginConfig->Fixes().bSmoothAnimationTransitions && controlMap->IsMovementControlsEnabled() && !Helper::IsInteracting(player))
+			{
+				if (*fControllerBufferDepth != m_pluginConfig->Fixes().fControllerBufferDepth1st)
+					*fControllerBufferDepth = m_pluginConfig->Fixes().fControllerBufferDepth1st;
 
-			if (playerState->IsSprinting())
-				*fControllerBufferDepth = 0.14f;
+				return true;
+			}
 			else
-				*fControllerBufferDepth = m_pluginConfig->Fixes().fControllerBufferDepth3rd;
+			{
+				// Reset back to original value
+				if (*fControllerBufferDepth != 0.14f)
+					*fControllerBufferDepth = 0.14f;
 
-			return true;
+				return false;
+			}
 		}
-		if (!m_pluginConfig->Fixes().bSmoothAnimationTransitions)
-			return false;
+		// Reset back to original value
+		if (*fControllerBufferDepth != 0.14f)
+			*fControllerBufferDepth = 0.14f;
 
-		auto controlMap = RE::ControlMap::GetSingleton();
-		if (!controlMap->IsMovementControlsEnabled())
-			return false;
-
-		*fControllerBufferDepth = m_pluginConfig->Fixes().fControllerBufferDepth1st;
 		return true;
 	}
 
-	bool ImprovedCameraSE::UpdateHeadTracking()
+	bool ImprovedCameraSE::UpdateHeadTracking() const
 	{
 		auto player = RE::PlayerCharacter::GetSingleton();
 		auto camera = RE::PlayerCamera::GetSingleton();
@@ -512,72 +522,6 @@ namespace ImprovedCamera {
 		return (!onMount || mounted);
 	}
 
-	void ImprovedCameraSE::ModelReferenceEffectFix1(void* arg1, RE::Actor* actor)
-	{
-		using namespace Address::Function;
-
-		auto player = RE::PlayerCharacter::GetSingleton();
-		auto camera = RE::PlayerCamera::GetSingleton();
-		auto tfcMode = camera->IsInFreeCameraMode();
-
-		if (actor != player || (!camera->IsInFirstPerson() && !tfcMode))
-		{
-			ModelReferenceEffect_Attach(arg1);
-			return;
-		}
-		// Fix model fx when fighting with third person arms
-		if (player->AsActorState()->IsWeaponDrawn() && !UseThirdPersonArms() && !tfcMode)
-		{
-			ModelReferenceEffect_Attach(arg1);
-		}
-		else
-		{
-			if (!m_pluginConfig->Fixes().bQuickLightLighting || tfcMode || m_Paragliding)
-			{
-				stl::enumeration<RE::PlayerCharacter::FlagBDB, std::uint8_t> saveState = player->GetPlayerRuntimeData().unkBDB;
-				player->GetPlayerRuntimeData().unkBDB.set(RE::PlayerCharacter::FlagBDB::kIsInThirdPersonMode);
-				ModelReferenceEffect_Attach(arg1);
-				player->GetPlayerRuntimeData().unkBDB = saveState;
-			}
-			else
-				ModelReferenceEffect_Attach(arg1);
-		}
-	}
-
-	bool ImprovedCameraSE::ModelReferenceEffectFix2(void* arg1, RE::Actor* actor)
-	{
-		using namespace Address::Function;
-
-		auto player = RE::PlayerCharacter::GetSingleton();
-		auto camera = RE::PlayerCamera::GetSingleton();
-		auto tfcMode = camera->IsInFreeCameraMode();
-
-		if (actor != player || (!camera->IsInFirstPerson() && !tfcMode))
-		{
-			return ModelReferenceEffect_Sub_14057BCC0(arg1);
-		}
-
-		bool rtn = false;
-		// Fix model fx when fighting with third person arms
-		if (player->AsActorState()->IsWeaponDrawn() && !UseThirdPersonArms() && !tfcMode)
-		{
-			rtn = ModelReferenceEffect_Sub_14057BCC0(arg1);
-		}
-		else
-		{
-			if (!m_pluginConfig->Fixes().bQuickLightLighting || tfcMode || m_Paragliding)
-			{
-				stl::enumeration<RE::PlayerCharacter::FlagBDB, std::uint8_t> saveState = player->GetPlayerRuntimeData().unkBDB;
-				player->GetPlayerRuntimeData().unkBDB.set(RE::PlayerCharacter::FlagBDB::kIsInThirdPersonMode);
-				rtn = ModelReferenceEffect_Sub_14057BCC0(arg1);
-				player->GetPlayerRuntimeData().unkBDB = saveState;
-			}
-			else
-				rtn = ModelReferenceEffect_Sub_14057BCC0(arg1);
-		}
-		return rtn;
-	}
-
 	bool ImprovedCameraSE::ShaderReferenceEffectFix1(void* arg1, RE::Actor* actor)
 	{
 		using namespace Address::Function;
@@ -599,10 +543,10 @@ namespace ImprovedCamera {
 		}
 		else
 		{
-			stl::enumeration<RE::PlayerCharacter::FlagBDB, std::uint8_t> saveState = player->GetPlayerRuntimeData().unkBDB;
-			player->GetPlayerRuntimeData().unkBDB.set(RE::PlayerCharacter::FlagBDB::kIsInThirdPersonMode);
+			bool saveState = player->GetPlayerRuntimeData().playerFlags.isInThirdPersonMode;
+			player->GetPlayerRuntimeData().playerFlags.isInThirdPersonMode = true;
 			rtn = ShaderReferenceEffect_Sub_140584680(arg1);
-			player->GetPlayerRuntimeData().unkBDB = saveState;
+			player->GetPlayerRuntimeData().playerFlags.isInThirdPersonMode = saveState;
 		}
 		return rtn;
 	}
@@ -628,10 +572,10 @@ namespace ImprovedCamera {
 		}
 		else
 		{
-			stl::enumeration<RE::PlayerCharacter::FlagBDB, std::uint8_t> saveState = player->GetPlayerRuntimeData().unkBDB;
-			player->GetPlayerRuntimeData().unkBDB.set(RE::PlayerCharacter::FlagBDB::kIsInThirdPersonMode);
+			bool saveState = player->GetPlayerRuntimeData().playerFlags.isInThirdPersonMode;
+			player->GetPlayerRuntimeData().playerFlags.isInThirdPersonMode = true;
 			ShaderReferenceEffect2(arg1);
-			player->GetPlayerRuntimeData().unkBDB = saveState;
+			player->GetPlayerRuntimeData().playerFlags.isInThirdPersonMode = saveState;
 		}
 	}
 
@@ -774,7 +718,7 @@ namespace ImprovedCamera {
 			player->NotifyAnimationGraph("IdleForceDefaultState");
 			// Push the actor away for good measure!
 			RE::NiPoint3 position = player->GetPosition();
-			player->GetActorRuntimeData().currentProcess->KnockExplosion(player, position, 10000.0f);
+			player->GetActorRuntimeData().currentProcess->KnockExplosion(player, position, 0.1f);
 		}
 		m_IsThirdPersonForced = false;
 		m_IsFirstPerson = false;
@@ -796,7 +740,7 @@ namespace ImprovedCamera {
 		}
 	}
 
-	bool ImprovedCameraSE::Ragdoll_IsTaskPoolRequired(RE::Actor* actor)
+	bool ImprovedCameraSE::Ragdoll_IsTaskPoolRequired(RE::Actor* actor) const
 	{
 		auto player = RE::PlayerCharacter::GetSingleton();
 		return (actor == player && m_iRagdollFrame < 2);
@@ -816,44 +760,6 @@ namespace ImprovedCamera {
 			}
 			m_iRagdollFrame = 0;
 		}
-	}
-
-	void ImprovedCameraSE::CheckAnimation(const std::string& filename)
-	{
-		std::string cartRiding = "CartPrisonerCSway";
-		std::string paragliding = "ParaGlide";
-		std::string elderscroll = "IdleReadElderScroll";
-		std::string potionDrinking = "DrinkPotion";
-		std::string takeItem = "TakeItem";
-		// Misc
-		// Touring Carriages
-		if (filename.find(cartRiding) != std::string::npos)
-			m_CartRiding = true;
-		else
-			m_CartRiding = false;
-		// Paragliding
-		if (filename.find(paragliding) != std::string::npos)
-			m_Paragliding = true;
-		else
-			m_Paragliding = false;
-		// Both Arms
-		// Elderscroll Reading
-		if (filename.find(elderscroll) != std::string::npos)
-			m_FirstPersonBothArms = true;
-		else
-			m_FirstPersonBothArms = false;
-		// Right Arm
-		// Ultimate Animated Potions NG
-		if (filename.find(potionDrinking) != std::string::npos)
-			m_FirstPersonRightArm = true;
-		else
-			m_FirstPersonRightArm = false;
-		// Left Arm
-		// Animated Interactions
-		if (filename.find(takeItem) != std::string::npos)
-			m_FirstPersonLeftArm = true;
-		else
-			m_FirstPersonLeftArm = false;
 	}
 
 	void ImprovedCameraSE::RequestAPIs()
@@ -882,25 +788,29 @@ namespace ImprovedCamera {
 	////////////////////////////////////////////////////////////////
 	bool ImprovedCameraSE::UseThirdPersonArms()
 	{
+		using namespace Address::Function;
+
 		auto player = RE::PlayerCharacter::GetSingleton();
 		auto playerState = player->AsActorState();
+		bool weaponDrawn = playerState->IsWeaponDrawn();
+		bool torchEquipped = GetEquippedItemTypeID(player) == RE::EQUIPPED_ITEMTYPE_ID::kTorch ? true : false;
 
-		if (m_FirstPersonBothArms || m_FirstPersonLeftArm || m_FirstPersonRightArm)
+		if (Events::Observer::Get()->IsCurrentAnimation("IdleReadElderScroll") || Events::Observer::Get()->IsCurrentAnimation("DrinkPotion") ||
+			Events::Observer::Get()->IsCurrentAnimation("TakeItem"))// || Events::Observer::Get()->IsCurrentAnimation("ParaGlide"))
 			return false;
 
-		if (m_CurrentCameraID == RE::CameraState::kFirstPerson && (playerState->IsSprinting() || player->IsInMidair() || playerState->IsSwimming()) && !m_Paragliding &&
-			!playerState->IsWeaponDrawn() && !Helper::IsBeastMode() && !m_pluginConfig->General().bEnableThirdPersonArms && m_pluginConfig->Fixes().bFirstPersonOverhaul && !m_pluginConfig->Fixes().bFirstPersonOverhaulEnableVanillaArmsOnMovement)
+		if (m_CurrentCameraID == RE::CameraState::kFirstPerson && (playerState->IsSprinting() || player->IsInMidair() || playerState->IsSwimming()) &&
+			!weaponDrawn && !Helper::IsBeastMode() && !m_pluginConfig->General().bEnableThirdPersonArms && m_pluginConfig->Fixes().bFirstPersonOverhaul &&
+			!m_pluginConfig->Fixes().bOverrideVanillaArmsOnMovement)
 		{
 			return false;
 		}
-
 		if ((m_CurrentCameraID != RE::CameraState::kFirstPerson && !(m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kFirstPerson)) ||
-			Helper::IsOnMount(player) || m_Paragliding || (!playerState->IsWeaponDrawn() && !Helper::IsTorchEquipped(player)))
+			Helper::IsOnMount(player) || (!weaponDrawn && !torchEquipped))
 		{
 			return true;
 		}
-
-		if (Helper::IsSitting(player) && Helper::IsTorchEquipped(player))
+		if (Helper::IsSitting(player) && torchEquipped)
 			return true;
 
 		if (Helper::IsAiming(player))
@@ -920,38 +830,51 @@ namespace ImprovedCamera {
 
 	bool ImprovedCameraSE::UseThirdPersonLeftArm()
 	{
+		using namespace Address::Function;
+
 		auto player = RE::PlayerCharacter::GetSingleton();
 		auto playerState = player->AsActorState();
-		bool shieldEquipped = Helper::IsShieldEquipped(player);
-		bool torchEquipped = Helper::IsTorchEquipped(player);
+		bool shieldEquipped = GetEquippedItemTypeID(player) == RE::EQUIPPED_ITEMTYPE_ID::kShield ? true : false;
+		bool torchEquipped = GetEquippedItemTypeID(player) == RE::EQUIPPED_ITEMTYPE_ID::kTorch ? true : false;
+		bool playerBlocking = player->IsBlocking();
 
-		// CFPAO/First Person Left Arm fix
-		if (((playerState->IsSprinting() || player->IsInMidair()) && !playerState->IsWeaponDrawn() && !Helper::IsBeastMode() && m_pluginConfig->Fixes().bFirstPersonOverhaul && !m_pluginConfig->Fixes().bFirstPersonOverhaulEnableVanillaArmsOnMovement) ||
-			m_FirstPersonLeftArm)
+		// CFPAO/Animated Interactions fix
+		if (((playerState->IsSprinting() || player->IsInMidair()) && !playerState->IsWeaponDrawn() && !Helper::IsBeastMode() &&
+			m_pluginConfig->Fixes().bFirstPersonOverhaul && !m_pluginConfig->Fixes().bOverrideVanillaArmsOnMovement) ||
+			Events::Observer::Get()->IsCurrentAnimation("TakeItem"))
 		{
 			return false;
 		}
-		// Torch/First Person Right Arm fix
-		if ((torchEquipped && m_pluginConfig->General().bEnableThirdPersonTorch) || m_FirstPersonRightArm)
+		// Potion Drinking fix
+		if (Events::Observer::Get()->IsCurrentAnimation("DrinkPotion"))
 			return true;
+
+		if (torchEquipped)
+		{
+			// Torch fix
+			if (m_pluginConfig->General().bEnableThirdPersonTorch && !playerBlocking)
+				return true;
+			// Torch Block fix
+			if (m_pluginConfig->General().bEnableThirdPersonTorchBlock && playerBlocking)
+				return true;
+		}
 
 		if (shieldEquipped)
 		{
 			// Shield fix
-			if (m_pluginConfig->General().bEnableThirdPersonShield && !player->IsBlocking())
+			if (m_pluginConfig->General().bEnableThirdPersonShield && !playerBlocking)
 				return true;
-
 			// Shield Block fix
-			if (m_pluginConfig->General().bEnableThirdPersonShieldBlock && player->IsBlocking())
+			if (m_pluginConfig->General().bEnableThirdPersonShieldBlock && playerBlocking)
 				return true;
 		}
 
 		// Fists fix
-		if (Helper::GetWeaponID(player) == RE::WEAPON_ID::kFist && Helper::GetWeaponID(player, true) == RE::WEAPON_ID::kFist)
+		if (GetEquippedItemTypeID(player) == RE::EQUIPPED_ITEMTYPE_ID::kFist && GetEquippedItemTypeID(player, true) == RE::EQUIPPED_ITEMTYPE_ID::kFist)
 			return false;
 
 		// One Handed weapon fix
-		if (Helper::IsRighthandWeaponEquipped(player) && !torchEquipped && !shieldEquipped && !player->IsBlocking() && !m_pluginConfig->Fixes().bFirstPersonOverhaul)
+		if (Helper::IsRighthandWeaponEquipped(player) && !torchEquipped && !shieldEquipped && !playerBlocking && !m_pluginConfig->Fixes().bFirstPersonOverhaul)
 			return true;
 
 		return false;
@@ -959,21 +882,25 @@ namespace ImprovedCamera {
 
 	bool ImprovedCameraSE::UseThirdPersonRightArm()
 	{
+		using namespace Address::Function;
+
 		auto player = RE::PlayerCharacter::GetSingleton();
 		auto playerState = player->AsActorState();
+		bool weaponDrawn = playerState->IsWeaponDrawn();
 
-		// CFPAO/First Person Right Arm fix
-		if (((playerState->IsSprinting() || player->IsInMidair()) && !playerState->IsWeaponDrawn() && !Helper::IsBeastMode() && m_pluginConfig->Fixes().bFirstPersonOverhaul && !m_pluginConfig->Fixes().bFirstPersonOverhaulEnableVanillaArmsOnMovement) ||
-			m_FirstPersonRightArm)
+		// CFPAO/Potion Drinking fix
+		if (((playerState->IsSprinting() || player->IsInMidair()) && !weaponDrawn && !Helper::IsBeastMode() &&
+			m_pluginConfig->Fixes().bFirstPersonOverhaul && !m_pluginConfig->Fixes().bOverrideVanillaArmsOnMovement) ||
+			Events::Observer::Get()->IsCurrentAnimation("DrinkPotion"))
 		{
 			return false;
 		}
-		// Torch/First Person Left Arm fix
-		if ((Helper::IsTorchEquipped(player) && !player->AsActorState()->IsWeaponDrawn()) || m_FirstPersonLeftArm)
+		// Torch/Animated Interactions fix
+		if ((GetEquippedItemTypeID(player) == RE::EQUIPPED_ITEMTYPE_ID::kTorch && !weaponDrawn) || Events::Observer::Get()->IsCurrentAnimation("TakeItem"))
 			return true;
 
 		// Bow fix
-		if (Helper::GetWeaponID(player) == RE::WEAPON_ID::kBow && !Helper::IsAiming(player) && !m_pluginConfig->Fixes().bArcheryGameplayOverhaul)
+		if (GetEquippedItemTypeID(player) == RE::EQUIPPED_ITEMTYPE_ID::kBow && !Helper::IsAiming(player) && !m_pluginConfig->Fixes().bArcheryGameplayOverhaul)
 			return true;
 
 		return false;
@@ -1011,10 +938,10 @@ namespace ImprovedCamera {
 
 			if (headNode && !Helper::CannotMoveAndLook())
 			{
-				bool hideHead = !m_pluginConfig->General().bEnableHead && (m_CurrentCameraID == RE::CameraStates::kFirstPerson || (m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kFirstPerson)) && m_ICamera->GetStateID() != CameraFirstPerson::State::kWeaponDrawnIdle ||
-					!m_pluginConfig->General().bEnableHeadCombat &&	(m_CurrentCameraID == RE::CameraStates::kFirstPerson || (m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kFirstPerson)) && m_ICamera->GetStateID() == CameraFirstPerson::State::kWeaponDrawnIdle ||
-					!m_pluginConfig->General().bEnableHeadHorse && m_IsFakeCamera && (m_CurrentCameraID == RE::CameraStates::kMount || (m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kMount)) ||
-					!m_pluginConfig->General().bEnableHeadDragon && m_IsFakeCamera && (m_CurrentCameraID == RE::CameraStates::kDragon || (m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kDragon)) ||
+				bool hideHead = !m_pluginConfig->General().bEnableHead && (m_CurrentCameraID == RE::CameraStates::kFirstPerson || m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kFirstPerson) && m_ICamera->GetStateID() != CameraFirstPerson::State::kWeaponDrawnIdle ||
+					!m_pluginConfig->General().bEnableHeadCombat &&	(m_CurrentCameraID == RE::CameraStates::kFirstPerson || m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kFirstPerson) && m_ICamera->GetStateID() == CameraFirstPerson::State::kWeaponDrawnIdle ||
+					!m_pluginConfig->General().bEnableHeadHorse && m_IsFakeCamera && (m_CurrentCameraID == RE::CameraStates::kMount || m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kMount) ||
+					!m_pluginConfig->General().bEnableHeadDragon && m_IsFakeCamera && (m_CurrentCameraID == RE::CameraStates::kDragon || m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kDragon) ||
 					!m_pluginConfig->General().bEnableHeadScripted && m_IsFakeCamera && isScripted ||
 					!m_pluginConfig->General().bEnableHeadVampireLord && m_IsFakeCamera && isVampireLord ||
 					!m_pluginConfig->General().bEnableHeadWerewolf && m_IsFakeCamera && isWerewolf;
@@ -1069,7 +996,7 @@ namespace ImprovedCamera {
 			{
 				overrides.push_back(std::make_unique<NodeOverride>(weaponBackNode, 0.001f));
 			}
-			if (weaponBackNode && m_pluginConfig->Hide().bBow && weaponBowNode->local.scale > 0.002f)
+			if (weaponBowNode && m_pluginConfig->Hide().bBow && weaponBowNode->local.scale > 0.002f)
 			{
 				overrides.push_back(std::make_unique<NodeOverride>(weaponBowNode, 0.001f));
 			}
@@ -1087,7 +1014,7 @@ namespace ImprovedCamera {
 			return;
 
 		RE::BSVisit::TraverseScenegraphGeometries(thirdperson3D, [&](RE::BSGeometry* a_geometry) -> RE::BSVisit::BSVisitControl {
-			const auto effect = a_geometry->properties[RE::BSGeometry::States::kEffect];
+			const auto& effect = a_geometry->properties[RE::BSGeometry::States::kEffect];
 			const auto lightingShader = netimmerse_cast<RE::BSLightingShaderProperty*>(effect.get());
 
 			if (lightingShader)
@@ -1198,36 +1125,16 @@ namespace ImprovedCamera {
 		if (!cameraNI)
 			return;
 
-		RE::NiPoint3 point1{}, point2{};
+		RE::NiPoint3 point1{}, point2{}, lerp{};
 		ScalePoint(&point1, thirdpersonNode->world.scale);
-
-		float headRot = 0.0f;
-		bool isHeadbob = (!GetHeadRotation(&headRot) && !m_IsFakeCamera) ? false : true;
-		// Adjust height for high heels.
-		if (!isHeadbob)
-		{
-			float heelsOffset = (Helper::GetHighHeelsOffset(player) - 1.0f) * thirdpersonNode->world.scale;
-			if (heelsOffset < 0.0f)
-				heelsOffset = 0.0f;
-
-			point1.y -= 19.0f * thirdpersonNode->world.scale;
-			if (playerState->IsSneaking())
-			{
-				point1.z -= heelsOffset * thirdpersonNode->world.scale;
-			}
-			else
-			{
-				point1.z += heelsOffset * thirdpersonNode->world.scale;
-			}
-		}
 		Utils::MatrixVectorMultiply(&point2, &thirdpersonNode->world.rotate, &point1);
+		float headRot = 0.0f;
 
-		if (isHeadbob)
+		if (GetHeadRotation(&headRot) || m_IsFakeCamera)
 		{
 			if (HeadRotation())
 			{
-				if (m_ICamera->GetID() == RE::CameraStates::kThirdPerson &&
-					(m_ICamera->GetStateID() == CameraThirdPerson::State::kWerewolfEnter || m_ICamera->GetStateID() == CameraThirdPerson::State::kWerewolfIdle))
+				if (m_ICamera->GetID() == RE::CameraStates::kThirdPerson && m_ICamera->GetStateID() == CameraThirdPerson::State::kWerewolfIdle)
 				{
 					headNode = Helper::FindNode(thirdpersonNode, "Camera3rd [Cam3]");
 
@@ -1238,40 +1145,32 @@ namespace ImprovedCamera {
 				}
 				Utils::MatrixVectorMultiply(&point2, &headNode->world.rotate, &point1);
 			}
-			cameraNI->world.translate = cameraNode->world.translate = cameraNode->local.translate = headNode->world.translate + point2;
+			lerp = cameraNI->world.translate + ((headNode->world.translate + point2) - cameraNI->world.translate) * 1.0f;
+			cameraNI->world.translate = cameraNode->world.translate = cameraNode->local.translate = lerp;
 		}
 		else
-			cameraNI->world.translate = cameraNode->world.translate = cameraNode->local.translate + point2;
-		// Fix casting magic from the correct position.
-		if (playerState->IsWeaponDrawn())
 		{
-			auto lefthandMagicNode = Helper::FindNode(firstpersonNode, "NPC L MagicNode [LMag]");
-			if (lefthandMagicNode)
+			cameraNI->world.translate = cameraNode->world.translate = cameraNode->local.translate;
+		}
+
+		// Fix casting magic from the correct position - FIXME
+		if (Helper::IsCastingMagic(player) && m_pluginConfig->Headbob().bCombat && !UseThirdPersonArms())
+		{
+			auto leftMagicNode = Helper::FindNode(firstpersonNode, "NPC L MagicNode [LMag]");
+			if (leftMagicNode)
+			{}
+			auto rightMagicNode = Helper::FindNode(firstpersonNode, "NPC R MagicNode [RMag]");
+			if (rightMagicNode)
+			{}
+		}
+		// Fix shooting arrows from the correct position
+		if (UseThirdPersonArms() || m_pluginConfig->Headbob().bCombat)
+		{
+			auto weaponNode = Helper::FindNode(firstpersonNode, "WEAPON");
+			if (weaponNode)
 			{
-				if (!isHeadbob)
-					lefthandMagicNode->world.translate.z += point2.z;
-				// FIXME: Headbob Combat Magic
-				else
-				{}
-			}
-			auto righthandMagicNode = Helper::FindNode(firstpersonNode, "NPC R MagicNode [RMag]");
-			if (righthandMagicNode)
-			{
-				if (!isHeadbob)
-					righthandMagicNode->world.translate.z += point2.z;
-				// FIXME: Headbob Combat Magic
-				else
-				{}
-			}
-			// Fix shooting arrows from the correct position. Note: Likely needs fixing/reviewing.
-			if (UseThirdPersonArms() || isHeadbob)
-			{
-				auto weaponNode = Helper::FindNode(firstpersonNode, "WEAPON");
-				if (weaponNode)
-				{
-					weaponNode->world.translate = cameraNI->world.translate;
-					weaponNode->world.translate.z -= m_pluginConfig->Camera().fFirstPersonCombatPosZ;
-				}
+				weaponNode->world.translate = cameraNI->world.translate;
+				weaponNode->world.translate.z -= m_pluginConfig->Camera().fFirstPersonCombatPosZ;
 			}
 		}
 		// For floating quest markers
@@ -1306,7 +1205,7 @@ namespace ImprovedCamera {
 	{
 		auto player = RE::PlayerCharacter::GetSingleton();
 		auto playerState = player->AsActorState();
-		auto firstpersonNode = player->Get3D(1)->AsNode();
+		//auto firstpersonNode = player->Get3D(1)->AsNode();
 		auto thirdpersonNode = player->Get3D(0)->AsNode();
 		auto headNode = Helper::GetHeadNode(thirdpersonNode);
 		if (!headNode)
@@ -1316,7 +1215,8 @@ namespace ImprovedCamera {
 		RE::NiPoint3 point1{}, point2{};
 		float headRot = 0.0f;
 
-		if (m_CurrentCameraID == RE::CameraStates::kFirstPerson || (m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kFirstPerson))
+		if (m_CurrentCameraID == RE::CameraStates::kFirstPerson ||
+			m_CurrentCameraID == RE::CameraStates::kTween && m_PreviousCameraID == RE::CameraStates::kFirstPerson)
 		{
 			if (!GetHeadRotation(&headRot) && !m_IsFakeCamera)
 			{
@@ -1332,9 +1232,10 @@ namespace ImprovedCamera {
 					point1.y = m_pluginConfig->Camera().fFirstPersonPosY * thirdpersonNode->world.scale;
 					point1.z = m_pluginConfig->Camera().fFirstPersonPosZ * thirdpersonNode->world.scale;
 				}
+
 				Utils::MatrixVectorMultiply(&point2, &thirdpersonNode->world.rotate, &point1);
-				// Update body position
 				thirdpersonNode->local.translate += cameraNode->world.translate - (headNode->world.translate + point2);
+
 				// Update LootAt position
 				UpdateLootAtPosition();
 			}
@@ -1361,9 +1262,9 @@ namespace ImprovedCamera {
 				Utils::MatrixVectorMultiply(&point2, &thirdpersonNode->world.rotate, &point1);
 				thirdpersonNode->local.translate += point2;
 			}
-			// Height offset
-			if (thirdpersonNode->local.translate.z != firstpersonNode->local.translate.z)
-				thirdpersonNode->local.translate.z = firstpersonNode->local.translate.z;
+			// Height offset - stop lifting of body
+			//if (thirdpersonNode->local.translate.z != firstpersonNode->local.translate.z)
+			//	thirdpersonNode->local.translate.z = firstpersonNode->local.translate.z;
 
 			thirdpersonNode->local.translate.z += m_pluginConfig->General().fBodyHeightOffset;
 		}
@@ -1443,10 +1344,8 @@ namespace ImprovedCamera {
 		auto firstpersonState = (RE::FirstPersonState*)camera->cameraStates[RE::CameraState::kFirstPerson].get();
 		auto thirdpersonNode = player->Get3D(0)->AsNode();
 		auto headNode = Helper::GetHeadNode(thirdpersonNode);
-		if (!headNode)
-			return false;
-
 		auto cameraNode = camera->cameraRoot.get()->AsNode();
+
 		auto cameraNI = (RE::NiCamera*)((cameraNode->children.size() == 0) ? nullptr : cameraNode->children[0].get());
 		if (!cameraNI)
 			return false;
@@ -1516,8 +1415,7 @@ namespace ImprovedCamera {
 			}
 			// Scripted and Animation
 			if (m_ICamera->GetID() == RE::CameraState::kThirdPerson &&
-				(m_ICamera->GetStateID() == CameraThirdPerson::State::kScriptedIdle || m_ICamera->GetStateID() == CameraThirdPerson::State::kAnimationIdle ||
-				m_ICamera->GetStateID() == CameraThirdPerson::State::kWerewolfEnter))
+				(m_ICamera->GetStateID() == CameraThirdPerson::State::kScriptedIdle || m_ICamera->GetStateID() == CameraThirdPerson::State::kAnimationIdle))
 			{
 				point.x = 0.5f * M_PI - player->data.angle.x;              // Pitch
 				point.y = 0.5f * M_PI - thirdpersonState->freeRotation.x;  // Yaw

@@ -5,12 +5,13 @@
  */
 
 // Precompiled Header
-#include "stdafx.h"
+#include "PCH.h"
 
 #include "cameras/ThirdPerson.h"
 
 #include "skyrimse/Addresses.h"
 #include "skyrimse/ImprovedCameraSE.h"
+#include "skyrimse/EventsSkyrim.h"
 #include "utils/ICMath.h"
 
 namespace ImprovedCamera {
@@ -74,6 +75,12 @@ namespace ImprovedCamera {
 			if (necroLichCheck)
 			{
 				m_ThirdPersonState = CameraThirdPerson::State::kNecroLichEnter;
+				SetData();
+				return true;
+			}
+			if (Events::Observer::Get()->IsCurrentAnimation("ParaGlide"))
+			{
+				m_ThirdPersonState = CameraThirdPerson::State::kParaGlidingEnter;
 				SetData();
 				return true;
 			}
@@ -157,6 +164,12 @@ namespace ImprovedCamera {
 				m_ThirdPersonState = CameraThirdPerson::State::kNecroLichIdle;
 				return true;
 			}
+			// ParaGlding Entered
+			if (m_ThirdPersonState == CameraThirdPerson::State::kParaGlidingEnter)
+			{
+				m_ThirdPersonState = CameraThirdPerson::State::kParaGlidingIdle;
+				return true;
+			}
 		}
 		return false;
 	}
@@ -169,7 +182,7 @@ namespace ImprovedCamera {
 		auto controlMap = RE::ControlMap::GetSingleton();
 		auto playerControls = RE::PlayerControls::GetSingleton();
 
-		float zoom = *fMinCurrentZoom + m_pluginConfig->Fixes().fSwitchPOVDetectDistance;
+		float zoom = *fMinCurrentZoom + 0.03f;
 		bool isFirstPerson = pluginCamera->IsFirstPerson();
 
 		if (m_ThirdPersonState)
@@ -301,6 +314,20 @@ namespace ImprovedCamera {
 						thirdpersonState->freeRotation.x = -necroLichMaxAngle;
 				}
 			}
+			// Angle Restriction ParaGliding
+			if (m_ThirdPersonState == CameraThirdPerson::State::kParaGlidingIdle)
+			{
+				if (isFirstPerson && thirdpersonState->currentZoomOffset <= zoom)
+				{
+					float paraGlidingMaxAngle = 80.0f * (M_PI / 180.0f);  // Degrees to Radians;
+
+					if (thirdpersonState->freeRotation.x >= paraGlidingMaxAngle)
+						thirdpersonState->freeRotation.x = paraGlidingMaxAngle;
+
+					if (thirdpersonState->freeRotation.x <= -paraGlidingMaxAngle)
+						thirdpersonState->freeRotation.x = -paraGlidingMaxAngle;
+				}
+			}
 			// Exit Crafting detection
 			if (m_ThirdPersonState == CameraThirdPerson::State::kCraftingIdle && thirdpersonState->IsInputEventHandlingEnabled())
 			{
@@ -321,6 +348,12 @@ namespace ImprovedCamera {
 			}
 			// Exit VampireLord Killmove
 			if (m_ThirdPersonState == CameraThirdPerson::State::kVampireLordKillmove && !this->Player->IsInKillMove())
+			{
+				m_ThirdPersonState = CameraThirdPerson::State::kExit;
+				return true;
+			}
+			// Exit ParaGliding detection
+			if (m_ThirdPersonState == CameraThirdPerson::State::kParaGlidingIdle && !Events::Observer::Get()->IsCurrentAnimation("ParaGlide"))
 			{
 				m_ThirdPersonState = CameraThirdPerson::State::kExit;
 				return true;
@@ -352,6 +385,8 @@ namespace ImprovedCamera {
 			case CameraThirdPerson::State::kScriptedIdle:
 			case CameraThirdPerson::State::kAnimationEnter:
 			case CameraThirdPerson::State::kAnimationIdle:
+			case CameraThirdPerson::State::kParaGlidingEnter:
+			case CameraThirdPerson::State::kParaGlidingIdle:
 				return CameraEvent::kScripted;
 
 			case CameraThirdPerson::State::kVampireLordKillmove:

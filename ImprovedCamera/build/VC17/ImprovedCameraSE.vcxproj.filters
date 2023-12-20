@@ -1,0 +1,359 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="source">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="_resource">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include\api">
+      <UniqueIdentifier>{9bf6f7b7-46ad-49b4-ab41-9bda66050299}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\menu">
+      <UniqueIdentifier>{a62519e9-be7c-4d28-b05a-9261af0a7390}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\skyrimse">
+      <UniqueIdentifier>{ed388e92-8c0d-4595-8b2d-717d4a618920}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\utils">
+      <UniqueIdentifier>{54166a4a-68c0-4d48-b8e4-f73ad21d8d6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\systems">
+      <UniqueIdentifier>{e19d6afe-91e0-465a-bf0f-ebd59073ed19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\api">
+      <UniqueIdentifier>{a8b8042f-f538-433a-ba4c-dbe8590014cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\menu">
+      <UniqueIdentifier>{e682fd34-930a-4aec-af96-eef7f5c456c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\skyrimse">
+      <UniqueIdentifier>{f53fdd46-cc68-47eb-bb88-d0e65ef3bbdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\utils">
+      <UniqueIdentifier>{1c1645fe-af77-412f-bf05-1bd7d64e4e5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\systems">
+      <UniqueIdentifier>{4d4b0f71-4305-4860-b991-e12a5fedc9a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\settings">
+      <UniqueIdentifier>{02efb41e-aa45-4f68-9b4f-df7220412128}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor">
+      <UniqueIdentifier>{0ca5dbfb-9779-4775-bf36-fd9ee19ed5fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\glm">
+      <UniqueIdentifier>{d0bbbb4d-0342-41bd-920d-15ce8e7b908b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\mINI">
+      <UniqueIdentifier>{acf7fb75-1043-4929-b827-1bfc9521ce3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\build">
+      <UniqueIdentifier>{89fd3101-c290-4fd1-a0ff-2432002d85ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\cameras">
+      <UniqueIdentifier>{53b64b72-98ce-42b5-9763-3c6125155144}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\cameras">
+      <UniqueIdentifier>{1b3ee4f8-45cc-4976-9546-67e0ed1745dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PCH">
+      <UniqueIdentifier>{2fc0decc-e6b1-43ec-9c22-13ab08cab62c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\stb">
+      <UniqueIdentifier>{dd930a4d-14d9-4a64-8363-e9082f32657a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\api\skse_api.h">
+      <Filter>include\api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\menu\Camera.h">
+      <Filter>include\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\menu\EventsMenu.h">
+      <Filter>include\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\menu\Fixes.h">
+      <Filter>include\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\menu\Fov.h">
+      <Filter>include\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\menu\General.h">
+      <Filter>include\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\menu\Headbob.h">
+      <Filter>include\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\menu\Hide.h">
+      <Filter>include\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\menu\IMenu.h">
+      <Filter>include\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\menu\Menus.h">
+      <Filter>include\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\menu\NearDistance.h">
+      <Filter>include\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\menu\RestrictAngles.h">
+      <Filter>include\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\menu\UIMenu.h">
+      <Filter>include\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\menu\UIMenuHelper.h">
+      <Filter>include\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\skyrimse\SkyrimSE.h">
+      <Filter>include\skyrimse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\settings\Settings.h">
+      <Filter>include\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\systems\Config.h">
+      <Filter>include\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\systems\Graphics.h">
+      <Filter>include\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\systems\UI.h">
+      <Filter>include\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\systems\Window.h">
+      <Filter>include\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\utils\ICMath.h">
+      <Filter>include\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\utils\PatternScan.h">
+      <Filter>include\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\utils\Utils.h">
+      <Filter>include\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\plugin.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\version.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\vendor\glm\glm\glm.hpp">
+      <Filter>vendor\glm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\vendor\mINI\src\mini\ini.h">
+      <Filter>vendor\mINI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\systems\Logging.h">
+      <Filter>include\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\utils\Log.h">
+      <Filter>include\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\skyrimse\Addresses.h">
+      <Filter>include\skyrimse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\skyrimse\Hooks.h">
+      <Filter>include\skyrimse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\skyrimse\ImprovedCameraSE.h">
+      <Filter>include\skyrimse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\skyrimse\Helper.h">
+      <Filter>include\skyrimse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cameras\Cameras.h">
+      <Filter>include\cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cameras\DeathCinematic.h">
+      <Filter>include\cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cameras\Dragon.h">
+      <Filter>include\cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cameras\Events.h">
+      <Filter>include\cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cameras\FirstPerson.h">
+      <Filter>include\cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cameras\Furniture.h">
+      <Filter>include\cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cameras\Horse.h">
+      <Filter>include\cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cameras\ICamera.h">
+      <Filter>include\cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cameras\Ragdoll.h">
+      <Filter>include\cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cameras\ThirdPerson.h">
+      <Filter>include\cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\cameras\Transition.h">
+      <Filter>include\cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\api\SmoothCamAPI.h">
+      <Filter>include\api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\api\TrueDirectionalMovementAPI.h">
+      <Filter>include\api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\skyrimse\EventsSkyrim.h">
+      <Filter>include\skyrimse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\PCH\PCH.h">
+      <Filter>PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\menu\Logo.h">
+      <Filter>include\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\menu\IconsFontAwesome6.h">
+      <Filter>include\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\vendor\stb\stb_image.h">
+      <Filter>vendor\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\api\versionlibdb.h">
+      <Filter>include\api</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\api\skse_api.cpp">
+      <Filter>source\api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\menu\Camera.cpp">
+      <Filter>source\menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\menu\EventsMenu.cpp">
+      <Filter>source\menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\menu\Fixes.cpp">
+      <Filter>source\menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\menu\Fov.cpp">
+      <Filter>source\menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\menu\General.cpp">
+      <Filter>source\menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\menu\Headbob.cpp">
+      <Filter>source\menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\menu\Hide.cpp">
+      <Filter>source\menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\menu\IMenu.cpp">
+      <Filter>source\menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\menu\NearDistance.cpp">
+      <Filter>source\menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\menu\RestrictAngles.cpp">
+      <Filter>source\menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\menu\UIMenu.cpp">
+      <Filter>source\menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\menu\UIMenuHelper.cpp">
+      <Filter>source\menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\skyrimse\SkyrimSE.cpp">
+      <Filter>source\skyrimse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\systems\Config.cpp">
+      <Filter>source\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\systems\Graphics.cpp">
+      <Filter>source\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\systems\UI.cpp">
+      <Filter>source\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\systems\Window.cpp">
+      <Filter>source\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\utils\ICMath.cpp">
+      <Filter>source\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\utils\PatternScan.cpp">
+      <Filter>source\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\utils\Utils.cpp">
+      <Filter>source\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\dllmain.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\plugin.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\build\vendor.cpp">
+      <Filter>source\build</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\systems\Logging.cpp">
+      <Filter>source\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\skyrimse\Hooks.cpp">
+      <Filter>source\skyrimse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\skyrimse\ImprovedCameraSE.cpp">
+      <Filter>source\skyrimse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\cameras\DeathCinematic.cpp">
+      <Filter>source\cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\cameras\Dragon.cpp">
+      <Filter>source\cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\cameras\FirstPerson.cpp">
+      <Filter>source\cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\cameras\Furniture.cpp">
+      <Filter>source\cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\cameras\Horse.cpp">
+      <Filter>source\cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\cameras\ICamera.cpp">
+      <Filter>source\cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\cameras\Ragdoll.cpp">
+      <Filter>source\cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\cameras\ThirdPerson.cpp">
+      <Filter>source\cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\cameras\Transition.cpp">
+      <Filter>source\cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\skyrimse\Addresses.cpp">
+      <Filter>source\skyrimse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\skyrimse\EventsSkyrim.cpp">
+      <Filter>source\skyrimse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\PCH\PCH.cpp">
+      <Filter>PCH</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\resource\plugin.rc">
+      <Filter>_resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\.clang-format" />
+  </ItemGroup>
+</Project>

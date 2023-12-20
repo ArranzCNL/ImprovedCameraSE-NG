@@ -13,7 +13,7 @@ namespace Menu {
 	class MenuRestrictAngles : public Interface::IMenu {
 
 	public:
-		MenuRestrictAngles() = default;
+		MenuRestrictAngles();
 		virtual ~MenuRestrictAngles() = default;
 
 		virtual void OnOpen() override;

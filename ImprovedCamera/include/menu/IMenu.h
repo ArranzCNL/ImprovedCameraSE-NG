@@ -14,6 +14,27 @@ namespace Interface {
 	class IMenu {
 
 	public:
+		enum ControlType
+		{
+			kNone = 0,
+			kToggle,
+			kSliderFloat,
+			kSliderInt
+		};
+
+		struct MenuNode {
+			const std::uint32_t TableIndex;
+			const char* Name;
+			const char* Tooltip;
+			const std::int32_t Control;
+			void* Variable;
+			const float MinValue;
+			const float MaxValue;
+			const char* Format;
+			void (*MenuCallback)(std::uint32_t, bool);
+		};
+
+	public:
 		IMenu();
 		virtual ~IMenu() = default;
 
@@ -24,8 +45,11 @@ namespace Interface {
 		virtual void OnShutdown() = 0;
 
 	protected:
+		void DisplayMenuNodes(const char* tableName, const std::uint32_t tableIndex = 1);
 		bool m_Window = false;
 		Systems::Config* m_pluginConfig = nullptr;
+
+		std::vector<MenuNode> m_MenuNodes;
 	};
 
 	class Menu {

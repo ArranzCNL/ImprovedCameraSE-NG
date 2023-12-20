@@ -5,7 +5,7 @@
  */
 
 // Precompiled Header
-#include "stdafx.h"
+#include "PCH.h"
 
 #include "systems/Config.h"
 
@@ -80,6 +80,7 @@ namespace Systems {
 				m_General.bEnableHeadScripted = std::stoi(ini.get("GENERAL").get("bEnableHeadScripted"));
 				m_General.bEnableThirdPersonArms = std::stoi(ini.get("GENERAL").get("bEnableThirdPersonArms"));
 				m_General.bEnableThirdPersonTorch = std::stoi(ini.get("GENERAL").get("bEnableThirdPersonTorch"));
+				m_General.bEnableThirdPersonTorchBlock = std::stoi(ini.get("GENERAL").get("bEnableThirdPersonTorchBlock"));
 				m_General.bEnableThirdPersonShield = std::stoi(ini.get("GENERAL").get("bEnableThirdPersonShield"));
 				m_General.bEnableThirdPersonShieldBlock = std::stoi(ini.get("GENERAL").get("bEnableThirdPersonShieldBlock"));
 				m_General.bEnableThirdPersonBow = std::stoi(ini.get("GENERAL").get("bEnableThirdPersonBow"));
@@ -101,14 +102,11 @@ namespace Systems {
 				m_Hide.bAttackBow = std::stoi(ini.get("HIDE").get("bAttackBow"));
 				m_Hide.bKillmove = std::stoi(ini.get("HIDE").get("bKillmove"));
 
-				m_Fixes.bQuickLightLighting = std::stoi(ini.get("FIXES").get("bQuickLightLighting"));
 				m_Fixes.bFirstPersonOverhaul = std::stoi(ini.get("FIXES").get("bFirstPersonOverhaul"));
-				m_Fixes.bFirstPersonOverhaulEnableVanillaArmsOnMovement = std::stoi(ini.get("FIXES").get("bFirstPersonOverhaulEnableVanillaArmsOnMovement"));
+				m_Fixes.bOverrideVanillaArmsOnMovement = std::stoi(ini.get("FIXES").get("bOverrideVanillaArmsOnMovement"));
 				m_Fixes.bArcheryGameplayOverhaul = std::stoi(ini.get("FIXES").get("bArcheryGameplayOverhaul"));
-				m_Fixes.fSwitchPOVDetectDistance = std::stof(ini.get("FIXES").get("fSwitchPOVDetectDistance"));
 				m_Fixes.bSmoothAnimationTransitions = std::stoi(ini.get("FIXES").get("bSmoothAnimationTransitions"));
 				m_Fixes.fControllerBufferDepth1st = std::stof(ini.get("FIXES").get("fControllerBufferDepth1st"));
-				m_Fixes.fControllerBufferDepth3rd = std::stof(ini.get("FIXES").get("fControllerBufferDepth3rd"));
 
 				m_RestrictAngles.fSitting = std::stof(ini.get("RESTRICT ANGLES").get("fSitting"));
 				m_RestrictAngles.fSittingMaxLookingUp = std::stof(ini.get("RESTRICT ANGLES").get("fSittingMaxLookingUp"));
@@ -300,6 +298,7 @@ namespace Systems {
 			ini["GENERAL"]["bEnableHeadScripted"] = std::to_string(m_General.bEnableHeadScripted);
 			ini["GENERAL"]["bEnableThirdPersonArms"] = std::to_string(m_General.bEnableThirdPersonArms);
 			ini["GENERAL"]["bEnableThirdPersonTorch"] = std::to_string(m_General.bEnableThirdPersonTorch);
+			ini["GENERAL"]["bEnableThirdPersonTorchBlock"] = std::to_string(m_General.bEnableThirdPersonTorchBlock);
 			ini["GENERAL"]["bEnableThirdPersonShield"] = std::to_string(m_General.bEnableThirdPersonShield);
 			ini["GENERAL"]["bEnableThirdPersonShieldBlock"] = std::to_string(m_General.bEnableThirdPersonShieldBlock);
 			ini["GENERAL"]["bEnableThirdPersonBow"] = std::to_string(m_General.bEnableThirdPersonBow);
@@ -320,14 +319,11 @@ namespace Systems {
 			ini["HIDE"]["bAttackBow"] = std::to_string(m_Hide.bAttackBow);
 			ini["HIDE"]["bKillmove"] = std::to_string(m_Hide.bKillmove);
 
-			ini["FIXES"]["bQuickLightLighting"] = std::to_string(m_Fixes.bQuickLightLighting);
 			ini["FIXES"]["bFirstPersonOverhaul"] = std::to_string(m_Fixes.bFirstPersonOverhaul);
-			ini["FIXES"]["bFirstPersonOverhaulEnableVanillaArmsOnMovement"] = std::to_string(m_Fixes.bFirstPersonOverhaulEnableVanillaArmsOnMovement);
+			ini["FIXES"]["bOverrideVanillaArmsOnMovement"] = std::to_string(m_Fixes.bOverrideVanillaArmsOnMovement);
 			ini["FIXES"]["bArcheryGameplayOverhaul"] = std::to_string(m_Fixes.bArcheryGameplayOverhaul);
-			ini["FIXES"]["fSwitchPOVDetectDistance"] = std::to_string(m_Fixes.fSwitchPOVDetectDistance);
 			ini["FIXES"]["bSmoothAnimationTransitions"] = std::to_string(m_Fixes.bSmoothAnimationTransitions);
 			ini["FIXES"]["fControllerBufferDepth1st"] = std::to_string(m_Fixes.fControllerBufferDepth1st);
-			ini["FIXES"]["fControllerBufferDepth3rd"] = std::to_string(m_Fixes.fControllerBufferDepth3rd);
 
 			ini["RESTRICT ANGLES"]["fSitting"] = std::to_string(m_RestrictAngles.fSitting);
 			ini["RESTRICT ANGLES"]["fSittingMaxLookingUp"] = std::to_string(m_RestrictAngles.fSittingMaxLookingUp);

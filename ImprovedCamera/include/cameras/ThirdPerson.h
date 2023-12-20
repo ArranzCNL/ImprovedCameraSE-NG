@@ -31,6 +31,8 @@ namespace ImprovedCamera {
 				kScriptedIdle,
 				kAnimationEnter,
 				kAnimationIdle,
+				kParaGlidingEnter,
+				kParaGlidingIdle,
 				kVampireLordEnter,
 				kVampireLordIdle,
 				kWerewolfEnter,

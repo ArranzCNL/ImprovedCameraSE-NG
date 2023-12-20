@@ -5,7 +5,7 @@
  */
 
 // Precompiled Header
-#include "stdafx.h"
+#include "PCH.h"
 
 #include "cameras/Dragon.h"
 
@@ -107,7 +107,7 @@ namespace ImprovedCamera {
 
 				if (m_pluginConfig->Events().bDragon && m_DragonState == CameraDragon::State::kRiding)
 				{
-					float zoom = *fMinCurrentZoom + m_pluginConfig->Fixes().fSwitchPOVDetectDistance;
+					float zoom = *fMinCurrentZoom + 0.03f;
 
 					if (isFirstPerson && thirdpersonState->currentZoomOffset <= zoom)
 					{

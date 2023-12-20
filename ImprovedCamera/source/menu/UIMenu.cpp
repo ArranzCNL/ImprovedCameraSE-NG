@@ -5,16 +5,26 @@
  */
 
 // Precompiled Header
-#include "stdafx.h"
+#include "PCH.h"
 
 #include "menu/UIMenu.h"
 
 #include "menu/Menus.h"
 #include "menu/UIMenuHelper.h"
+#include "menu/IconsFontAwesome6.h"
+#include "menu/Logo.h"
+
 #include "skyrimse/ImprovedCameraSE.h"
 #include "utils/Log.h"
 
 #include <filesystem>
+
+#define STB_IMAGE_IMPLEMENTATION
+#define STBI_ONLY_PNG
+#pragma warning(push)
+#pragma warning(disable: 4244)
+#include "stb/stb_image.h"
+#pragma warning(pop)
 
 namespace Menu {
 
@@ -28,8 +38,7 @@ namespace Menu {
 		m_pluginSkyrimSE = plugin->SkyrimSE();
 
 		m_ProfileName = m_pluginConfig->ModuleData().sProfileName.substr(0, m_pluginConfig->ModuleData().sProfileName.size() - 4);
-		m_TitlebarName = plugin->Description().c_str();
-		m_TitlebarName += " Editor";
+		m_TitlebarName = plugin->Description() + " Editor";
 	}
 
 	UIMenu::~UIMenu()
@@ -58,6 +67,7 @@ namespace Menu {
 			if (!m_pluginConfig->ModuleData().sMenuFont.empty())
 			{
 				std::string customFont = m_pluginConfig->FontPath() + m_pluginConfig->ModuleData().sMenuFont;
+				std::string fontAwesome = m_pluginConfig->FontPath() + "FontAwesome\\" + FONT_ICON_FILE_NAME_FAS;
 				float fontSize = m_pluginConfig->ModuleData().fMenuFontSize;
 
 				if (std::filesystem::exists(customFont))
@@ -92,6 +102,11 @@ namespace Menu {
 						}
 					}
 				}
+				ImFontConfig config;
+				config.MergeMode = true;
+				config.GlyphMinAdvanceX = 14.0f;  // Use if you want to make the icon monospaced
+				static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+				io.Fonts->AddFontFromFileTTF(fontAwesome.c_str(), 14.0f, &config, icon_ranges);
 			}
 			// Setup Dear ImGui style
 			ImGui::StyleColorsDark();
@@ -101,6 +116,11 @@ namespace Menu {
 
 			LOG_TRACE("  MenuKey:\t\t\t\t0x{:0X}", m_MenuKey);  // 0x%I64X
 			LOG_INFO("UIMenu Loaded.");
+
+			// Load Improved Camera's logo
+			std::int32_t logoWidth = 0;
+			std::int32_t logoHeight = 0;
+			LoadTextureFromMemory(logoBlob, &m_logoTexture, &logoWidth, &logoHeight);
 
 			// Setup Platform/Renderer backends
 			ImGui_ImplWin32_Init(m_UIMenuWindow);
@@ -298,7 +318,7 @@ namespace Menu {
 		m_ViewAboutImGuiWindow = false;
 
 		// Clear ImGui input
-		io.ClearInputCharacters();
+		io.ClearEventsQueue();
 		io.ClearInputKeys();
 
 		if (m_pluginConfig->ModuleData().iMenuMode == Systems::Window::UIDisplay::kInternal)
@@ -347,17 +367,25 @@ namespace Menu {
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
+			ImGui::Image((void*)m_logoTexture, ImVec2(25, 25));
 			if (ImGui::BeginMenu("File"))
 			{
+				ImGui::TextColored(ImVec4(0.573f, 0.894f, 0.573f, 1.0f), ICON_FA_USERS);
+				ImGui::SameLine();
 				if (ImGui::BeginMenu("Profiles"))
 				{
 					ShowProfileWindow();
 					ImGui::EndMenu();
 				}
+
+				ImGui::TextColored(ImVec4(0.314f, 0.6f, 0.894f, 1.0f), ICON_FA_FLOPPY_DISK);
+				ImGui::SameLine();
 				if (ImGui::MenuItem("Save Profile", "Ctrl+S") && !m_ViewSaveWindow)
 					OnUpdateMenuSave();
 
 				ImGui::Separator();
+				ImGui::TextColored(ImVec4(0.961f, 0.341f, 0.384f, 1.0f), ICON_FA_TRASH_CAN);
+				ImGui::SameLine();
 				if (m_ProfileName.compare("Default") == 0)
 					ImGui::MenuItem("Delete Profile", NULL, false, false);
 
@@ -365,6 +393,8 @@ namespace Menu {
 					OnUpdateDeleteProfile();
 
 				ImGui::Separator();
+				ImGui::Text(ICON_FA_RIGHT_FROM_BRACKET);
+				ImGui::SameLine();
 				if (ImGui::MenuItem("Close", "Esc"))
 					OnUpdateMenuClose();
 
@@ -382,9 +412,13 @@ namespace Menu {
 			}
 			if (ImGui::BeginMenu("Tools"))
 			{
+				ImGui::TextColored(ImVec4(0.961f, 0.341f, 0.384f, 1.0f), ICON_FA_BUG);
+				ImGui::SameLine();
 				if (ImGui::MenuItem("Stack Tool"))
 					m_ViewStackToolWindow = true;
 
+				ImGui::TextColored(ImVec4(0.314f, 0.6f, 0.894f, 1.0f), ICON_FA_SCREWDRIVER_WRENCH);
+				ImGui::SameLine();
 				if (ImGui::MenuItem("Metrics/Debugger"))
 					m_ViewMetricsWindow = true;
 
@@ -410,9 +444,13 @@ namespace Menu {
 #endif
 			if (ImGui::BeginMenu("Help"))
 			{
+				ImGui::TextColored(ImVec4(1.0f, 0.89f, 0.62f, 1.0f), ICON_FA_ROTATE);
+				ImGui::SameLine();
 				if (ImGui::MenuItem("Reset State"))
 					m_pluginSkyrimSE->Camera()->ResetState(true);
 
+				ImGui::TextColored(ImVec4(0.314f, 0.6f, 0.894f, 1.0f), ICON_FA_CIRCLE_INFO);
+				ImGui::SameLine();
 				if (ImGui::MenuItem("About Dear ImGui"))
 					m_ViewAboutImGuiWindow = true;
 
@@ -467,7 +505,7 @@ namespace Menu {
 		ImGui::SetNextWindowSize(ImVec2(300, 150));
 		ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 		ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-		ImGui::Begin(m_TitlebarName.c_str(), &m_ViewSaveWindow, ImGuiWindowFlags_::ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_::ImGuiWindowFlags_NoResize | ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse);
+		ImGui::Begin(m_TitlebarName.c_str(), &m_ViewSaveWindow, ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
 
 		auto windowWidth = ImGui::GetWindowSize().x;
 		auto textWidth = ImGui::CalcTextSize("Save Settings").x;
@@ -540,9 +578,9 @@ namespace Menu {
 
 	void UIMenu::ShowModuleDataWindow()
 	{
-		ImGui::Begin("[MODULE DATA]", &m_ViewModuleDataWindow, ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse);
+		ImGui::Begin("[MODULE DATA]", &m_ViewModuleDataWindow, ImGuiWindowFlags_NoCollapse);
 
-		if (ImGui::BeginTable("GeneralTable", 2, ImGuiTableFlags_::ImGuiTableFlags_SizingFixedFit))
+		if (ImGui::BeginTable("GeneralTable", 2, ImGuiTableFlags_SizingFixedFit))
 		{
 			ImGui::BeginDisabled();
 
@@ -588,6 +626,50 @@ namespace Menu {
 		m_Menu.Register(new MenuNearDistance);
 		m_Menu.Register(new MenuHeadbob);
 		m_Menu.Register(new MenuCamera);
+	}
+
+	bool UIMenu::LoadTextureFromMemory(const unsigned char* blob, ID3D11ShaderResourceView** outputResource, std::int32_t* outputWidth, std::int32_t* outputHeight)
+	{
+		std::int32_t textureWidth = 0;
+		std::int32_t textureHeight = 0;
+		std::int32_t textureLength = 32 * 32 * 4;
+		unsigned char* textureData = stbi_load_from_memory(blob, textureLength, &textureWidth, &textureHeight, nullptr, 4);
+		if (textureData == nullptr)
+			return false;
+
+		// Create texture
+		D3D11_TEXTURE2D_DESC desc{};
+		desc.Width = textureWidth;
+		desc.Height = textureHeight;
+		desc.MipLevels = 1;
+		desc.ArraySize = 1;
+		desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		desc.SampleDesc.Count = 1;
+		desc.Usage = D3D11_USAGE_DEFAULT;
+		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		desc.CPUAccessFlags = 0;
+
+		ID3D11Texture2D* pTexture = nullptr;
+		D3D11_SUBRESOURCE_DATA subResource{};
+		subResource.pSysMem = textureData;
+		subResource.SysMemPitch = desc.Width * 4;
+		subResource.SysMemSlicePitch = 0;
+		m_pluginGraphics->m_Device.Get()->CreateTexture2D(&desc, &subResource, &pTexture);
+
+		// Create texture view
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+		srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Texture2D.MipLevels = desc.MipLevels;
+		srvDesc.Texture2D.MostDetailedMip = 0;
+		m_pluginGraphics->m_Device.Get()->CreateShaderResourceView(pTexture, &srvDesc, outputResource);
+		pTexture->Release();
+
+		*outputWidth = textureWidth;
+		*outputHeight = textureHeight;
+		stbi_image_free(textureData);
+
+		return true;
 	}
 
 	void UIMenu::Shutdown()

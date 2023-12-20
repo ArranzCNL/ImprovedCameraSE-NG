@@ -22,8 +22,7 @@ namespace Menu {
 
 		virtual void OnShutdown() override{};
 
-	private:
-		Patch::SkyrimSE* m_pluginSkyrimSE = nullptr;
+		static void OnCallback(std::uint32_t node, bool begin);
 	};
 
 }

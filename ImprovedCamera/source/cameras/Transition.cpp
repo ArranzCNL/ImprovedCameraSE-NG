@@ -5,7 +5,7 @@
  */
 
 // Precompiled Header
-#include "stdafx.h"
+#include "PCH.h"
 
 #include "cameras/Transition.h"
 
@@ -39,6 +39,9 @@ namespace ImprovedCamera {
 			{
 				m_TransitionState = CameraTransition::State::kTransformation;
 				SetData();
+				// Set fade level
+				auto thirdpersonNode = this->Player->Get3D(0)->AsNode();
+				thirdpersonNode->fadeAmount = 0.0;
 				return true;
 			}
 			// Werewolf Killmove
@@ -89,7 +92,7 @@ namespace ImprovedCamera {
 				return true;
 			}
 			// Use this for feeding detection
-			if (previousCamera == RE::CameraStates::kFirstPerson && this->Player->GetPlayerRuntimeData().unkBDB.all(RE::PlayerCharacter::FlagBDB::kIsInThirdPersonMode) && pluginConfig->Events().bCannibal)
+			if (previousCamera == RE::CameraStates::kFirstPerson && this->Player->GetPlayerRuntimeData().playerFlags.isInThirdPersonMode && pluginConfig->Events().bCannibal)
 			{
 				m_TransitionState = CameraTransition::State::kCannibal;
 				SetData();

@@ -30,6 +30,8 @@ namespace Events {
 	public:
 		static void Register();
 		void CheckSPIM();
+		bool IsCurrentAnimation(const std::string& animation);
+		bool IsPreviousAnimation(const std::string& animation);
 
 		virtual EventResult ProcessEvent(const RE::MenuOpenCloseEvent* a_event, RE::BSTEventSource<RE::MenuOpenCloseEvent>* a_eventSource) override;
 		virtual EventResult ProcessEvent(const RE::BSAnimationGraphEvent* a_event, RE::BSTEventSource<RE::BSAnimationGraphEvent>* a_eventSource) override;
@@ -37,6 +39,8 @@ namespace Events {
 	private:
 		void ResetArms();
 
+		std::string m_CurrentAnimation{};
+		std::string m_PreviousAnimation{};
 		std::uint32_t* m_SPIMInventoryMenu = nullptr;
 		std::uint32_t* m_SPIMMagicMenu = nullptr;
 	};

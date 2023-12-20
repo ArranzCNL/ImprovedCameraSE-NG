@@ -23,7 +23,7 @@ namespace Settings {
 		float fMenuFontSize;
 	};
 	// Data for ImprovedCameraSE.ini
-	// 20 Settings
+	// 21 Settings
 	struct General {
 		bool bEnableBody;
 		bool bEnableBodyConsole;
@@ -39,6 +39,7 @@ namespace Settings {
 		bool bEnableHeadScripted;
 		bool bEnableThirdPersonArms;
 		bool bEnableThirdPersonTorch;
+		bool bEnableThirdPersonTorchBlock;
 		bool bEnableThirdPersonShield;
 		bool bEnableThirdPersonShieldBlock;
 		bool bEnableThirdPersonBow;
@@ -62,16 +63,13 @@ namespace Settings {
 		bool bAttackBow;
 		bool bKillmove;
 	};
-	// 8 Settings
+	// 5 Settings
 	struct Fixes {
-		bool bQuickLightLighting;
 		bool bFirstPersonOverhaul;
-		bool bFirstPersonOverhaulEnableVanillaArmsOnMovement;
+		bool bOverrideVanillaArmsOnMovement;
 		bool bArcheryGameplayOverhaul;
-		float fSwitchPOVDetectDistance;
 		bool bSmoothAnimationTransitions;
 		float fControllerBufferDepth1st;
-		float fControllerBufferDepth3rd;
 	};
 	// 14 Settings
 	struct RestrictAngles {

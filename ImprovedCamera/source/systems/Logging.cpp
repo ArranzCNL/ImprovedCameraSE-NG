@@ -5,7 +5,7 @@
  */
 
 // Precompiled Header
-#include "stdafx.h"
+#include "PCH.h"
 
 #include "systems/Logging.h"
 
@@ -39,7 +39,7 @@ namespace Systems {
 
 			auto plugin = DLLMain::Plugin::Get();
 			char logPath[MAX_PATH]{};
-			snprintf(logPath, sizeof(logPath), "\\My Games\\%s\\SKSE\\%s.log", plugin->Config()->ModuleData().sWindowName.c_str(), plugin->Name().c_str());
+			snprintf(logPath, sizeof(logPath), "\\My Games\\%s\\SKSE\\%s.log", plugin->SkyrimSE()->WindowName().c_str(), plugin->Name().c_str());
 			logFile += logPath;
 
 			auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logFile.string(), true);

@@ -5,7 +5,7 @@
  */
 
 // Precompiled Header
-#include "stdafx.h"
+#include "PCH.h"
 
 #include "menu/UIMenuHelper.h"
 
@@ -96,7 +96,13 @@ namespace ImGui {
 		colors[ImGuiCol_TabUnfocusedActive] = ImVec4{ 0.2f, 0.2f, 0.2f, 1.0f };
 
 		// Seperator - Inner borders from Visual Studio are this colour when grabbing.
-		//colors[ImGuiCol_SeparatorActive] = ImVec4(0.09f, 0.09f, 0.09f, 1.00f);
+		//colors[ImGuiCol_SeparatorActive] = ImVec4{ 0.09f, 0.09f, 0.09f, 1.0f };
+
+		// ImGui::TextColored(ImVec4(0.961f, 0.341f, 0.384f, 1.0f), "Red");
+		// ImGui::TextColored(ImVec4(0.573f, 0.894f, 0.573f, 1.0f), "Green");
+		// ImGui::TextColored(ImVec4(0.314f, 0.6f, 0.894f, 1.0f), "Blue");
+		// ImGui::TextColored(ImVec4(1.0f, 0.89f, 0.62f, 1.0f), "Yellow");
+		// ImGui::TextColored(ImVec4(0.6f, 0.431f, 0.820f, 1.0f), "Purple");
 	}
 
 	void TableItemInputText(const char* text, const char* inputText, std::string* setting)
@@ -129,32 +135,6 @@ namespace ImGui {
 		ImGui::TableNextColumn();
 		ImGui::PushItemWidth(250);
 		ImGui::InputFloat(inputText, setting, step, step_fast, format);
-		ImGui::PopItemWidth();
-	}
-
-	void TableItemToggleButton(const char* text, const char* buttonText, bool* setting, bool insertRow)
-	{
-		if (insertRow)
-			ImGui::TableNextRow();
-
-		ImGui::TableNextColumn();
-		ImGui::Text(text);
-		ImGui::TableNextColumn();
-		ImGui::ToggleButton(buttonText, setting);
-	}
-
-	void TableItemSliderFloat(const char* text, const char* sliderText, float* setting, float v_min, float v_max, const char* format, bool insertRow)
-	{
-		if (insertRow)
-			ImGui::TableNextRow();
-
-		ImGui::TableNextColumn();
-		ImGui::Text(text);
-		ImGui::TableNextColumn();
-		ImGui::PushItemWidth(100);
-		ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 12.0f);
-		ImGui::SliderFloat(sliderText, setting, v_min, v_max, format, ImGuiSliderFlags_::ImGuiSliderFlags_AlwaysClamp);
-		ImGui::PopStyleVar();
 		ImGui::PopItemWidth();
 	}
 

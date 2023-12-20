@@ -5,7 +5,7 @@
  */
 
 // Precompiled Header
-#include "stdafx.h"
+#include "PCH.h"
 
 #include "api/skse_api.h"
 
@@ -13,6 +13,27 @@
 #include "skyrimse/ImprovedCameraSE.h"
 #include "utils/Log.h"
 #include "version.h"
+
+#if 0
+#include "api/versionlibdb.h"
+
+bool DumpSpecificVersion()
+{
+	VersionDb db;
+
+	// Try to load database of version 1.6.1130.0 regardless of running executable version.
+	if (!db.Load(1, 6, 1130, 0))
+	{
+		LOG_CRITICAL("Failed to load database for 1.6.1130.0!");
+		return false;
+	}
+
+	// Write out a file called offsets-1.6.1130.txt where each line is the ID and offset.
+	db.Dump("offsets-1.6.1130.0.txt"); // Dumps to root of Skyrim directory
+	LOG_INFO("Dumped offsets for 1.6.1130.0");
+	return true;
+}
+#endif
 
 namespace SKSE {
 
@@ -77,7 +98,7 @@ namespace SKSE {
 		}
 
 		const auto version = skse->RuntimeVersion();
-		if (version < SKSE::RUNTIME_SSE_1_5_39)
+		if (version < SKSE::RUNTIME_SSE_1_5_97)
 		{
 			LOG_CRITICAL("Unsupported runtime version {}", version.string());
 			return false;
@@ -89,9 +110,10 @@ namespace SKSE {
 	{
 		auto plugin = DLLMain::Plugin::Get();
 		plugin->m_Logging.Initialize();
-
+#if 0
+		DumpSpecificVersion();
+#endif
 		SKSE::Init(skse);
-
 		bool loaded = plugin->Load();
 
 		if (loaded)

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{3fd049f6-1f15-430e-8951-bbd3821a70be}</ProjectGuid>
+    <RootNamespace>IC</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.20348.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir).bin\$(Platform)-$(Configuration)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir).obj\$(Platform)-$(Configuration)\$(ProjectName)\</IntDir>
+    <LinkIncremental />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir).bin\$(Platform)-$(Configuration)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir).obj\$(Platform)-$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+    <VcpkgManifestInstall>false</VcpkgManifestInstall>
+    <VcpkgAutoLink>false</VcpkgAutoLink>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <VcpkgConfiguration>Debug</VcpkgConfiguration>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <SDLCheck>
+      </SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;ENABLE_SKYRIM_SE=1;ENABLE_SKYRIM_AE=1;SKSE_SUPPORT_XBYAK=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <ForcedIncludeFiles>
+      </ForcedIncludeFiles>
+      <UseFullPaths>false</UseFullPaths>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\include;$(ProjectDir)..\..\pch;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\include;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\vendor\fmt\include;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\vendor\spdlog\include;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\vendor\rapidcsv\src;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\vendor\xbyak;$(ProjectDir)..\..\vendor\minhook\include;$(ProjectDir)..\..\vendor\mINI\src;$(ProjectDir)..\..\vendor\imgui;$(ProjectDir)..\..\vendor\glm;$(ProjectDir)..\..\vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <BuildStlModules>false</BuildStlModules>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <SupportJustMyCode>false</SupportJustMyCode>
+      <Optimization>Disabled</Optimization>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>
+      </SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;ENABLE_SKYRIM_SE=1;ENABLE_SKYRIM_AE=1;SKSE_SUPPORT_XBYAK=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <ForcedIncludeFiles>
+      </ForcedIncludeFiles>
+      <UseFullPaths>false</UseFullPaths>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\include;$(ProjectDir)..\..\pch;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\include;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\vendor\fmt\include;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\vendor\spdlog\include;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\vendor\rapidcsv\src;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\vendor\xbyak;$(ProjectDir)..\..\vendor\minhook\include;$(ProjectDir)..\..\vendor\mINI\src;$(ProjectDir)..\..\vendor\imgui;$(ProjectDir)..\..\vendor\glm;$(ProjectDir)..\..\vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <BuildStlModules>false</BuildStlModules>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\api\skse_api.h" />
+    <ClInclude Include="..\..\include\api\SmoothCamAPI.h" />
+    <ClInclude Include="..\..\include\api\TrueDirectionalMovementAPI.h" />
+    <ClInclude Include="..\..\include\api\versionlibdb.h" />
+    <ClInclude Include="..\..\include\cameras\Cameras.h" />
+    <ClInclude Include="..\..\include\cameras\DeathCinematic.h" />
+    <ClInclude Include="..\..\include\cameras\Dragon.h" />
+    <ClInclude Include="..\..\include\cameras\Events.h" />
+    <ClInclude Include="..\..\include\cameras\FirstPerson.h" />
+    <ClInclude Include="..\..\include\cameras\Furniture.h" />
+    <ClInclude Include="..\..\include\cameras\Horse.h" />
+    <ClInclude Include="..\..\include\cameras\ICamera.h" />
+    <ClInclude Include="..\..\include\cameras\Ragdoll.h" />
+    <ClInclude Include="..\..\include\cameras\ThirdPerson.h" />
+    <ClInclude Include="..\..\include\cameras\Transition.h" />
+    <ClInclude Include="..\..\include\menu\Camera.h" />
+    <ClInclude Include="..\..\include\menu\EventsMenu.h" />
+    <ClInclude Include="..\..\include\menu\Fixes.h" />
+    <ClInclude Include="..\..\include\menu\Fov.h" />
+    <ClInclude Include="..\..\include\menu\General.h" />
+    <ClInclude Include="..\..\include\menu\Headbob.h" />
+    <ClInclude Include="..\..\include\menu\Hide.h" />
+    <ClInclude Include="..\..\include\menu\IconsFontAwesome6.h" />
+    <ClInclude Include="..\..\include\menu\Logo.h" />
+    <ClInclude Include="..\..\include\menu\IMenu.h" />
+    <ClInclude Include="..\..\include\menu\Menus.h" />
+    <ClInclude Include="..\..\include\menu\NearDistance.h" />
+    <ClInclude Include="..\..\include\menu\RestrictAngles.h" />
+    <ClInclude Include="..\..\include\menu\UIMenu.h" />
+    <ClInclude Include="..\..\include\menu\UIMenuHelper.h" />
+    <ClInclude Include="..\..\include\plugin.h" />
+    <ClInclude Include="..\..\include\settings\Settings.h" />
+    <ClInclude Include="..\..\include\skyrimse\Addresses.h" />
+    <ClInclude Include="..\..\include\skyrimse\EventsSkyrim.h" />
+    <ClInclude Include="..\..\include\skyrimse\Helper.h" />
+    <ClInclude Include="..\..\include\skyrimse\Hooks.h" />
+    <ClInclude Include="..\..\include\skyrimse\ImprovedCameraSE.h" />
+    <ClInclude Include="..\..\include\skyrimse\SkyrimSE.h" />
+    <ClInclude Include="..\..\include\systems\Config.h" />
+    <ClInclude Include="..\..\include\systems\Graphics.h" />
+    <ClInclude Include="..\..\include\systems\Logging.h" />
+    <ClInclude Include="..\..\include\systems\UI.h" />
+    <ClInclude Include="..\..\include\systems\Window.h" />
+    <ClInclude Include="..\..\include\utils\ICMath.h" />
+    <ClInclude Include="..\..\include\utils\Log.h" />
+    <ClInclude Include="..\..\include\utils\PatternScan.h" />
+    <ClInclude Include="..\..\include\utils\Utils.h" />
+    <ClInclude Include="..\..\include\version.h" />
+    <ClInclude Include="..\..\PCH\PCH.h" />
+    <ClInclude Include="..\..\vendor\glm\glm\glm.hpp" />
+    <ClInclude Include="..\..\vendor\mINI\src\mini\ini.h" />
+    <ClInclude Include="..\..\vendor\stb\stb_image.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\PCH\PCH.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\source\api\skse_api.cpp" />
+    <ClCompile Include="..\..\source\build\vendor.cpp" />
+    <ClCompile Include="..\..\source\cameras\DeathCinematic.cpp" />
+    <ClCompile Include="..\..\source\cameras\Dragon.cpp" />
+    <ClCompile Include="..\..\source\cameras\FirstPerson.cpp" />
+    <ClCompile Include="..\..\source\cameras\Furniture.cpp" />
+    <ClCompile Include="..\..\source\cameras\Horse.cpp" />
+    <ClCompile Include="..\..\source\cameras\ICamera.cpp" />
+    <ClCompile Include="..\..\source\cameras\Ragdoll.cpp" />
+    <ClCompile Include="..\..\source\cameras\ThirdPerson.cpp" />
+    <ClCompile Include="..\..\source\cameras\Transition.cpp" />
+    <ClCompile Include="..\..\source\dllmain.cpp" />
+    <ClCompile Include="..\..\source\menu\Camera.cpp" />
+    <ClCompile Include="..\..\source\menu\EventsMenu.cpp" />
+    <ClCompile Include="..\..\source\menu\Fixes.cpp" />
+    <ClCompile Include="..\..\source\menu\Fov.cpp" />
+    <ClCompile Include="..\..\source\menu\General.cpp" />
+    <ClCompile Include="..\..\source\menu\Headbob.cpp" />
+    <ClCompile Include="..\..\source\menu\Hide.cpp" />
+    <ClCompile Include="..\..\source\menu\IMenu.cpp" />
+    <ClCompile Include="..\..\source\menu\NearDistance.cpp" />
+    <ClCompile Include="..\..\source\menu\RestrictAngles.cpp" />
+    <ClCompile Include="..\..\source\menu\UIMenu.cpp" />
+    <ClCompile Include="..\..\source\menu\UIMenuHelper.cpp" />
+    <ClCompile Include="..\..\source\plugin.cpp" />
+    <ClCompile Include="..\..\source\skyrimse\Addresses.cpp" />
+    <ClCompile Include="..\..\source\skyrimse\EventsSkyrim.cpp" />
+    <ClCompile Include="..\..\source\skyrimse\Hooks.cpp" />
+    <ClCompile Include="..\..\source\skyrimse\ImprovedCameraSE.cpp" />
+    <ClCompile Include="..\..\source\skyrimse\SkyrimSE.cpp" />
+    <ClCompile Include="..\..\source\systems\Config.cpp" />
+    <ClCompile Include="..\..\source\systems\Graphics.cpp" />
+    <ClCompile Include="..\..\source\systems\Logging.cpp" />
+    <ClCompile Include="..\..\source\systems\UI.cpp" />
+    <ClCompile Include="..\..\source\systems\Window.cpp" />
+    <ClCompile Include="..\..\source\utils\ICMath.cpp" />
+    <ClCompile Include="..\..\source\utils\PatternScan.cpp" />
+    <ClCompile Include="..\..\source\utils\Utils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\resource\plugin.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\.clang-format" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\vendor\CommonLibSSE-NG\build\VC17\CommonLibSSE.vcxproj">
+      <Project>{2a2587b1-09b5-3b54-8e12-47c07c344f2f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\vendor\imgui\build\VC17\libImGui.vcxproj">
+      <Project>{d492d2f6-d275-4083-ad10-903a1cbac986}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\vendor\minhook\build\VC17\libMinHook.vcxproj">
+      <Project>{f142a341-5ee0-442d-a15f-98ae9b48dbae}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

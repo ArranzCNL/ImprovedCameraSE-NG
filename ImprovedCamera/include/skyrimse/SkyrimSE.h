@@ -27,6 +27,7 @@ namespace Patch {
 				k16353 = 2,
 				k16640 = 3,
 				k16659 = 4,  // GOG
+				k161130 = 5,
 
 				kTotal
 			};
@@ -39,6 +40,7 @@ namespace Patch {
 	public:
 		const std::string& FullName() const { return m_FullName; };
 		const std::string& Name() const { return m_Name; };
+		const std::string& WindowName() const { return m_WindowName; };
 		const std::string& Path() const { return m_Path; };
 		const std::uint8_t Build() const { return m_Build; };
 		const std::uint32_t VersionMajor() const { return m_VersionMajor; };
@@ -54,6 +56,7 @@ namespace Patch {
 	private:
 		std::string m_FullName{};
 		std::string m_Name{};
+		std::string m_WindowName{};
 		std::string m_Path{};
 		std::uint8_t m_Build = BuildInfo::kInvalid;
 		std::uint32_t m_VersionMajor = 0;

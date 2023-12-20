@@ -5,7 +5,7 @@
  */
 
 // Precompiled Header
-#include "stdafx.h"
+#include "PCH.h"
 
 /* Based upon learn_more's findPattern_v2 */
 #include "utils/PatternScan.h"

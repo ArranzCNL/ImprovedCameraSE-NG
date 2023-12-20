@@ -12,9 +12,9 @@
 
 namespace RE {
 
-	struct WEAPON_IDS {
+	struct EQUIPPED_ITEMTYPE_IDS {
 
-		enum WEAPON_ID : std::int8_t
+		enum EQUIPPED_ITEMTYPE_ID : std::int32_t
 		{
 			kFist = 0,
 			kSword,
@@ -26,12 +26,15 @@ namespace RE {
 			kBattleaxe = kWarhammer,
 			kBow,
 			kStaff,
+			kMagic,
+			kShield,
+			kTorch,
 			kCrossbow,
 
-			kTotal = 10
+			kTotal = 13
 		};
 	};
-	using WEAPON_ID = WEAPON_IDS::WEAPON_ID;
+	using EQUIPPED_ITEMTYPE_ID = EQUIPPED_ITEMTYPE_IDS::EQUIPPED_ITEMTYPE_ID;
 
 }
 
@@ -138,6 +141,7 @@ namespace Helper {
 				"SitCrossLeggedRoot",
 				"IdleKneeling",
 				"LayDownRoot",
+				"IdleLaydown",
 				"IdleCartTravelDriver",
 			};
 
@@ -246,44 +250,16 @@ namespace Helper {
 		return IsSitting(player) || IsSleeping(player);
 	}
 
-	static inline std::int8_t GetWeaponID(RE::PlayerCharacter* player, bool rightHand = false)
-	{
-		auto playerState = player->AsActorState();
-
-		if (playerState->IsWeaponDrawn())
-		{
-			std::int8_t weaponID = 0;
-
-			if (rightHand)
-			{
-				auto equippedRightHand = player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
-				auto rightWeapon = equippedRightHand ? equippedRightHand->As<RE::TESObjectWEAP>() : nullptr;
-
-				if (rightWeapon)
-					weaponID = static_cast<std::int8_t>(rightWeapon->GetWeaponType());
-
-				return weaponID;
-			}
-
-			auto equippedLeftHand = player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();
-			auto leftWeapon = equippedLeftHand ? equippedLeftHand->As<RE::TESObjectWEAP>() : nullptr;
-
-			if (leftWeapon)
-				weaponID = static_cast<std::int8_t>(leftWeapon->GetWeaponType());
-
-			return weaponID;
-		}
-		return -1;
-	}
-
 	static inline bool IsAiming(RE::PlayerCharacter* player, bool crossbow = false)
 	{
+		using namespace Address::Function;
+
 		if (!player)
 			return false;
 
-		std::int8_t weaponID = GetWeaponID(player);
+		std::int32_t equippedItemID = GetEquippedItemTypeID(player);
 
-		if ((crossbow && weaponID != RE::WEAPON_ID::kCrossbow) || (!crossbow && weaponID != RE::WEAPON_ID::kBow))
+		if ((crossbow && equippedItemID != RE::EQUIPPED_ITEMTYPE_ID::kCrossbow) || (!crossbow && equippedItemID != RE::EQUIPPED_ITEMTYPE_ID::kBow))
 			return false;
 
 		auto attackState = player->AsActorState()->GetAttackState();
@@ -296,25 +272,30 @@ namespace Helper {
 
 	static inline bool IsRighthandWeaponEquipped(RE::PlayerCharacter* player)
 	{
+		using namespace Address::Function;
+
 		if (!player)
 			return false;
 
-		std::int8_t leftWeaponID = GetWeaponID(player);
-		std::int8_t rightWeaponID = GetWeaponID(player, true);
+		std::int32_t equippedLeftItemID = GetEquippedItemTypeID(player);
+		std::int32_t equippedRightItemID = GetEquippedItemTypeID(player, true);
 
-		return (leftWeaponID == RE::WEAPON_ID::kFist && (rightWeaponID == RE::WEAPON_ID::kFist || rightWeaponID == RE::WEAPON_ID::kSword ||
-			rightWeaponID == RE::WEAPON_ID::kDagger || rightWeaponID == RE::WEAPON_ID::kAxe || rightWeaponID == RE::WEAPON_ID::kMace ||
-			rightWeaponID == RE::WEAPON_ID::kStaff));
+		return (equippedLeftItemID == RE::EQUIPPED_ITEMTYPE_ID::kFist && (equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kFist ||
+			equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kSword || equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kDagger ||
+			equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kAxe || equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kMace ||
+			equippedRightItemID == RE::EQUIPPED_ITEMTYPE_ID::kStaff));
 	}
 
 	static inline bool IsRangedWeaponEquipped(RE::PlayerCharacter* player, bool crossbow = false)
 	{
+		using namespace Address::Function;
+
 		if (!player)
 			return false;
 
-		std::int8_t weaponID = GetWeaponID(player);
+		std::int32_t equippedItemID = GetEquippedItemTypeID(player);
 
-		if ((crossbow && weaponID == RE::WEAPON_ID::kCrossbow) || (!crossbow && weaponID == RE::WEAPON_ID::kBow))
+		if ((crossbow && equippedItemID == RE::EQUIPPED_ITEMTYPE_ID::kCrossbow) || (!crossbow && equippedItemID == RE::EQUIPPED_ITEMTYPE_ID::kBow))
 			return true;
 
 		return false;
@@ -329,47 +310,6 @@ namespace Helper {
 			return true;
 
 		return false;
-	}
-
-	static inline bool IsShieldEquipped(RE::PlayerCharacter* player)
-	{
-		auto thirdperson3D = player->Get3D(0);
-		if (!thirdperson3D)
-			return false;
-
-		auto shieldNode = FindNode(thirdperson3D->AsNode(), "Shield");
-		if (shieldNode && shieldNode->children.size() == 1)
-			return true;
-
-		return false;
-	}
-
-	static inline bool IsTorchEquipped(RE::Actor* actor)
-	{
-		using namespace Address::Function;
-
-		typedef RE::BipedModel* (*_GetBipedModel)(RE::Actor*);
-		_GetBipedModel GetBipedModel = (_GetBipedModel)GetVTableAddress(actor, 0x3F8);
-		RE::BipedModel* model = GetBipedModel(actor);
-		RE::BipedAnim* bipedData = model->bipedData;
-
-		bool torch_out = false;
-
-		if (bipedData)
-		{
-			bipedData->IncRef();
-
-			torch_out = BipedAnim_GetTorchObject(bipedData, 1);
-			if (!torch_out)
-				torch_out = BipedAnim_GetTorchObject(bipedData, 0);
-
-			if (bipedData->DecRef() == 0)
-			{
-				bipedData->~BipedAnim();
-				RE::MemoryManager::GetSingleton()->Deallocate(bipedData, false);
-			}
-		}
-		return torch_out;
 	}
 
 	// Needs testing.

@@ -5,11 +5,67 @@
  */
 
 // Precompiled Header
-#include "stdafx.h"
+#include "PCH.h"
 
 #include "menu/RestrictAngles.h"
 
 namespace Menu {
+
+	struct MENU_IDS {
+
+		enum MENU_ID : std::int32_t
+		{
+			kSitting = 1,
+			kSittingMaxLookingUp,
+			kSittingMaxLookingDown,
+			kMounted,
+			kMountedMaxLookingUp,
+			kMountedMaxLookingDown,
+			kFlying,
+			kFlyingMaxLookingUp,
+			kFlyingMaxLookingDown,
+			kVampireLord,
+			kWerewolf,
+			kNecroLich,
+			kScripted,
+			kScriptedPitch,
+
+			kTotal = 15
+		};
+	};
+	using MENU_ID = MENU_IDS::MENU_ID;
+
+	MenuRestrictAngles::MenuRestrictAngles()
+	{
+		m_MenuNodes.emplace_back(1, "Sitting Restrict Angle", "Restricts left/right Angle to Prevent Clipping into Head/Body",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fSitting, 0.0f, 180.0f, "%.1f");
+		m_MenuNodes.emplace_back(1, "Sitting Max Looking Up", "Restricts looking Up Angle to Prevent Clipping into Head/Body",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fSittingMaxLookingUp, 0.0f, 180.0f, "%.1f");
+		m_MenuNodes.emplace_back(1, "Sitting Max Looking Down", "Restricts looking down Angle to Prevent Clipping into Head/Body",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fSittingMaxLookingDown, 0.0f, 180.0f, "%.1f");
+		m_MenuNodes.emplace_back(1, "Mounted Restrict Angle", "Restricts Left/Right Angles to Prevent Clipping into Head/Body",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fMounted, 0.0f, 180.0f, "%.1f");
+		m_MenuNodes.emplace_back(1, "Mounted Max Looking Up", "Restricts Looking Up Angle to Prevent Clipping into Head/Body",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fMountedMaxLookingUp, 0.0f, 180.0f, "%.1f");
+		m_MenuNodes.emplace_back(1, "Mounted Max Looking Down", "Restricts looking down Angle to Prevent Clipping into Head/Body",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fMountedMaxLookingDown, 0.0f, 180.0f, "%.1f");
+		m_MenuNodes.emplace_back(1, "Flying Restrict Angle", "Restricts Left/Right Angles to Prevent Clipping into Head/Body",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fFlying, 0.0f, 180.0f, "%.1f");
+		m_MenuNodes.emplace_back(1, "Flying Max Looking Up", "Restricts looking up Angle to Prevent Clipping into Head/Body",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fFlyingMaxLookingUp, 0.0f, 180.0f, "%.1f");
+		m_MenuNodes.emplace_back(1, "Flying Max Looking Down", "Restricts looking down Angle to Prevent Clipping into Head/Body",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fFlyingMaxLookingDown, 0.0f, 180.0f, "%.1f");
+		m_MenuNodes.emplace_back(1, "VampireLord Restrict Angle", "Restricts Angles to Prevent Clipping into Head/Body",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fVampireLord, 0.0f, 180.0f, "%.1f");
+		m_MenuNodes.emplace_back(1, "Werewolf Restrict Angle", "Restricts Angles to Prevent Clipping into Head/Body",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fWerewolf, 0.0f, 180.0f, "%.1f");
+		m_MenuNodes.emplace_back(1, "Lich Restrict Angle", "Restricts Angles to Prevent Clipping into Head/Body",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fNecroLich, 0.0f, 180.0f, "%.1f");
+		m_MenuNodes.emplace_back(1, "Scripted Restrict Angle", "Restricts Angles to Prevent Clipping into Head/Body during Scripted Events",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fScripted, 0.0f, 180.0f, "%.1f");
+		m_MenuNodes.emplace_back(1, "Scripted Restrict Pitch", "Restricts Pitch to Prevent Clipping into Head/Body during Scripted Events",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fScriptedPitch, 0.0f, 180.0f, "%.1f");
+	}
 
 	void MenuRestrictAngles::OnOpen()
 	{
@@ -21,27 +77,9 @@ namespace Menu {
 		if (!m_Window)
 			return;
 
-		ImGui::Begin("[RESTRICT ANGLES]", &m_Window, ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse);
-		if (ImGui::BeginTable("RestrictAnglesTable", 2, ImGuiTableFlags_::ImGuiTableFlags_SizingFixedFit))
-		{
-			ImGui::TableItemSliderFloat("Sitting Restrict Angle", "##SittingRestrictAngle", &m_pluginConfig->m_RestrictAngles.fSitting, 0.0f, 180.0f, "%.1f");
-			ImGui::TableItemSliderFloat("Sitting Max Looking Up", "##SittingMaxLookingUp", &m_pluginConfig->m_RestrictAngles.fSittingMaxLookingUp, 0.0f, 180.0f, "%.1f");
-			ImGui::TableItemSliderFloat("Sitting Max Looking Down", "##SittingMaxLookingDown", &m_pluginConfig->m_RestrictAngles.fSittingMaxLookingDown, 0.0f, 180.0f, "%.1f");
-			ImGui::TableItemSliderFloat("Mounted Restrict Angle", "##MountedRestrictAngle", &m_pluginConfig->m_RestrictAngles.fMounted, 0.0f, 180.0f, "%.1f");
-			ImGui::TableItemSliderFloat("Mounted Max Looking Up", "##MountedMaxLookingUp", &m_pluginConfig->m_RestrictAngles.fMountedMaxLookingUp, 0.0f, 180.0f, "%.1f");
-			ImGui::TableItemSliderFloat("Mounted Max Looking Down", "##MountedMaxLookingDown", &m_pluginConfig->m_RestrictAngles.fMountedMaxLookingDown, 0.0f, 180.0f, "%.1f");
-			ImGui::TableItemSliderFloat("Flying Restrict Angle", "##FlyingRestrictAngle", &m_pluginConfig->m_RestrictAngles.fFlying, 0.0f, 180.0f, "%.1f");
-			ImGui::TableItemSliderFloat("Flying Max Looking Up", "##FlyingMaxLookingUp", &m_pluginConfig->m_RestrictAngles.fFlyingMaxLookingUp, 0.0f, 180.0f, "%.1f");
-			ImGui::TableItemSliderFloat("Flying Max Looking Down", "##FlyingMaxLookingDown", &m_pluginConfig->m_RestrictAngles.fFlyingMaxLookingDown, 0.0f, 180.0f, "%.1f");
-			ImGui::TableItemSliderFloat("VampireLord Restrict Angle", "##VampireLordRestrictAngle", &m_pluginConfig->m_RestrictAngles.fVampireLord, 0.0f, 180.0f, "%.1f");
-			ImGui::TableItemSliderFloat("Werewolf Restrict Angle", "##WerewolfRestrictAngle", &m_pluginConfig->m_RestrictAngles.fWerewolf, 0.0f, 180.0f, "%.1f");
-			ImGui::TableItemSliderFloat("Lich Restrict Angle", "##NecroLichRestrictAngle", &m_pluginConfig->m_RestrictAngles.fNecroLich, 0.0f, 180.0f, "%.1f");
-			ImGui::TableItemSliderFloat("Scripted Restrict Angle", "##ScriptedRestrictAngle", &m_pluginConfig->m_RestrictAngles.fScripted, 0.0f, 180.0f, "%.1f");
-			ImGui::TableItemSliderFloat("Scripted Restrict Pitch", "##ScriptedRestrictPitch", &m_pluginConfig->m_RestrictAngles.fScriptedPitch, 0.0f, 180.0f, "%.1f");
-
-			ImGui::EndTable();
-		}
-
+		ImGui::Begin("[RESTRICT ANGLES]", &m_Window, ImGuiWindowFlags_NoCollapse);
+		
+		DisplayMenuNodes("RestrictAnglesTable");
 		if (ImGui::Button("Close"))
 			m_Window = false;
 

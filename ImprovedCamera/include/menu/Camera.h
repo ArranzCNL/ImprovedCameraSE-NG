@@ -13,7 +13,7 @@ namespace Menu {
 	class MenuCamera : public Interface::IMenu {
 
 	public:
-		MenuCamera() = default;
+		MenuCamera();
 		virtual ~MenuCamera() = default;
 
 		virtual void OnOpen() override;

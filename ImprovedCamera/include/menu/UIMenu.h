@@ -54,7 +54,11 @@ namespace Menu {
 		std::string m_ImGuiConfig{};
 		std::int32_t m_MenuKey = 0;
 
+		ID3D11ShaderResourceView* m_logoTexture = nullptr;
+
 	private:
+		bool LoadTextureFromMemory(const unsigned char* blob, ID3D11ShaderResourceView** outputResource, std::int32_t* outputWidth, std::int32_t* outputHeight);
+
 		void Shutdown();
 		void OnUpdateMenu();
 		void OnUpdateMenuClose();

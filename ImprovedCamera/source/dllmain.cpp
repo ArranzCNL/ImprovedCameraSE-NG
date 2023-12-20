@@ -5,7 +5,7 @@
  */
 
 // Precompiled Header
-#include "stdafx.h"
+#include "PCH.h"
 
 #include "plugin.h"
 
@@ -23,9 +23,10 @@ BOOL APIENTRY DllMain(HMODULE hinstDLL, DWORD fdwReason, LPVOID)
 		{
 			DisableThreadLibraryCalls(hinstDLL);
 #ifdef _DEBUG
-			_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-			_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
-			_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
+			// To use the following under project properties: Advanced > Use Debug Libraries: Yes
+			//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+			//_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
+			//_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
 
 			// Wait for a debugger to attach. Note: Makes it easier for quickly testing stuff without needing the debugger present.
 			if (!IsDebuggerPresent())

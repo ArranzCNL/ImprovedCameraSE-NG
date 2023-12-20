@@ -13,7 +13,7 @@ namespace Menu {
 	class MenuFOV : public Interface::IMenu {
 
 	public:
-		MenuFOV() = default;
+		MenuFOV();
 		virtual ~MenuFOV() = default;
 
 		virtual void OnOpen() override;
@@ -21,6 +21,8 @@ namespace Menu {
 		virtual void OnClose() override{};
 
 		virtual void OnShutdown() override{};
+
+		static void OnCallback(std::uint32_t node, bool begin);
 	};
 
 }
