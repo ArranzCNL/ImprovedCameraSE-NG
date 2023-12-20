@@ -1,0 +1,18 @@
+[submodule "ImprovedCamera/vendor/CommonLibSSE-NG"]
+	path = ImprovedCamera/vendor/CommonLibSSE-NG
+	url = https://github.com/ArranzCNL/CommonLibSSE-NG
+	branch = flatrim
+[submodule "ImprovedCamera/vendor/mINI"]
+	path = ImprovedCamera/vendor/mINI
+	url = https://github.com/ArranzCNL/mINI
+[submodule "ImprovedCamera/vendor/minhook"]
+	path = ImprovedCamera/vendor/minhook
+	url = https://github.com/ArranzCNL/minhook
+	branch = dev
+[submodule "ImprovedCamera/vendor/imgui"]
+	path = ImprovedCamera/vendor/imgui
+	url = https://github.com/ArranzCNL/imgui
+	branch = v1.89.9
+[submodule "ImprovedCamera/vendor/glm"]
+	path = ImprovedCamera/vendor/glm
+	url = https://github.com/g-truc/glm
