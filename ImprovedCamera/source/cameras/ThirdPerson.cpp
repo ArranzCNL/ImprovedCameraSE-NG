@@ -143,7 +143,7 @@ namespace ImprovedCamera {
 			if (m_ThirdPersonState == CameraThirdPerson::State::kAnimationEnter)
 			{
 				m_ThirdPersonState = CameraThirdPerson::State::kAnimationIdle;
-				controlMap->enabledControls.set(RE::UserEvents::USER_EVENT_FLAG::kPOVSwitch);  // Allow POV
+				controlMap->GetRuntimeData().enabledControls.set(RE::UserEvents::USER_EVENT_FLAG::kPOVSwitch);  // Allow POV
 				return true;
 			}
 			// VampireLord Entered

@@ -707,7 +707,7 @@ namespace ImprovedCamera {
 			// Fixes inputEventHandling, crafting usually disables this.
 			thirdpersonState->inputEventHandlingEnabled = true;
 			// Fixes common enabledControls issues.
-			controlMap->enabledControls.set(RE::UserEvents::USER_EVENT_FLAG::kMovement,
+			controlMap->GetRuntimeData().enabledControls.set(RE::UserEvents::USER_EVENT_FLAG::kMovement,
 				RE::UserEvents::USER_EVENT_FLAG::kLooking,
 				RE::UserEvents::USER_EVENT_FLAG::kPOVSwitch,
 				RE::UserEvents::USER_EVENT_FLAG::kFighting);
