@@ -1,5 +1,6 @@
 ## v1.1.0 - TBC
-* Added bOverrideVanillaArmsOnMovement by Kruziikrel13
+* Fixed controlmap crash issue on SkyrimSE v1.6.1130.
+* Added bOverrideVanillaArmsOnMovement by Kruziikrel13.
 * Added bEnableThirdPersonTorchBlock as requested.
 * Fixed left arm issue with magic using third person arm when equipped with a weapon in the right.
 * Removed fControllerBufferDepth3rd this was the main culprit for animations getting stuck workbench, etc. Handled internally to adhere to 0.14 value.
