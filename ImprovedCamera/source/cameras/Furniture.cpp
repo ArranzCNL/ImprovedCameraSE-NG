@@ -65,7 +65,7 @@ namespace ImprovedCamera {
 			if (wakeUp)
 			{
 				auto controlMap = RE::ControlMap::GetSingleton();
-				controlMap->enabledControls.set(RE::UserEvents::USER_EVENT_FLAG::kLooking);  // Unblock Looking
+				controlMap->GetRuntimeData().enabledControls.set(RE::UserEvents::USER_EVENT_FLAG::kLooking);  // Unblock Looking
 			}
 			return true;
 		}
