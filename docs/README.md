@@ -12,6 +12,8 @@ Credits: [Capt. Panda](https://www.youtube.com/@CaptPanda)
 * [Address Library for SKSE Plugins](https://www.nexusmods.com/skyrimspecialedition/mods/32444)
 
 ## Build Requirements
+Recommend cloning the repository using [GitHub Desktop](https://desktop.github.com/) due to submodule usage.
+
 * [Visual Studio 2022 IDE - Programming Tool for Software Developers](https://visualstudio.microsoft.com/vs/)
   * Desktop development with C++
     * MSVC v143 - VS 2022 C++ x64/x86 build tools (Latest)
