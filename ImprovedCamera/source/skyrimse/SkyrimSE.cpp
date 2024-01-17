@@ -22,7 +22,7 @@ namespace Patch {
 
 		m_FullName = pluginConfig->ModuleData().sFileName;
 		m_Name = m_FullName.substr(0, m_FullName.size() - 4);
-		m_WindowName = "Skyrim Special Edition";
+		m_WindowName = pluginConfig->ModuleData().sWindowName;
 
 		ExecutableInfo();
 		BuildInfo();
