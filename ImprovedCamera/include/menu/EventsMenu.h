@@ -10,7 +10,7 @@
 
 namespace Menu {
 
-	class MenuEvents : public Interface::IMenu {
+	class MenuEvents final : public Interface::IMenu {
 
 	public:
 		MenuEvents();

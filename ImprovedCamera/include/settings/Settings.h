@@ -63,13 +63,10 @@ namespace Settings {
 		bool bAttackBow;
 		bool bKillmove;
 	};
-	// 5 Settings
+	// 2 Settings
 	struct Fixes {
 		bool bFirstPersonOverhaul;
 		bool bOverrideVanillaArmsOnMovement;
-		bool bArcheryGameplayOverhaul;
-		bool bSmoothAnimationTransitions;
-		float fControllerBufferDepth1st;
 	};
 	// 14 Settings
 	struct RestrictAngles {
@@ -135,9 +132,10 @@ namespace Settings {
 		float fScripted;
 		float fThirdPerson;
 	};
-	// 22 Settings
+	// 23 Settings
 	struct NearDistance {
 		bool bEnableOverride;
+		float fFirstPersonDefault;
 		float fPitchThreshold;
 		float fFirstPerson;
 		float fFirstPersonCombat;

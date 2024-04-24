@@ -10,7 +10,7 @@
 
 namespace Menu {
 
-	class MenuCamera : public Interface::IMenu {
+	class MenuCamera final : public Interface::IMenu {
 
 	public:
 		MenuCamera();

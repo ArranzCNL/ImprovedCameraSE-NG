@@ -619,7 +619,6 @@ namespace Menu {
 	{
 		m_Menu.Register(new MenuGeneral);
 		m_Menu.Register(new MenuHide);
-		m_Menu.Register(new MenuFixes);
 		m_Menu.Register(new MenuRestrictAngles);
 		m_Menu.Register(new MenuEvents);
 		m_Menu.Register(new MenuFOV);

@@ -81,9 +81,6 @@
     <ClInclude Include="..\..\include\menu\EventsMenu.h">
       <Filter>include\menu</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\menu\Fixes.h">
-      <Filter>include\menu</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\menu\Fov.h">
       <Filter>include\menu</Filter>
     </ClInclude>
@@ -237,9 +234,6 @@
       <Filter>source\menu</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\menu\EventsMenu.cpp">
-      <Filter>source\menu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\menu\Fixes.cpp">
       <Filter>source\menu</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\menu\Fov.cpp">

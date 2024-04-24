@@ -104,9 +104,6 @@ namespace Systems {
 
 				m_Fixes.bFirstPersonOverhaul = std::stoi(ini.get("FIXES").get("bFirstPersonOverhaul"));
 				m_Fixes.bOverrideVanillaArmsOnMovement = std::stoi(ini.get("FIXES").get("bOverrideVanillaArmsOnMovement"));
-				m_Fixes.bArcheryGameplayOverhaul = std::stoi(ini.get("FIXES").get("bArcheryGameplayOverhaul"));
-				m_Fixes.bSmoothAnimationTransitions = std::stoi(ini.get("FIXES").get("bSmoothAnimationTransitions"));
-				m_Fixes.fControllerBufferDepth1st = std::stof(ini.get("FIXES").get("fControllerBufferDepth1st"));
 
 				m_RestrictAngles.fSitting = std::stof(ini.get("RESTRICT ANGLES").get("fSitting"));
 				m_RestrictAngles.fSittingMaxLookingUp = std::stof(ini.get("RESTRICT ANGLES").get("fSittingMaxLookingUp"));
@@ -167,6 +164,7 @@ namespace Systems {
 				m_FOV.fThirdPerson = std::stof(ini.get("FOV").get("fThirdPerson"));
 
 				m_NearDistance.bEnableOverride = std::stoi(ini.get("NEARDISTANCE").get("bEnableOverride"));
+				m_NearDistance.fFirstPersonDefault = std::stof(ini.get("NEARDISTANCE").get("fFirstPersonDefault"));
 				m_NearDistance.fPitchThreshold = std::stof(ini.get("NEARDISTANCE").get("fPitchThreshold"));
 				m_NearDistance.fFirstPerson = std::stof(ini.get("NEARDISTANCE").get("fFirstPerson"));
 				m_NearDistance.fFirstPersonCombat = std::stof(ini.get("NEARDISTANCE").get("fFirstPersonCombat"));
@@ -321,9 +319,6 @@ namespace Systems {
 
 			ini["FIXES"]["bFirstPersonOverhaul"] = std::to_string(m_Fixes.bFirstPersonOverhaul);
 			ini["FIXES"]["bOverrideVanillaArmsOnMovement"] = std::to_string(m_Fixes.bOverrideVanillaArmsOnMovement);
-			ini["FIXES"]["bArcheryGameplayOverhaul"] = std::to_string(m_Fixes.bArcheryGameplayOverhaul);
-			ini["FIXES"]["bSmoothAnimationTransitions"] = std::to_string(m_Fixes.bSmoothAnimationTransitions);
-			ini["FIXES"]["fControllerBufferDepth1st"] = std::to_string(m_Fixes.fControllerBufferDepth1st);
 
 			ini["RESTRICT ANGLES"]["fSitting"] = std::to_string(m_RestrictAngles.fSitting);
 			ini["RESTRICT ANGLES"]["fSittingMaxLookingUp"] = std::to_string(m_RestrictAngles.fSittingMaxLookingUp);
@@ -384,6 +379,7 @@ namespace Systems {
 			ini["FOV"]["fThirdPerson"] = std::to_string(m_FOV.fThirdPerson);
 
 			ini["NEARDISTANCE"]["bEnableOverride"] = std::to_string(m_NearDistance.bEnableOverride);
+			ini["NEARDISTANCE"]["fFirstPersonDefault"] = std::to_string(m_NearDistance.fFirstPersonDefault);
 			ini["NEARDISTANCE"]["fPitchThreshold"] = std::to_string(m_NearDistance.fPitchThreshold);
 			ini["NEARDISTANCE"]["fFirstPerson"] = std::to_string(m_NearDistance.fFirstPerson);
 			ini["NEARDISTANCE"]["fFirstPersonCombat"] = std::to_string(m_NearDistance.fFirstPersonCombat);

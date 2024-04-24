@@ -10,7 +10,7 @@
 
 namespace Menu {
 
-	class MenuHeadbob : public Interface::IMenu {
+	class MenuHeadbob final : public Interface::IMenu {
 
 	public:
 		MenuHeadbob();

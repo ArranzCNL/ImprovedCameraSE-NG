@@ -21,16 +21,16 @@ bool DumpSpecificVersion()
 {
 	VersionDb db;
 
-	// Try to load database of version 1.6.1130.0 regardless of running executable version.
-	if (!db.Load(1, 6, 1130, 0))
+	// Try to load database of version 1.6.1170.0 regardless of running executable version.
+	if (!db.Load(1, 6, 1170, 0))
 	{
-		LOG_CRITICAL("Failed to load database for 1.6.1130.0!");
+		LOG_CRITICAL("Failed to load database for 1.6.1170.0!");
 		return false;
 	}
 
-	// Write out a file called offsets-1.6.1130.txt where each line is the ID and offset.
-	db.Dump("offsets-1.6.1130.0.txt"); // Dumps to root of Skyrim directory
-	LOG_INFO("Dumped offsets for 1.6.1130.0");
+	// Write out a file called 1.6.1170-offsets.txt where each line is the ID and offset.
+	db.Dump("1.6.1170.0-offsets.txt"); // Dumps to root of Skyrim directory
+	LOG_INFO("Dumped offsets for 1.6.1170.0");
 	return true;
 }
 #endif
@@ -60,6 +60,8 @@ namespace SKSE {
 			}
 			case SKSE::MessagingInterface::kDataLoaded:
 			{
+				plugin->SkyrimSE()->Camera()->DetectMods();
+
 				if (plugin->Config()->ModuleData().iMenuMode > Systems::Window::UIDisplay::kNone)
 				{
 					plugin->SkyrimSE()->InstallInput();

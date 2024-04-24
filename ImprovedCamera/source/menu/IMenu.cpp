@@ -77,14 +77,6 @@ namespace Interface {
 
 						break;
 					}
-					case ControlType::kSliderInt:
-					{
-						ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 12.0f);
-						ImGui::SliderInt(label.c_str(), (std::int32_t*)node.Variable, (std::int32_t)node.MinValue, (std::int32_t)node.MaxValue, node.Format);
-						ImGui::PopStyleVar();
-
-						break;
-					}
 				}
 				ImGui::PopItemWidth();
 				// Setup tooltip

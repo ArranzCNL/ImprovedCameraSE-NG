@@ -10,7 +10,7 @@
 
 namespace Menu {
 
-	class MenuFOV : public Interface::IMenu {
+	class MenuFOV final : public Interface::IMenu {
 
 	public:
 		MenuFOV();

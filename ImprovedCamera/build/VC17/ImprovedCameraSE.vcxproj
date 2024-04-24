@@ -80,7 +80,7 @@
       </ForcedIncludeFiles>
       <UseFullPaths>false</UseFullPaths>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\include;$(ProjectDir)..\..\pch;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\include;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\vendor\fmt\include;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\vendor\spdlog\include;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\vendor\rapidcsv\src;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\vendor\xbyak;$(ProjectDir)..\..\vendor\minhook\include;$(ProjectDir)..\..\vendor\mINI\src;$(ProjectDir)..\..\vendor\imgui;$(ProjectDir)..\..\vendor\glm;$(ProjectDir)..\..\vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\include;$(ProjectDir)..\..\pch;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\include;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\vendor\spdlog\include;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\vendor\rapidcsv\src;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\vendor\xbyak;$(ProjectDir)..\..\vendor\minhook\include;$(ProjectDir)..\..\vendor\mINI\src;$(ProjectDir)..\..\vendor\imgui;$(ProjectDir)..\..\vendor\glm;$(ProjectDir)..\..\vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
@@ -121,7 +121,7 @@
       </ForcedIncludeFiles>
       <UseFullPaths>false</UseFullPaths>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\include;$(ProjectDir)..\..\pch;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\include;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\vendor\fmt\include;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\vendor\spdlog\include;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\vendor\rapidcsv\src;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\vendor\xbyak;$(ProjectDir)..\..\vendor\minhook\include;$(ProjectDir)..\..\vendor\mINI\src;$(ProjectDir)..\..\vendor\imgui;$(ProjectDir)..\..\vendor\glm;$(ProjectDir)..\..\vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\include;$(ProjectDir)..\..\pch;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\include;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\vendor\spdlog\include;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\vendor\rapidcsv\src;$(ProjectDir)..\..\vendor\CommonLibSSE-NG\vendor\xbyak;$(ProjectDir)..\..\vendor\minhook\include;$(ProjectDir)..\..\vendor\mINI\src;$(ProjectDir)..\..\vendor\imgui;$(ProjectDir)..\..\vendor\glm;$(ProjectDir)..\..\vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
@@ -137,6 +137,10 @@
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>del /q "$(TargetDir)*.lib"; "$(TargetDir)*.exp"
+xcopy /s /y "$(SolutionDir)..\..\assets\$(TargetName)\" "$(TargetDir)$(TargetName)\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\api\skse_api.h" />
@@ -156,7 +160,6 @@
     <ClInclude Include="..\..\include\cameras\Transition.h" />
     <ClInclude Include="..\..\include\menu\Camera.h" />
     <ClInclude Include="..\..\include\menu\EventsMenu.h" />
-    <ClInclude Include="..\..\include\menu\Fixes.h" />
     <ClInclude Include="..\..\include\menu\Fov.h" />
     <ClInclude Include="..\..\include\menu\General.h" />
     <ClInclude Include="..\..\include\menu\Headbob.h" />
@@ -211,7 +214,6 @@
     <ClCompile Include="..\..\source\dllmain.cpp" />
     <ClCompile Include="..\..\source\menu\Camera.cpp" />
     <ClCompile Include="..\..\source\menu\EventsMenu.cpp" />
-    <ClCompile Include="..\..\source\menu\Fixes.cpp" />
     <ClCompile Include="..\..\source\menu\Fov.cpp" />
     <ClCompile Include="..\..\source\menu\General.cpp" />
     <ClCompile Include="..\..\source\menu\Headbob.cpp" />

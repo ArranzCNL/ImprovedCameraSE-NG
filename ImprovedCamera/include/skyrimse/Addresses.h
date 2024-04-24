@@ -14,6 +14,8 @@ namespace Address {
 		static std::uintptr_t UpdateSwitchPOV;
 		static std::uintptr_t UpdateCamera;
 		static std::uintptr_t UpdateFirstPerson;
+		static std::uintptr_t NiCameraUpdate;
+		static std::uintptr_t FadeOutGame;
 		static std::uintptr_t TESObjectCell_Get3D;
 		static std::uintptr_t SmoothAnimationTransitions;
 		static std::uintptr_t ShaderReferenceEffect1;
@@ -27,6 +29,7 @@ namespace Address {
 		static std::uintptr_t RagdollDeath;
 		static std::uintptr_t KillActor;
 		static std::uintptr_t ThirdpersonFade;
+		static std::uintptr_t NearDistanceFix;
 		static std::uintptr_t HorseLookingDownFix1;
 		static std::uintptr_t HorseLookingDownFix2;
 		static std::uintptr_t HorseLookingDownFix3;
@@ -44,9 +47,7 @@ namespace Address {
 	namespace Variable {
 
 		extern float* NiNodeGlobalTime;
-		extern float* fControllerBufferDepth;
 		extern float* fDefaultWorldFOV;
-		extern float* fNearDistance;
 		extern float* fMinCurrentZoom;
 		extern float* fSittingMaxLookingDown;
 		extern float* fMountedMaxLookingUp;

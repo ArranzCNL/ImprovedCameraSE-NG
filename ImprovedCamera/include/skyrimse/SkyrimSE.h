@@ -28,6 +28,9 @@ namespace Patch {
 				k16640 = 3,
 				k16659 = 4,  // GOG
 				k161130 = 5,
+				k161179 = 6, // GOG
+
+				kNewer,
 
 				kTotal
 			};

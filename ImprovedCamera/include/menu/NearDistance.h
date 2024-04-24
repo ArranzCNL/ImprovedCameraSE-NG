@@ -10,7 +10,7 @@
 
 namespace Menu {
 
-	class MenuNearDistance : public Interface::IMenu {
+	class MenuNearDistance final : public Interface::IMenu {
 
 	public:
 		MenuNearDistance();

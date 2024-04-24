@@ -14,7 +14,7 @@
 // 4005 - macro redefinition
 // 4200 - zero-sized array
 #pragma warning(push)
-#pragma warning(disable: 4005 4200)
+#pragma warning(disable: 4005 4200 4324)
 #include <RE/Skyrim.h>
 #pragma warning(pop)
 #include <SKSE/SKSE.h>
@@ -24,11 +24,7 @@
 #include <Psapi.h>
 
 // OpenGL Mathematics 
-// 4201 - nameless struct/union
-#pragma warning(push)
-#pragma warning(disable: 4201)
 #include <glm/glm.hpp>
-#pragma warning(pop)
 
 using namespace std::literals;
 

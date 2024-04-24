@@ -50,8 +50,8 @@ namespace DLLMain {
 		m_Config = std::make_unique<Systems::Config>();
 		m_SkyrimSE = std::make_unique<Patch::SkyrimSE>();
 
-		// Append " GOG" to the window name for 1.6.659
-		if (m_SkyrimSE->Build() == Patch::SkyrimSE::BuildInfo::k16659)
+		// Append " GOG" to the window name
+		if (m_SkyrimSE->Build() == Patch::SkyrimSE::BuildInfo::k16659 || m_SkyrimSE->Build() == Patch::SkyrimSE::BuildInfo::k161179)
 		{
 			std::string temp = m_Config->m_ModuleData.sWindowName;
 			m_Config->m_ModuleData.sWindowName += " GOG";

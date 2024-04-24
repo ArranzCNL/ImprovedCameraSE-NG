@@ -10,7 +10,7 @@
 
 namespace Menu {
 
-	class MenuGeneral : public Interface::IMenu {
+	class MenuGeneral final : public Interface::IMenu {
 
 	public:
 		MenuGeneral();

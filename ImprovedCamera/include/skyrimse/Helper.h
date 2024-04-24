@@ -40,6 +40,8 @@ namespace RE {
 
 namespace Helper {
 
+	static bool archeryGameplayOverhaul = false;
+
 	static inline void* GetVTableAddress(void* object, std::uint32_t address)
 	{
 		std::uint64_t* vtbl = (std::uint64_t*)*(std::uint64_t*)object;
@@ -109,7 +111,7 @@ namespace Helper {
 			"NPC UpperLid",
 		};
 
-		for (const char* headName : headNames)
+		for (auto headName : headNames)
 		{
 			auto headNode = FindNode(node, headName);
 			if (headNode)
@@ -145,7 +147,7 @@ namespace Helper {
 				"IdleCartTravelDriver",
 			};
 
-			for (const char* idleName : idleNames)
+			for (auto idleName : idleNames)
 			{
 				if (strcmp(idleName, parentIdle) == 0)
 					return true;
@@ -264,7 +266,7 @@ namespace Helper {
 
 		auto attackState = player->AsActorState()->GetAttackState();
 
-		if (attackState == RE::ATTACK_STATE_ENUM::kBowAttached && DLLMain::Plugin::Get()->Config()->Fixes().bArcheryGameplayOverhaul)
+		if (attackState == RE::ATTACK_STATE_ENUM::kBowAttached && archeryGameplayOverhaul)
 			return false;
 
 		return (attackState >= RE::ATTACK_STATE_ENUM::kBowDraw && attackState <= RE::ATTACK_STATE_ENUM::kBowNextAttack);
