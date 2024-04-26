@@ -1,7 +1,7 @@
 # <img align="left" width="150" height="150" src="https://github.com/ArranzCNL/ImprovedCameraSE-NG/blob/main/assets/Artwork/ic_logo2.png"> ImprovedCameraSE-NG
 
 Improved Camera SE is an immersive first person camera modification for [The Elder Scrolls V: Skyrim Special Edition](https://store.steampowered.com/app/489830/The_Elder_Scrolls_V_Skyrim_Special_Edition/).
-NG version allows this modification to work across multiple SkyrimSE versions from 1.5.97 to 1.6.1130 thanks to [CommonLibSSE-NG](https://github.com/CharmedBaryon/CommonLibSSE-NG) and [Address Library](https://github.com/meh321/AddressLibraryDatabase).
+NG version allows this modification to work across multiple SkyrimSE versions from 1.5.97 to 1.6.1179 thanks to [CommonLibSSE-NG](https://github.com/CharmedBaryon/CommonLibSSE-NG) and [Address Library](https://github.com/meh321/AddressLibraryDatabase).
 
 ## Showcase
 [![Improved Camera SE](https://img.youtube.com/vi/SGQNoSJBfSk/maxresdefault.jpg)](https://www.youtube.com/watch?v=SGQNoSJBfSk "Improved Camera SE")
