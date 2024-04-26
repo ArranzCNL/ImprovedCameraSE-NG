@@ -39,8 +39,10 @@ namespace Menu {
 			kEnableThirdPersonBowAim,
 			kEnableThirdPersonCrossbow,
 			kEnableThirdPersonCrossbowAim,
+			kFirstPersonOverhaul,
+			kOverrideVanillaArmsOnMovement,
 
-			kTotal = 22
+			kTotal = 24
 		};
 	};
 	using MENU_ID = MENU_IDS::MENU_ID;
@@ -52,45 +54,49 @@ namespace Menu {
 			ControlType::kToggle, (void*)&m_pluginConfig->m_General.bEnableBody, 0.0f, 0.0f, "", &MenuGeneral::OnCallback);
 		m_MenuNodes.emplace_back(1, "First Person Shadows", "Enable/Disable First Person Shadows on Character (Only Working Outdoors!)",
 			ControlType::kToggle, (void*)&m_pluginConfig->m_General.bEnableShadows);
-		m_MenuNodes.emplace_back(1, "First Person Body Console", "Enables/disable First Person Body Visibility while the Console is Open",
+		m_MenuNodes.emplace_back(1, "First Person Body Console", "Enable/disable First Person Body visibility while the console is open",
 			ControlType::kToggle, (void*)&m_pluginConfig->m_General.bEnableBodyConsole, 0.0f, 0.0f, "", &MenuGeneral::OnCallback);
-		m_MenuNodes.emplace_back(1, "Adjust Player Scale", "Adjust First Person Camera Height to Match Character's Race Scale",
+		m_MenuNodes.emplace_back(1, "Adjust Player Scale", "Adjust First Person Camera Height to match character's race scale",
 			ControlType::kToggle, (void*)&m_pluginConfig->m_General.bAdjustPlayerScale);
-		m_MenuNodes.emplace_back(1, "Body Height Offset", "Moves The Body in First Person to Adjust the Camera Height",
-			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_General.fBodyHeightOffset, -500.0f, 500.0f, "%.1f");
-		m_MenuNodes.emplace_back(1, "Head First Person", "Enables/Disable First Person Head (May Make Hair Visible)",
+		m_MenuNodes.emplace_back(1, "Body Height Offset", "Moves the character's body in First Person Up/Down",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_General.fBodyHeightOffset, -8192.0f, 8192.0f, "%.1f");
+		m_MenuNodes.emplace_back(1, "Head First Person", "Enable/Disable First Person Head (May Make Hair Visible)",
 			ControlType::kToggle, (void*)&m_pluginConfig->m_General.bEnableHead);
-		m_MenuNodes.emplace_back(1, "Head First Person Combat", "Enable/Disable First Person Head (May Make Hair Visible)",
+		m_MenuNodes.emplace_back(1, "Head First Person Combat", "Enable/Disable First Person Head whilst weapons are drawn (May Make Hair Visible)",
 			ControlType::kToggle, (void*)&m_pluginConfig->m_General.bEnableHeadCombat);
-		m_MenuNodes.emplace_back(1, "Head First Person Horse", "Enable/Disable First Person Head while Mounted On A Horse (May Make Hair Visible)",
+		m_MenuNodes.emplace_back(1, "Head First Person Horse", "Enable/Disable First Person Head while mounted on a horse (May Make Hair Visible)",
 			ControlType::kToggle, (void*)&m_pluginConfig->m_General.bEnableHeadHorse);
-		m_MenuNodes.emplace_back(1, "Head First Person Dragon", "Enables/Disable First Person Headn While Mounted On A Dragon (May Make Hair Visible)",
+		m_MenuNodes.emplace_back(1, "Head First Person Dragon", "Enable/Disable First Person Head while mounted On a dragon (May Make Hair Visible)",
 			ControlType::kToggle, (void*)&m_pluginConfig->m_General.bEnableHeadDragon);
 		m_MenuNodes.emplace_back(1, "Head First Person Vampire Lord", "Enable/Disable First Person Head for Vampire Lord",
 			ControlType::kToggle, (void*)&m_pluginConfig->m_General.bEnableHeadVampireLord);
 		m_MenuNodes.emplace_back(1, "Head First Person Werewolf", "Enable/Disable First Person Head For Werewolf",
 			ControlType::kToggle, (void*)&m_pluginConfig->m_General.bEnableHeadWerewolf);
-		m_MenuNodes.emplace_back(1, "Head First Person Scripted", "Enable/Disable First Person Head During Opening Scripted Scene",
+		m_MenuNodes.emplace_back(1, "Head First Person Scripted", "Enable/Disable First Person Head during scripted animations",
 			ControlType::kToggle, (void*)&m_pluginConfig->m_General.bEnableHeadScripted);
 		// Table 2
-		m_MenuNodes.emplace_back(2, "Third Person Arms", "Enable/Disable Third person Arms When in First Person",
+		m_MenuNodes.emplace_back(2, "Third Person Arms", "Enable/Disable Third person Arms when in First Person",
 			ControlType::kToggle, (void*)&m_pluginConfig->m_General.bEnableThirdPersonArms, 0.0f, 0.0f, "", &MenuGeneral::OnCallback);
-		m_MenuNodes.emplace_back(2, "Third Person Torch", "Enable/Disable Third Person Torch When in First Person",
+		m_MenuNodes.emplace_back(2, "Third Person Torch", "Enable/Disable Third Person Torch when in First Person",
 			ControlType::kToggle, (void*)&m_pluginConfig->m_General.bEnableThirdPersonTorch, 0.0f, 0.0f, "", &MenuGeneral::OnCallback);
-		m_MenuNodes.emplace_back(2, "Third Person Torch Block", "Enable/Disable Blocking While Using A Torch When in First Person",
+		m_MenuNodes.emplace_back(2, "Third Person Torch Block", "Enable/Disable Torch Blocking when in First Person",
 			ControlType::kToggle, (void*)&m_pluginConfig->m_General.bEnableThirdPersonTorchBlock);
-		m_MenuNodes.emplace_back(2, "Third Person Shield", "Enable/Disable Third Person Shield When in First Person",
+		m_MenuNodes.emplace_back(2, "Third Person Shield", "Enable/Disable Third Person Shield when in First Person",
 			ControlType::kToggle, (void*)&m_pluginConfig->m_General.bEnableThirdPersonShield, 0.0f, 0.0f, "", &MenuGeneral::OnCallback);
-		m_MenuNodes.emplace_back(2, "Third Person Shield Block", "Enable/Disable Third Person Shield Block When in First Person",
+		m_MenuNodes.emplace_back(2, "Third Person Shield Block", "Enable/Disable Third Person Shield Blocking when in First Person",
 			ControlType::kToggle, (void*)&m_pluginConfig->m_General.bEnableThirdPersonShieldBlock);
-		m_MenuNodes.emplace_back(2, "Third Person Bow", "Enables/Disables Third Person Bow When in First Person",
+		m_MenuNodes.emplace_back(2, "Third Person Bow", "Enables/Disables Third Person Bow when in First Person",
 			ControlType::kToggle, (void*)&m_pluginConfig->m_General.bEnableThirdPersonBow);
-		m_MenuNodes.emplace_back(2, "Third Person Bow Aim", "Enable/Disable Third Person Aiming When in First Person",
+		m_MenuNodes.emplace_back(2, "Third Person Bow Aim", "Enable/Disable Third Person Bow Aiming when in First Person",
 			ControlType::kToggle, (void*)&m_pluginConfig->m_General.bEnableThirdPersonBowAim);
-		m_MenuNodes.emplace_back(2, "Third Person Crossbow", "Enable/Disable Ther Person Crossbow When in First Person",
+		m_MenuNodes.emplace_back(2, "Third Person Crossbow", "Enable/Disable Ther Person Crossbow when in First Person",
 			ControlType::kToggle, (void*)&m_pluginConfig->m_General.bEnableThirdPersonCrossbow);
-		m_MenuNodes.emplace_back(2, "Third Person Crossbow Aim", "Enable/Disable Third Person Crossbow Aiming When in First Person",
-			ControlType::kToggle, (void*)&m_pluginConfig->m_General.bEnableThirdPersonCrossbowAim, 0.0f, 0.0f, "", &MenuGeneral::OnCallback);
+		m_MenuNodes.emplace_back(2, "Third Person Crossbow Aim", "Enable/Disable Third Person Crossbow Aiming when in First Person",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_General.bEnableThirdPersonCrossbowAim);
+		m_MenuNodes.emplace_back(2, "First Person Overhaul", "Compatibility with First Person Animation mods",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_Fixes.bFirstPersonOverhaul, 0.0f, 0.0f, "", &MenuGeneral::OnCallback);
+		m_MenuNodes.emplace_back(2, "Override Vanilla Arms on Movement", "Restores vanilla arms for movement",
+			ControlType::kToggle, (void*)&m_pluginConfig->m_Fixes.bOverrideVanillaArmsOnMovement, 0.0f, 0.0f, "", &MenuGeneral::OnCallback);
 	}
 
 	void MenuGeneral::OnOpen()
@@ -142,9 +148,6 @@ namespace Menu {
 				if (!begin && ImGui::IsItemClicked())
 					pluginSkyrimSE->Camera()->ResetPlayerNodes();
 
-				if (begin && pluginConfig->General().bEnableThirdPersonArms)
-					ImGui::BeginDisabled();
-
 				break;
 			}
 			case MENU_ID::kEnableThirdPersonShield:
@@ -154,10 +157,19 @@ namespace Menu {
 
 				break;
 			}
-			case MENU_ID::kEnableThirdPersonCrossbowAim:
+			case MENU_ID::kFirstPersonOverhaul:
 			{
-				if (!begin && pluginConfig->General().bEnableThirdPersonArms)
-					ImGui::EndDisabled();
+				if (begin)
+					ImGui::Separator();
+
+				break;
+			}
+			case MENU_ID::kOverrideVanillaArmsOnMovement:
+			{
+				bool fpo = pluginConfig->Fixes().bFirstPersonOverhaul;
+
+				if (!fpo)
+					begin ? ImGui::BeginDisabled() : ImGui::EndDisabled();
 
 				break;
 			}

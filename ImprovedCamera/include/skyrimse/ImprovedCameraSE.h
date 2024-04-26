@@ -41,9 +41,11 @@ namespace ImprovedCamera {
 		bool Ragdoll_IsTaskPoolRequired(RE::Actor* actor) const;
 		void Ragdoll_UpdateObjectUpwards(RE::Actor* actor);
 
-		bool IsFirstPerson() { return m_IsFirstPerson; }
+		bool IsFirstPerson() const { return m_IsFirstPerson; }
+		float UpdateNearDistance();
 
 		void RequestAPIs();
+		void DetectMods();
 
 	private:
 		class NodeOverride {
@@ -70,14 +72,15 @@ namespace ImprovedCamera {
 		bool UseThirdPersonRightArm();
 
 		void UpdateSkeleton(bool show);
+		void FixWeaponPosition(RE::Actor* actor, RE::NiNode* firstpersonNode, RE::NiNode* thirdpersonNode);
 		void DisplayShadows(bool show);
 
-		void UpdateNearDistance(RE::PlayerCamera* camera);
 		void UpdateFOV(RE::PlayerCamera* camera);
 
 		void TranslateCamera();
-		void TranslateFirstPerson();
-		void TranslateThirdPerson();
+		void TranslateFirstPersonModel();
+		void TranslateThirdPersonModel();
+		void AdjustModelPosition(RE::NiPoint3& position, bool headbob);
 
 		void UpdateLootAtPosition();
 		bool GetHeadRotation(float* rotation);

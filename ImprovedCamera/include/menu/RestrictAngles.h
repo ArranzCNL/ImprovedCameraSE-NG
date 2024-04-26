@@ -10,7 +10,7 @@
 
 namespace Menu {
 
-	class MenuRestrictAngles : public Interface::IMenu {
+	class MenuRestrictAngles final : public Interface::IMenu {
 
 	public:
 		MenuRestrictAngles();

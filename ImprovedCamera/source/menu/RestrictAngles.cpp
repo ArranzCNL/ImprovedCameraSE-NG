@@ -37,33 +37,33 @@ namespace Menu {
 
 	MenuRestrictAngles::MenuRestrictAngles()
 	{
-		m_MenuNodes.emplace_back(1, "Sitting Restrict Angle", "Restricts left/right Angle to Prevent Clipping into Head/Body",
+		m_MenuNodes.emplace_back(1, "Sitting Restrict Angle", "Restricts Left/Right Angle to prevent clipping into Head/Body",
 			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fSitting, 0.0f, 180.0f, "%.1f");
-		m_MenuNodes.emplace_back(1, "Sitting Max Looking Up", "Restricts looking Up Angle to Prevent Clipping into Head/Body",
+		m_MenuNodes.emplace_back(1, "Sitting Max Looking Up", "Restricts Up Angle to prevent clipping into Head/Body",
 			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fSittingMaxLookingUp, 0.0f, 180.0f, "%.1f");
-		m_MenuNodes.emplace_back(1, "Sitting Max Looking Down", "Restricts looking down Angle to Prevent Clipping into Head/Body",
+		m_MenuNodes.emplace_back(1, "Sitting Max Looking Down", "Restricts Down Angle to prevent clipping into Head/Body",
 			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fSittingMaxLookingDown, 0.0f, 180.0f, "%.1f");
-		m_MenuNodes.emplace_back(1, "Mounted Restrict Angle", "Restricts Left/Right Angles to Prevent Clipping into Head/Body",
+		m_MenuNodes.emplace_back(1, "Mounted Restrict Angle", "Restricts Left/Right Angles to prevent clipping into Head/Body",
 			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fMounted, 0.0f, 180.0f, "%.1f");
-		m_MenuNodes.emplace_back(1, "Mounted Max Looking Up", "Restricts Looking Up Angle to Prevent Clipping into Head/Body",
+		m_MenuNodes.emplace_back(1, "Mounted Max Looking Up", "Restricts Up Angle to prevent clipping into Head/Body",
 			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fMountedMaxLookingUp, 0.0f, 180.0f, "%.1f");
-		m_MenuNodes.emplace_back(1, "Mounted Max Looking Down", "Restricts looking down Angle to Prevent Clipping into Head/Body",
+		m_MenuNodes.emplace_back(1, "Mounted Max Looking Down", "Restricts Down Angle to prevent clipping into Head/Body",
 			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fMountedMaxLookingDown, 0.0f, 180.0f, "%.1f");
-		m_MenuNodes.emplace_back(1, "Flying Restrict Angle", "Restricts Left/Right Angles to Prevent Clipping into Head/Body",
+		m_MenuNodes.emplace_back(1, "Flying Restrict Angle", "Restricts Left/Right Angles to prevent clipping into Head/Body",
 			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fFlying, 0.0f, 180.0f, "%.1f");
-		m_MenuNodes.emplace_back(1, "Flying Max Looking Up", "Restricts looking up Angle to Prevent Clipping into Head/Body",
+		m_MenuNodes.emplace_back(1, "Flying Max Looking Up", "Restricts Up Angle to prevent clipping into Head/Body",
 			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fFlyingMaxLookingUp, 0.0f, 180.0f, "%.1f");
-		m_MenuNodes.emplace_back(1, "Flying Max Looking Down", "Restricts looking down Angle to Prevent Clipping into Head/Body",
+		m_MenuNodes.emplace_back(1, "Flying Max Looking Down", "Restricts Down Angle to prevent clipping into Head/Body",
 			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fFlyingMaxLookingDown, 0.0f, 180.0f, "%.1f");
-		m_MenuNodes.emplace_back(1, "VampireLord Restrict Angle", "Restricts Angles to Prevent Clipping into Head/Body",
+		m_MenuNodes.emplace_back(1, "VampireLord Restrict Angle", "Restricts Left/Right Angles to prevent clipping into Head/Body",
 			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fVampireLord, 0.0f, 180.0f, "%.1f");
-		m_MenuNodes.emplace_back(1, "Werewolf Restrict Angle", "Restricts Angles to Prevent Clipping into Head/Body",
+		m_MenuNodes.emplace_back(1, "Werewolf Restrict Angle", "Restricts Left/Right Angles to prevent clipping into Head/Body",
 			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fWerewolf, 0.0f, 180.0f, "%.1f");
-		m_MenuNodes.emplace_back(1, "Lich Restrict Angle", "Restricts Angles to Prevent Clipping into Head/Body",
+		m_MenuNodes.emplace_back(1, "Lich Restrict Angle", "Restricts Left/Right Angles to prevent clipping into Head/Body",
 			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fNecroLich, 0.0f, 180.0f, "%.1f");
-		m_MenuNodes.emplace_back(1, "Scripted Restrict Angle", "Restricts Angles to Prevent Clipping into Head/Body during Scripted Events",
+		m_MenuNodes.emplace_back(1, "Scripted Restrict Angle", "Restricts Left/Right Angles to prevent clipping into Head/Body",
 			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fScripted, 0.0f, 180.0f, "%.1f");
-		m_MenuNodes.emplace_back(1, "Scripted Restrict Pitch", "Restricts Pitch to Prevent Clipping into Head/Body during Scripted Events",
+		m_MenuNodes.emplace_back(1, "Scripted Restrict Pitch", "Restricts Up/Down Angles to prevent clipping into Head/Body",
 			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_RestrictAngles.fScriptedPitch, 0.0f, 180.0f, "%.1f");
 	}
 

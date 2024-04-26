@@ -19,7 +19,6 @@ namespace Interface {
 			kNone = 0,
 			kToggle,
 			kSliderFloat,
-			kSliderInt
 		};
 
 		struct MenuNode {

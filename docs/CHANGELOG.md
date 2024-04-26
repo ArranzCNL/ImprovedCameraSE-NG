@@ -1,12 +1,34 @@
-## v1.1.0 - TBC
-* Fixed controlmap crash issue on SkyrimSE v1.6.1130.
+## v1.1.0 - 26/04/2024
+* Reworked disabling player fade for third person by request, only disables fading when needed. Note: SSE Display Fixes and/or OStim supercedes it.
+* Fixed weapon node misalignment when third person arms are active.
+* Disabled Headbob combat for now (might stay this way) as it causes weapon node misalignment issue(s).
+* Fixed bow aim positioning whilst riding a horse.
+* Updated default profile values.
+* Support for GOG 1.6.1179.
+* Removal of Fixes menu. First Person Overhaul toggle(s) moved to General.
+* Archery Gameplay Overhaul (AGO) auto detection and activation of patch.
+* Smooth Animation Transition auto activates when headbob rotation(s) are > 0.0f.
+* fControllerBufferDepth has been removed. Note: You can set this manually inside of your skyrim.ini.
+* Added note to Camera section for CTRL+CLICK the slider boxes to input a value.
+* Drastically increased the controllable camera distances from 500 to 8192.
+* Cameras have been updated to get the correct displacement value(s) which fixes various issues.
+* Added a new hook for NearDistance which fixes water turning opaque. Note: Weird brightness is due to weathers (fine on clear day) will be looked at after release.
+* Added CaptureWarmer detection to fix seeing the camera spinning around crazily for users with large mod lists.
+* Added fFirstPersonDefault=15.000000 as requested this works outside of fPitchThreshold. (big hats!)
+* Added Immersive Equipment Displays detection to state hiding weapons will not work and to use IED instead on the Hide menu.
+* Added sync option for headbob rotation so all sliders move at once.
+* Changed camera positioning due to internal updates.
+* Re-added High Heels support. Note: There is a bug with HH if switching from female save to male save which causes the camera to be lower.
+* Fixed camera issue when the target is not the player or on a horse.
+* Fixed camera when werewolf feeding.
+* Fixed ad-hoc scripted events when exiting sometimes placed you back into third person instead of first person.
+* Fixed controlmap crash issue on SkyrimSE v1.6.1130+
 * Added bOverrideVanillaArmsOnMovement by Kruziikrel13.
 * Added bEnableThirdPersonTorchBlock as requested.
 * Fixed left arm issue with magic using third person arm when equipped with a weapon in the right.
-* Removed fControllerBufferDepth3rd this was the main culprit for animations getting stuck workbench, etc. Handled internally to adhere to 0.14 value.
 * Update imgui to 1.89.9 and fixed a crash issue which is present in previous builds.
 * Removed bQuickLightLighting due to not working as intended and causing more problems than it is worth.
-* Added official support for latest SkyrimSE v1.6.1130.
+* Added official support for latest SkyrimSE v1.6.1170.
 * Fixed Paragliding, now is enforced into third person with fake first person support.
 * Fixed Camera acting oddly, visible body when looking down.
 * Removed fSwitchPOVDetectDistance.

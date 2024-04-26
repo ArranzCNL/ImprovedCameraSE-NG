@@ -137,14 +137,14 @@ namespace Utils {
 			}
 			else
 			{
-				*y = -M_PI / 2.0f;
+				*y = -M_PI * 0.5f;
 				*x = -atan2(src->entry[1][0], src->entry[1][1]);
 				*z = 0.0f;
 			}
 		}
 		else
 		{
-			*y = +M_PI / 2.0f;
+			*y = +M_PI * 0.5f;
 			*x = atan2(src->entry[1][0], src->entry[1][1]);
 			*z = 0.0f;
 		}

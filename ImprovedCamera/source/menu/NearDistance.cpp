@@ -16,6 +16,7 @@ namespace Menu {
 		enum MENU_ID : std::int32_t
 		{
 			kEnableOverride = 1,
+			kFirstPersonDefault,
 			kPitchThreshold,
 			kFirstPerson,
 			kFirstPersonCombat,
@@ -26,10 +27,10 @@ namespace Menu {
 			kRagdoll,
 			kDeath,
 			kCannibal,
+			// Table 2
 			kHorse,
 			kHorseCombat,
 			kHorseTransition,
-			// Table 2
 			kDragon,
 			kDragonCombat,
 			kDragonTransition,
@@ -39,7 +40,7 @@ namespace Menu {
 			kScripted,
 			kThirdPerson,
 
-			kTotal = 23
+			kTotal = 24
 		};
 	};
 	using MENU_ID = MENU_IDS::MENU_ID;
@@ -49,49 +50,51 @@ namespace Menu {
 		// Table 1
 		m_MenuNodes.emplace_back(1, "Enable Near Distance Override", "",
 			ControlType::kToggle, (void*)&m_pluginConfig->m_NearDistance.bEnableOverride);
-		m_MenuNodes.emplace_back(1, "Pitch Threshold", "Pitch Threshold for Changing the fNearDistance automatically",
+		m_MenuNodes.emplace_back(1, "First Person Default", "Control for Default that works outside of the pitch threshold",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fFirstPersonDefault, 1.0f, 30.0f, "%.0f", &MenuNearDistance::OnCallback);
+		m_MenuNodes.emplace_back(1, "Pitch Threshold", "Pitch Threshold for changing the fNearDistance automatically",
 			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fPitchThreshold, -90.0f, 0.0f, "%.0f", &MenuNearDistance::OnCallback);
-		m_MenuNodes.emplace_back(1, "First Person", "Reduce fNearDistance when Pitch threshold is Met",
-			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fFirstPerson, 1.0f, 15.0f, "%.0f");
-		m_MenuNodes.emplace_back(1, "First Person Combat", "FNearDistance Control of First Person Combat that is Independant of The Pitch Threshold",
-			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fFirstPersonCombat, 1.0f, 15.0f, "%.0f");
-		m_MenuNodes.emplace_back(1, "Sitting / Sleeping", "FNearDistance Control of Sitting/Sleeping that is Independant of The Pitch Threshold",
-			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fSitting, 1.0f, 15.0f, "%.0f");
-		m_MenuNodes.emplace_back(1, "Furniture", "FNearDistance Control of Furniture that is Independant of The Pitch Threshold",
-			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fFurniture, 1.0f, 15.0f, "%.0f");
-		m_MenuNodes.emplace_back(1, "Crafting", "FNearDistance Control of Crafting that is Independant of The Pitch Threshold",
-			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fCrafting, 1.0f, 15.0f, "%.0f");
-		m_MenuNodes.emplace_back(1, "Killmove", "FNearDistance Control of Killmove that is Independant of The Pitch Threshold",
-			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fKillmove, 1.0f, 15.0f, "%.0f");
-		m_MenuNodes.emplace_back(1, "Ragdoll", "FNearDistance Control of Ragdoll that is Independant of The Pitch Threshold",
-			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fRagdoll, 1.0f, 15.0f, "%.0f");
-		m_MenuNodes.emplace_back(1, "Death", "FNearDistance Control of Death that is Independant of The Pitch Threshold",
-			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fDeath, 1.0f, 15.0f, "%.0f");
-		m_MenuNodes.emplace_back(1, "Cannibal", "FNearDistance Control of Cannibal that is Independant of The Pitch Threshold",
-			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fCannibal, 1.0f, 15.0f, "%.0f");
-		m_MenuNodes.emplace_back(1, "Horse", "FNearDistance Control of Horse (Mounted) that is Independant of The Pitch Threshold",
-			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fHorse, 1.0f, 15.0f, "%.0f");
-		m_MenuNodes.emplace_back(1, "Horse Combat", "FNearDistance Control of Horse Combat (Mounted) that is Independant of The Pitch Threshold",
-			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fHorseCombat, 1.0f, 15.0f, "%.0f");
-		m_MenuNodes.emplace_back(1, "Horse Transition", "FNearDistance Control of Horse Transition (Mount/Dismount) animations that are Independant of The Pitch Threshold",
-			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fHorseTransition, 1.0f, 15.0f, "%.0f");
+		m_MenuNodes.emplace_back(1, "First Person", "Reduce Near Distance when Pitch threshold is met",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fFirstPerson, 1.0f, 30.0f, "%.0f");
+		m_MenuNodes.emplace_back(1, "First Person Combat", "Control for First Person Combat",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fFirstPersonCombat, 1.0f, 30.0f, "%.0f", &MenuNearDistance::OnCallback);
+		m_MenuNodes.emplace_back(1, "Sitting / Sleeping", "Control for Sitting/Sleeping",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fSitting, 1.0f, 30.0f, "%.0f");
+		m_MenuNodes.emplace_back(1, "Furniture", "Control for Furniture",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fFurniture, 1.0f, 30.0f, "%.0f");
+		m_MenuNodes.emplace_back(1, "Crafting", "Control for Crafting",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fCrafting, 1.0f, 30.0f, "%.0f");
+		m_MenuNodes.emplace_back(1, "Killmove", "Control for Killmove",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fKillmove, 1.0f, 30.0f, "%.0f");
+		m_MenuNodes.emplace_back(1, "Ragdoll", "Control for Ragdoll",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fRagdoll, 1.0f, 30.0f, "%.0f");
+		m_MenuNodes.emplace_back(1, "Death", "Control for Death",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fDeath, 1.0f, 30.0f, "%.0f");
+		m_MenuNodes.emplace_back(1, "Cannibal", "Control for Cannibal",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fCannibal, 1.0f, 30.0f, "%.0f");
 		// Table 2
-		m_MenuNodes.emplace_back(2, "Dragon", "FNearDistance Control of Dragon (Mounted) that is Independant of The Pitch Threshold",
-			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fDragon, 1.0f, 15.0f, "%.0f");
-		m_MenuNodes.emplace_back(2, "Dragon Combat", "FNearDistance Control of Dragon Combat (Mounted) that is Independant of The Pitch Threshold",
-			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fDragonCombat, 1.0f, 15.0f, "%.0f");
-		m_MenuNodes.emplace_back(2, "Dragon Transition", "FNearDistance Control of Dragon Transition (Mount/Dismount) that is Independant of The Pitch Threshold",
-			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fDragonTransition, 1.0f, 15.0f, "%.0f");
-		m_MenuNodes.emplace_back(2, "Vampire Lord", "FNearDistance Control of Vampire Lord that is Independant of The Pitch Threshold",
-			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fVampireLord, 1.0f, 15.0f, "%.0f");
-		m_MenuNodes.emplace_back(2, "Werewolf", "FNearDistance Control of Werewolf that is Independant of The Pitch Threshold",
-			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fWerewolf, 1.0f, 15.0f, "%.0f");
-		m_MenuNodes.emplace_back(2, "Lich", "FNearDistance Control of Lich that is Independant of The Pitch Threshold",
-			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fNecroLich, 1.0f, 15.0f, "%.0f");
-		m_MenuNodes.emplace_back(2, "Scripted", "FNearDistance Control of Scripted Events that is Independant of The Pitch Threshold",
-			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fScripted, 1.0f, 15.0f, "%.0f");
-		m_MenuNodes.emplace_back(2, "Third Person", "FNearDistance Control of Third Person that is Independant of The Pitch Threshold",
-			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fThirdPerson, 1.0f, 15.0f, "%.0f", &MenuNearDistance::OnCallback);
+		m_MenuNodes.emplace_back(2, "Horse", "Control for Horse (Mounted)",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fHorse, 1.0f, 30.0f, "%.0f");
+		m_MenuNodes.emplace_back(2, "Horse Combat", "Control for Horse Combat (Mounted)",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fHorseCombat, 1.0f, 30.0f, "%.0f");
+		m_MenuNodes.emplace_back(2, "Horse Transition", "Control for Horse Transition (Mounting/Dismounting)",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fHorseTransition, 1.0f, 30.0f, "%.0f");
+		m_MenuNodes.emplace_back(2, "Dragon", "Control for Dragon (Mounted)",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fDragon, 1.0f, 30.0f, "%.0f");
+		m_MenuNodes.emplace_back(2, "Dragon Combat", "Control for Dragon Combat (Mounted)",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fDragonCombat, 1.0f, 30.0f, "%.0f");
+		m_MenuNodes.emplace_back(2, "Dragon Transition", "Control for Dragon Transition (Mounting/Dismounting)",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fDragonTransition, 1.0f, 30.0f, "%.0f");
+		m_MenuNodes.emplace_back(2, "Vampire Lord", "Control for Vampire Lord",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fVampireLord, 1.0f, 30.0f, "%.0f");
+		m_MenuNodes.emplace_back(2, "Werewolf", "Control for Werewolf",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fWerewolf, 1.0f, 30.0f, "%.0f");
+		m_MenuNodes.emplace_back(2, "Lich", "Control for Lich",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fNecroLich, 1.0f, 30.0f, "%.0f");
+		m_MenuNodes.emplace_back(2, "Scripted", "Control for Scripted Events",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fScripted, 1.0f, 30.0f, "%.0f");
+		m_MenuNodes.emplace_back(2, "Third Person", "Control for Third Person",
+			ControlType::kSliderFloat, (void*)&m_pluginConfig->m_NearDistance.fThirdPerson, 1.0f, 30.0f, "%.0f", &MenuNearDistance::OnCallback);
 	}
 
 	void MenuNearDistance::OnOpen()
@@ -122,10 +125,24 @@ namespace Menu {
 
 		switch (node)
 		{
-			case MENU_ID::kPitchThreshold:
+			case MENU_ID::kFirstPersonDefault:
 			{
 				if (begin && !pluginConfig->NearDistance().bEnableOverride)
 					ImGui::BeginDisabled();
+
+				break;
+			}
+			case MENU_ID::kPitchThreshold:
+			{
+				if (begin)
+					ImGui::Separator();
+
+				break;
+			}
+			case MENU_ID::kFirstPersonCombat:
+			{
+				if (begin)
+					ImGui::Separator();
 
 				break;
 			}

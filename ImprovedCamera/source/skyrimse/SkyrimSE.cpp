@@ -13,6 +13,7 @@
 #include "skyrimse/EventsSkyrim.h"
 #include "skyrimse/ImprovedCameraSE.h"
 #include "utils/Utils.h"
+#include "utils/Log.h"
 
 namespace Patch {
 
@@ -27,7 +28,7 @@ namespace Patch {
 		ExecutableInfo();
 		BuildInfo();
 
-		if (m_Build == BuildInfo::k16659)
+		if (m_Build == BuildInfo::k16659 || m_Build == BuildInfo::k161179)
 			m_WindowName += " GOG";
 	}
 
@@ -119,6 +120,9 @@ namespace Patch {
 		// GOG
 		else if (m_VersionMajor == 1 && m_VersionMinor == 6 && m_VersionRevision == 659)
 			m_Build = BuildInfo::k16659;
+		// GOG
+		else if (m_VersionMajor == 1 && m_VersionMinor == 6 && m_VersionRevision == 1179)
+			m_Build = BuildInfo::k161179;
 
 		else if (m_VersionMajor == 1 && m_VersionMinor == 6 && m_VersionRevision >= 1130)
 			m_Build = BuildInfo::k161130;

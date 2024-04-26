@@ -10,7 +10,7 @@
 
 namespace Menu {
 
-	class MenuHide : public Interface::IMenu {
+	class MenuHide final : public Interface::IMenu {
 
 	public:
 		MenuHide();

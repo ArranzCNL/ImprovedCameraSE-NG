@@ -12,6 +12,7 @@
 #include "plugin.h"
 #include "skyrimse/Addresses.h"
 #include "skyrimse/ImprovedCameraSE.h"
+#include <MinHook.h>
 #include "utils/Log.h"
 
 #include <chrono>
@@ -372,6 +373,166 @@ namespace Patch {
 		static inline constexpr std::size_t index{ 4 };
 	};
 
+	typedef void(STDMETHODCALLTYPE* NiCamera_Update_Hook)(RE::NiCamera*, float, float, float, std::uint32_t, std::uint32_t, std::uint8_t, std::uint8_t, float);
+	static NiCamera_Update_Hook NiCameraUpdate;
+	static NiCamera_Update_Hook NiCameraUpdateTarget;
+
+	struct NiCamera_Update
+	{
+		static void Hook_NiCamera_Update(RE::NiCamera* camera, float fFov, float fNear, float fFar, std::uint32_t iScreenWidth, std::uint32_t iScreenHeight, std::uint8_t unk7, std::uint8_t unk8, float fFov2)
+		{
+			fNear = ic->UpdateNearDistance();
+			NiCameraUpdate(camera, fFov, fNear, fFar, iScreenWidth, iScreenHeight, unk7, unk8, fFov2);
+		}
+
+		static void Install()
+		{
+			NiCameraUpdateTarget = reinterpret_cast<NiCamera_Update_Hook>(Address::Hook::NiCameraUpdate);
+
+			auto pluginSkyrimSE = DLLMain::Plugin::Get()->SkyrimSE();
+			std::uintptr_t baseAddress = pluginSkyrimSE->BaseAddress();
+
+			MH_STATUS status = MH_Initialize();
+			if (status != MH_OK && status != MH_ERROR_ALREADY_INITIALIZED)
+			{
+				LOG_ERROR("  MinHook:\t\t\t\tFailed to Initialize");
+				return;
+			}
+			status = MH_CreateHook(reinterpret_cast<LPVOID>(NiCameraUpdateTarget), reinterpret_cast<LPVOID>(Hook_NiCamera_Update), reinterpret_cast<LPVOID*>(&NiCameraUpdate));
+			if (status != MH_OK)
+			{
+				LOG_ERROR("  MinHook:\t\t\t\tFailed to CreateHook for NiCamera::sub_14{:07X}. Error Code: {}", Address::Hook::NiCameraUpdate - baseAddress, (std::int32_t)status);
+				return;
+			}
+			if (MH_EnableHook(reinterpret_cast<LPVOID>(NiCameraUpdateTarget)) != MH_OK)
+			{
+				LOG_ERROR("  MinHook:\t\t\t\tFailed to EnableHook for NiCamera::sub_14{:07X}", Address::Hook::NiCameraUpdate - baseAddress);
+				return;
+			}
+			LOG_TRACE("  MinHook:\t\t\t\tHooked NiCamera::sub_14{:07X}", Address::Hook::NiCameraUpdate - baseAddress);
+		}
+	};
+
+	typedef void(STDMETHODCALLTYPE* FadeOutGame_Hook)(bool, bool, float, bool, float);
+	static FadeOutGame_Hook FadeOutGame;
+	static FadeOutGame_Hook FadeOutGameTarget;
+
+	struct FadeOutGame_Update
+	{
+		static void Hook_FadeOutGame(bool a_fadingOut, bool a_blackFade, float a_fadeDuration, bool a_unk, float a_secsBeforeFade)
+		{
+			// LOG_INFO("FadeOutGame:\n\tFadingOut: {}\n\tBlackFade: {}\n\tFadeDuration: {}\n\tUnk: {}\n\tSecsBeforeFade: {}", a_fadingOut, a_blackFade, a_fadeDuration, a_unk, a_secsBeforeFade);
+
+			if (!a_fadingOut && a_unk)
+				a_secsBeforeFade *= 1.5f;
+
+			FadeOutGame(a_fadingOut, a_blackFade, a_fadeDuration, a_unk, a_secsBeforeFade);
+		}
+
+		static void Install()
+		{
+			FadeOutGameTarget = reinterpret_cast<FadeOutGame_Hook>(Address::Hook::FadeOutGame);
+
+			auto pluginSkyrimSE = DLLMain::Plugin::Get()->SkyrimSE();
+			std::uintptr_t baseAddress = pluginSkyrimSE->BaseAddress();
+
+			MH_STATUS status = MH_Initialize();
+			if (status != MH_OK && status != MH_ERROR_ALREADY_INITIALIZED)
+			{
+				LOG_ERROR("  MinHook:\t\t\t\tFailed to Initialize");
+				return;
+			}
+			status = MH_CreateHook(reinterpret_cast<LPVOID>(FadeOutGameTarget), reinterpret_cast<LPVOID>(Hook_FadeOutGame), reinterpret_cast<LPVOID*>(&FadeOutGame));
+			if (status != MH_OK)
+			{
+				LOG_ERROR("  MinHook:\t\t\t\tFailed to CreateHook for FadeOutGame (sub_14{:07X}). Error Code: {}", Address::Hook::FadeOutGame - baseAddress, (std::int32_t)status);
+				return;
+			}
+			if (MH_EnableHook(reinterpret_cast<LPVOID>(FadeOutGameTarget)) != MH_OK)
+			{
+				LOG_ERROR("  MinHook:\t\t\t\tFailed to EnableHook for FadeOutGame (sub_14{:07X})", Address::Hook::FadeOutGame - baseAddress);
+				return;
+			}
+			LOG_TRACE("  MinHook:\t\t\t\tHooked FadeOutGame (sub_14{:07X})", Address::Hook::FadeOutGame - baseAddress);
+		}
+	};
+
+	typedef void(STDMETHODCALLTYPE* PlayerCameraUnk0_Hook)(std::uint64_t, float*, char);
+	static PlayerCameraUnk0_Hook PlayerCameraUnk0;
+	static PlayerCameraUnk0_Hook PlayerCameraUnk0Target;
+	static const char* fadePayload[8];
+
+	struct PlayerCameraUnk0_Update {
+
+		static void Hook_PlayerCameraUnk0(std::uint64_t unk1, float* unk2, char unk3)
+		{
+			// Patch Thirdperson fading
+			static bool displayTweaks;
+			static std::uint8_t currentPayload[8]{};
+			static std::uint8_t payload[8]{};
+
+			if (!displayTweaks)
+			{
+				if (currentPayload[0] == 0)
+				{
+					std::memcpy(reinterpret_cast<void*>(currentPayload), reinterpret_cast<const void*>(Address::Hook::ThirdpersonFade + REL::VariantOffset(0x431, 0x4DD, 0).offset()), sizeof(currentPayload));
+					if (currentPayload[2] == 0x90)
+					{
+						displayTweaks = true;
+						PlayerCameraUnk0(unk1, unk2, unk3);
+						return;
+					}
+				}
+
+				bool fadePlayer = ic->IsFirstPerson();
+				if (fadePlayer && payload[0] != 0xEB)
+				{
+					std::memcpy(reinterpret_cast<void*>(payload), reinterpret_cast<const void*>(fadePayload), sizeof(payload));
+					// Create a short jump.
+					payload[0] = 0xEB;
+					payload[1] = 0x58;
+					REL::safe_write(Address::Hook::ThirdpersonFade + REL::VariantOffset(0x431, 0x4DD, 0).offset(), payload, sizeof(payload));
+				}
+				else if (!fadePlayer && payload[0] != 0xF3)
+				{
+					// Copy and restore the original fade state.
+					std::memcpy(reinterpret_cast<void*>(payload), reinterpret_cast<const void*>(fadePayload), sizeof(payload));
+					REL::safe_write(Address::Hook::ThirdpersonFade + REL::VariantOffset(0x431, 0x4DD, 0).offset(), payload, sizeof(payload));
+				}
+			}
+			PlayerCameraUnk0(unk1, unk2, unk3);
+		}
+
+		static void Install()
+		{
+			PlayerCameraUnk0Target = reinterpret_cast<PlayerCameraUnk0_Hook>(Address::Hook::ThirdpersonFade);
+
+			auto pluginSkyrimSE = DLLMain::Plugin::Get()->SkyrimSE();
+			std::uintptr_t baseAddress = pluginSkyrimSE->BaseAddress();
+
+			MH_STATUS status = MH_Initialize();
+			if (status != MH_OK && status != MH_ERROR_ALREADY_INITIALIZED)
+			{
+				LOG_ERROR("  MinHook:\t\t\t\tFailed to Initialize");
+				return;
+			}
+			status = MH_CreateHook(reinterpret_cast<LPVOID>(PlayerCameraUnk0Target), reinterpret_cast<LPVOID>(Hook_PlayerCameraUnk0), reinterpret_cast<LPVOID*>(&PlayerCameraUnk0));
+			if (status != MH_OK)
+			{
+				LOG_ERROR("  MinHook:\t\t\t\tFailed to CreateHook for PlayerCamera::sub_14{:07X}. Error Code: {}", Address::Hook::ThirdpersonFade - baseAddress, (std::int32_t)status);
+				return;
+			}
+			if (MH_EnableHook(reinterpret_cast<LPVOID>(PlayerCameraUnk0Target)) != MH_OK)
+			{
+				LOG_ERROR("  MinHook:\t\t\t\tFailed to EnableHook for PlayerCamera::sub_14{:07X}", Address::Hook::ThirdpersonFade - baseAddress);
+				return;
+			}
+			std::uintptr_t patch = Address::Hook::ThirdpersonFade + REL::VariantOffset(0x431, 0x4DD, 0).offset();
+			std::memcpy(reinterpret_cast<void*>(fadePayload), reinterpret_cast<const void*>(patch), 8);
+			LOG_TRACE("  MinHook:\t\t\t\tHooked PlayerCamera::sub_14{:07X}", Address::Hook::ThirdpersonFade - baseAddress);
+		}
+	};
+
 	Hooks::~Hooks()
 	{
 		ic = nullptr;
@@ -403,10 +564,14 @@ namespace Patch {
 		// Shader fixes
 		ShaderReferenceEffect_Update::Patch1::Install();
 		ShaderReferenceEffect_Update::Patch2::Install();
-
-		// Patch Thirdperson fading
-		std::uint8_t fadePayload[] = { 0xEB, 0x58 };
-		REL::safe_write(Address::Hook::ThirdpersonFade, fadePayload, sizeof(fadePayload));
+		// Update zNear, this one fixes water going opaque.
+		NiCamera_Update::Install();
+		// Fix third person player fading.
+		if (!GetModuleHandle("OStim.dll"))
+			PlayerCameraUnk0_Update::Install();
+		// Fix CaptureWarmer fading.
+		if (GetModuleHandle("CaptureWarmer.dll"))
+			FadeOutGame_Update::Install();
 
 		// Patch Horse looking downwards
 		std::uint8_t horsePayload[] = { 0x66, 0x90 };
@@ -448,15 +613,15 @@ namespace Patch {
 		Address::Hook::Ragdoll_UpdateObjectUpwards = REL::RelocationID(38858, 39895).address() + REL::VariantOffset(0x37D, 0x2C5, 0).offset();
 		Address::Hook::RagdollDeath = REL::RelocationID(36326, 37316).address() + REL::VariantOffset(0x85, 0x76, 0).offset();
 		Address::Hook::KillActor = REL::RelocationID(39646, 40733).address() + REL::VariantOffset(0xEC, 0xEC, 0).offset();
-		Address::Hook::ThirdpersonFade = REL::RelocationID(49899, 50832).address() + REL::VariantOffset(0x431, 0x4DD, 0).offset();
+		Address::Hook::ThirdpersonFade = REL::RelocationID(49899, 50832).address();
 		Address::Hook::HorseLookingDownFix1 = REL::RelocationID(36602, 37356).address() + REL::VariantOffset(0x77, 0xB4E, 0).offset();
 		Address::Hook::HorseLookingDownFix2 = REL::RelocationID(36602, 37610).address() + REL::VariantOffset(0x77, 0x19, 0).offset();
 		Address::Hook::HorseLookingDownFix3 = REL::RelocationID(36602, 37611).address() + REL::VariantOffset(0x77, 0x19, 0).offset();
+		Address::Hook::NiCameraUpdate = REL::RelocationID(69273, 70643).address();
+		Address::Hook::FadeOutGame = REL::RelocationID(51909, 52847).address();
 
 		Address::Variable::NiNodeGlobalTime = (float*)REL::RelocationID(514188, 400333).address();
-		Address::Variable::fControllerBufferDepth = (float*)REL::RelocationID(509447, 381879).address();
 		Address::Variable::fDefaultWorldFOV = (float*)REL::RelocationID(512129, 388785).address();
-		Address::Variable::fNearDistance = (float*)REL::RelocationID(512125, 388779).address();
 		Address::Variable::fMinCurrentZoom = (float*)REL::RelocationID(509882, 382633).address();
 		Address::Variable::fSittingMaxLookingDown = (float*)REL::RelocationID(503108, 371032).address();
 		Address::Variable::fMountedMaxLookingUp = (float*)REL::RelocationID(509846, 382579).address();
@@ -482,6 +647,8 @@ namespace Patch {
 		LOG_DEBUG("Hook::UpdateCamera:\t\t\t\t0x{:08X}", Address::Hook::UpdateCamera - baseAddress);
 		LOG_DEBUG("Hook::UpdateFirstPerson:\t\t\t0x{:08X}", Address::Hook::UpdateFirstPerson - baseAddress);
 		LOG_DEBUG("Hook::TESObjectCell_Get3D:\t\t\t0x{:08X}", Address::Hook::TESObjectCell_Get3D - baseAddress);
+		LOG_DEBUG("Hook::NiCameraUpdate:\t\t\t0x{:08X}", Address::Hook::NiCameraUpdate - baseAddress);
+		LOG_DEBUG("Hook::FadeOutGame:\t\t\t\t0x{:08X}", Address::Hook::FadeOutGame - baseAddress);
 		LOG_DEBUG("Hook::SmoothAnimationTransitions:\t\t0x{:08X}", Address::Hook::SmoothAnimationTransitions - baseAddress);
 		LOG_DEBUG("Hook::ShaderReferenceEffect1:\t\t0x{:08X}", Address::Hook::ShaderReferenceEffect1 - baseAddress);
 		LOG_DEBUG("Hook::ShaderReferenceEffect2:\t\t0x{:08X}", Address::Hook::ShaderReferenceEffect2 - baseAddress);
@@ -499,9 +666,7 @@ namespace Patch {
 		LOG_DEBUG("Hook::HorseLookingDownFix3:\t\t\t0x{:08X}", Address::Hook::HorseLookingDownFix3 - baseAddress);
 
 		LOG_DEBUG("Variable::NiNodeGlobalTime:\t\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::NiNodeGlobalTime) - baseAddress);
-		LOG_DEBUG("Variable::fControllerBufferDepth:\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::fControllerBufferDepth) - baseAddress);
 		LOG_DEBUG("Variable::fDefaultWorldFOV:\t\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::fDefaultWorldFOV) - baseAddress);
-		LOG_DEBUG("Variable::fNearDistance:\t\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::fNearDistance) - baseAddress);
 		LOG_DEBUG("Variable::fMinCurrentZoom:\t\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::fMinCurrentZoom) - baseAddress);
 		LOG_DEBUG("Variable::fSittingMaxLookingDown:\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::fSittingMaxLookingDown) - baseAddress);
 		LOG_DEBUG("Variable::fMountedMaxLookingUp:\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::fMountedMaxLookingUp) - baseAddress);

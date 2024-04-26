@@ -8,7 +8,6 @@
 
 #include "menu/Camera.h"
 #include "menu/EventsMenu.h"
-#include "menu/Fixes.h"
 #include "menu/Fov.h"
 #include "menu/General.h"
 #include "menu/Headbob.h"
