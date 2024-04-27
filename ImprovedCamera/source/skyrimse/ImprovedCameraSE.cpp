@@ -1052,18 +1052,25 @@ namespace ImprovedCamera {
 		});
 	}
 
-	float ImprovedCameraSE::UpdateNearDistance()
+	float ImprovedCameraSE::UpdateNearDistance(float fNear)
 	{
 		auto camera = RE::PlayerCamera::GetSingleton();
 		if (!camera || !m_ICamera)
-			return 15.0f;
+			return fNear;
 
 		auto player = RE::PlayerCharacter::GetSingleton();
 		auto firstpersonState = (RE::FirstPersonState*)camera->currentState.get();
 		auto cameraNode = camera->cameraRoot.get()->AsNode();
 		auto cameraNI = (RE::NiCamera*)((cameraNode->children.size() == 0) ? nullptr : cameraNode->children[0].get());
 		if (!cameraNI)
-			return 15.0f;
+			return fNear;
+
+		// Fix flickering map
+		if (RE::UI::GetSingleton()->IsMenuOpen("MapMenu"))
+		{
+			cameraNI->viewFrustum.fNear = 15.0f;
+			return fNear; // 128.0f
+		}
 
 		float nearDistance = cameraNI->viewFrustum.fNear;  // 15.0f
 		float maxPitch = m_pluginConfig->NearDistance().fPitchThreshold;
@@ -1095,8 +1102,14 @@ namespace ImprovedCamera {
 		else
 			nearDistance = 15.0f;
 
-		if (cameraNI->viewFrustum.fNear != nearDistance)
-			cameraNI->viewFrustum.fNear = nearDistance;
+		// fNear1stPersonDistance:Display check, usually comes in at 5.0f
+		if (fNear < nearDistance)
+		{
+			cameraNI->viewFrustum.fNear = 15.0f;
+			return fNear;
+		}
+
+		cameraNI->viewFrustum.fNear = nearDistance;
 
 		return nearDistance;
 	}

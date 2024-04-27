@@ -381,7 +381,7 @@ namespace Patch {
 	{
 		static void Hook_NiCamera_Update(RE::NiCamera* camera, float fFov, float fNear, float fFar, std::uint32_t iScreenWidth, std::uint32_t iScreenHeight, std::uint8_t unk7, std::uint8_t unk8, float fFov2)
 		{
-			fNear = ic->UpdateNearDistance();
+			fNear = ic->UpdateNearDistance(fNear);
 			NiCameraUpdate(camera, fFov, fNear, fFar, iScreenWidth, iScreenHeight, unk7, unk8, fFov2);
 		}
 
