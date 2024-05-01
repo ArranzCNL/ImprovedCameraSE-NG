@@ -1289,12 +1289,12 @@ namespace ImprovedCamera {
 		auto eyeNode = Helper::FindNode(thirdpersonNode, "NPCEyeBone");
 		auto cameraNode = RE::PlayerCamera::GetSingleton()->cameraRoot.get()->AsNode();
 
-		auto eyeDisplacement = std::hypot(headNode->world.translate.x - eyeNode->world.translate.x,
-			headNode->world.translate.y - eyeNode->world.translate.y,
-			headNode->world.translate.z - eyeNode->world.translate.z);
-		auto headDisplacement = std::hypot(headNode->world.translate.x - cameraNode->world.translate.x,
-			headNode->world.translate.y - cameraNode->world.translate.y,
-			headNode->world.translate.z - cameraNode->world.translate.z);
+		glm::vec3 cameraPosition = { cameraNode->world.translate.x, cameraNode->world.translate.y, cameraNode->world.translate.z };
+		glm::vec3 eyePosition = { eyeNode->world.translate.x, eyeNode->world.translate.y, eyeNode->world.translate.z };
+		glm::vec3 headPosition = { headNode->world.translate.x, headNode->world.translate.y, headNode->world.translate.z };
+
+		auto eyeDisplacement = glm::distance(headPosition, eyePosition);
+		auto headDisplacement = glm::distance(headPosition, cameraPosition);
 		auto forwardDisplacement = abs(headDisplacement + eyeDisplacement);
 
 		auto rightDisplacement = headNode->world.translate.x - cameraNode->world.translate.x;
