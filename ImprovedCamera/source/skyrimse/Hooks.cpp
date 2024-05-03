@@ -392,6 +392,9 @@ namespace Patch {
 			auto pluginSkyrimSE = DLLMain::Plugin::Get()->SkyrimSE();
 			std::uintptr_t baseAddress = pluginSkyrimSE->BaseAddress();
 
+			std::uint8_t nearDistancePayload[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
+			REL::safe_write(Address::Hook::NearDistanceIndoorsFix, nearDistancePayload, sizeof(nearDistancePayload));
+
 			MH_STATUS status = MH_Initialize();
 			if (status != MH_OK && status != MH_ERROR_ALREADY_INITIALIZED)
 			{
@@ -617,6 +620,7 @@ namespace Patch {
 		Address::Hook::HorseLookingDownFix1 = REL::RelocationID(36602, 37356).address() + REL::VariantOffset(0x77, 0xB4E, 0).offset();
 		Address::Hook::HorseLookingDownFix2 = REL::RelocationID(36602, 37610).address() + REL::VariantOffset(0x77, 0x19, 0).offset();
 		Address::Hook::HorseLookingDownFix3 = REL::RelocationID(36602, 37611).address() + REL::VariantOffset(0x77, 0x19, 0).offset();
+		Address::Hook::NearDistanceIndoorsFix = REL::RelocationID(100407, 107125).address() + 0x14;
 		Address::Hook::NiCameraUpdate = REL::RelocationID(69273, 70643).address();
 		Address::Hook::FadeOutGame = REL::RelocationID(51909, 52847).address();
 
@@ -664,6 +668,7 @@ namespace Patch {
 		LOG_DEBUG("Hook::HorseLookingDownFix1:\t\t\t0x{:08X}", Address::Hook::HorseLookingDownFix1 - baseAddress);
 		LOG_DEBUG("Hook::HorseLookingDownFix2:\t\t\t0x{:08X}", Address::Hook::HorseLookingDownFix2 - baseAddress);
 		LOG_DEBUG("Hook::HorseLookingDownFix3:\t\t\t0x{:08X}", Address::Hook::HorseLookingDownFix3 - baseAddress);
+		LOG_DEBUG("Hook::NearDistanceIndoorsFix:\t\t0x{:08X}", Address::Hook::NearDistanceIndoorsFix - baseAddress);
 
 		LOG_DEBUG("Variable::NiNodeGlobalTime:\t\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::NiNodeGlobalTime) - baseAddress);
 		LOG_DEBUG("Variable::fDefaultWorldFOV:\t\t\t0x{:08X}", (std::uintptr_t)std::addressof(*Address::Variable::fDefaultWorldFOV) - baseAddress);

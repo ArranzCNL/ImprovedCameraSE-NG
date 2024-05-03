@@ -29,7 +29,7 @@ namespace Address {
 		static std::uintptr_t RagdollDeath;
 		static std::uintptr_t KillActor;
 		static std::uintptr_t ThirdpersonFade;
-		static std::uintptr_t NearDistanceFix;
+		static std::uintptr_t NearDistanceIndoorsFix;
 		static std::uintptr_t HorseLookingDownFix1;
 		static std::uintptr_t HorseLookingDownFix2;
 		static std::uintptr_t HorseLookingDownFix3;
