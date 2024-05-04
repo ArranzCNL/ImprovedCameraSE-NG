@@ -392,9 +392,6 @@ namespace Patch {
 			auto pluginSkyrimSE = DLLMain::Plugin::Get()->SkyrimSE();
 			std::uintptr_t baseAddress = pluginSkyrimSE->BaseAddress();
 
-			std::uint8_t nearDistancePayload[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
-			REL::safe_write(Address::Hook::NearDistanceIndoorsFix, nearDistancePayload, sizeof(nearDistancePayload));
-
 			MH_STATUS status = MH_Initialize();
 			if (status != MH_OK && status != MH_ERROR_ALREADY_INITIALIZED)
 			{
@@ -413,6 +410,8 @@ namespace Patch {
 				return;
 			}
 			LOG_TRACE("  MinHook:\t\t\t\tHooked NiCamera::sub_14{:07X}", Address::Hook::NiCameraUpdate - baseAddress);
+      std::uint8_t nearDistancePayload[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
+			REL::safe_write(Address::Hook::NearDistanceIndoorsFix, nearDistancePayload, sizeof(nearDistancePayload));
 		}
 	};
 
