@@ -42,7 +42,7 @@ namespace ImprovedCamera {
 		void Ragdoll_UpdateObjectUpwards(RE::Actor* actor);
 
 		bool IsFirstPerson() const { return m_IsFirstPerson; }
-		float UpdateNearDistance();
+		float UpdateNearDistance(float fNear);
 
 		void RequestAPIs();
 		void DetectMods();

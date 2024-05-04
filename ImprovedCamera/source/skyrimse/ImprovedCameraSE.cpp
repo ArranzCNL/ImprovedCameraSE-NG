@@ -1052,18 +1052,25 @@ namespace ImprovedCamera {
 		});
 	}
 
-	float ImprovedCameraSE::UpdateNearDistance()
+	float ImprovedCameraSE::UpdateNearDistance(float fNear)
 	{
 		auto camera = RE::PlayerCamera::GetSingleton();
 		if (!camera || !m_ICamera)
-			return 15.0f;
+			return fNear;
 
 		auto player = RE::PlayerCharacter::GetSingleton();
 		auto firstpersonState = (RE::FirstPersonState*)camera->currentState.get();
 		auto cameraNode = camera->cameraRoot.get()->AsNode();
 		auto cameraNI = (RE::NiCamera*)((cameraNode->children.size() == 0) ? nullptr : cameraNode->children[0].get());
 		if (!cameraNI)
-			return 15.0f;
+			return fNear;
+
+		// Fix flickering map
+		if (RE::UI::GetSingleton()->IsMenuOpen("MapMenu"))
+		{
+			cameraNI->viewFrustum.fNear = 15.0f;
+			return fNear; // 128.0f
+		}
 
 		float nearDistance = cameraNI->viewFrustum.fNear;  // 15.0f
 		float maxPitch = m_pluginConfig->NearDistance().fPitchThreshold;
@@ -1095,8 +1102,14 @@ namespace ImprovedCamera {
 		else
 			nearDistance = 15.0f;
 
-		if (cameraNI->viewFrustum.fNear != nearDistance)
-			cameraNI->viewFrustum.fNear = nearDistance;
+		// fNear1stPersonDistance:Display check, usually comes in at 5.0f
+		if (fNear < nearDistance)
+		{
+			cameraNI->viewFrustum.fNear = 15.0f;
+			return fNear;
+		}
+
+		cameraNI->viewFrustum.fNear = nearDistance;
 
 		return nearDistance;
 	}
@@ -1276,12 +1289,12 @@ namespace ImprovedCamera {
 		auto eyeNode = Helper::FindNode(thirdpersonNode, "NPCEyeBone");
 		auto cameraNode = RE::PlayerCamera::GetSingleton()->cameraRoot.get()->AsNode();
 
-		auto eyeDisplacement = std::hypot(headNode->world.translate.x - eyeNode->world.translate.x,
-			headNode->world.translate.y - eyeNode->world.translate.y,
-			headNode->world.translate.z - eyeNode->world.translate.z);
-		auto headDisplacement = std::hypot(headNode->world.translate.x - cameraNode->world.translate.x,
-			headNode->world.translate.y - cameraNode->world.translate.y,
-			headNode->world.translate.z - cameraNode->world.translate.z);
+		glm::vec3 cameraPosition = { cameraNode->world.translate.x, cameraNode->world.translate.y, cameraNode->world.translate.z };
+		glm::vec3 eyePosition = { eyeNode->world.translate.x, eyeNode->world.translate.y, eyeNode->world.translate.z };
+		glm::vec3 headPosition = { headNode->world.translate.x, headNode->world.translate.y, headNode->world.translate.z };
+
+		auto eyeDisplacement = glm::distance(headPosition, eyePosition);
+		auto headDisplacement = glm::distance(headPosition, cameraPosition);
 		auto forwardDisplacement = abs(headDisplacement + eyeDisplacement);
 
 		auto rightDisplacement = headNode->world.translate.x - cameraNode->world.translate.x;
@@ -1298,25 +1311,25 @@ namespace ImprovedCamera {
 		{
 			if (playerState->IsWeaponDrawn())
 			{
-				position.x = (-m_pluginConfig->Camera().fFirstPersonCombatPosX - rightDisplacement) * thirdpersonNode->world.scale;
-				position.y = (-m_pluginConfig->Camera().fFirstPersonCombatPosY - forwardDisplacement) * thirdpersonNode->world.scale;
+				position.x = (-m_pluginConfig->Camera().fFirstPersonCombatPosX * thirdpersonNode->world.scale) - rightDisplacement;
+				position.y = (-m_pluginConfig->Camera().fFirstPersonCombatPosY * thirdpersonNode->world.scale) - forwardDisplacement;
 				position.z = -m_pluginConfig->Camera().fFirstPersonCombatPosZ * thirdpersonNode->world.scale;
 			}
 			else
 			{
-				position.x = (-m_pluginConfig->Camera().fFirstPersonPosX - rightDisplacement) * thirdpersonNode->world.scale;
-				position.y = (-m_pluginConfig->Camera().fFirstPersonPosY - forwardDisplacement) * thirdpersonNode->world.scale;
+				position.x = (-m_pluginConfig->Camera().fFirstPersonPosX * thirdpersonNode->world.scale) - rightDisplacement;
+				position.y = (-m_pluginConfig->Camera().fFirstPersonPosY * thirdpersonNode->world.scale) - forwardDisplacement;
 				position.z = -m_pluginConfig->Camera().fFirstPersonPosZ * thirdpersonNode->world.scale;
 			}
 		}
 		else
 		{
-			position.x = (0.0f - rightDisplacement) * thirdpersonNode->world.scale;
+			position.x = (0.0f * thirdpersonNode->world.scale) - rightDisplacement;
 
 			if ((playerState->IsWeaponDrawn() && m_pluginConfig->Camera().fFirstPersonCombatPosY < 0.1f) || (!playerState->IsWeaponDrawn() && m_pluginConfig->Camera().fFirstPersonPosY < 0.1f))
 				position.y = 0.0f * thirdpersonNode->world.scale;
 			else
-				position.y = (-8.0f - forwardDisplacement) * thirdpersonNode->world.scale;
+				position.y = (-8.0f * thirdpersonNode->world.scale) - forwardDisplacement;
 
 			position.z = 0.0f * thirdpersonNode->world.scale;
 		}
