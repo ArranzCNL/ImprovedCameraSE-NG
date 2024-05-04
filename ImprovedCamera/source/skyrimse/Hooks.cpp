@@ -410,7 +410,7 @@ namespace Patch {
 				return;
 			}
 			LOG_TRACE("  MinHook:\t\t\t\tHooked NiCamera::sub_14{:07X}", Address::Hook::NiCameraUpdate - baseAddress);
-      std::uint8_t nearDistancePayload[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
+			std::uint8_t nearDistancePayload[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
 			REL::safe_write(Address::Hook::NearDistanceIndoorsFix, nearDistancePayload, sizeof(nearDistancePayload));
 		}
 	};
