@@ -1311,25 +1311,25 @@ namespace ImprovedCamera {
 		{
 			if (playerState->IsWeaponDrawn())
 			{
-				position.x = (-m_pluginConfig->Camera().fFirstPersonCombatPosX - rightDisplacement) * thirdpersonNode->world.scale;
-				position.y = (-m_pluginConfig->Camera().fFirstPersonCombatPosY - forwardDisplacement) * thirdpersonNode->world.scale;
+				position.x = (-m_pluginConfig->Camera().fFirstPersonCombatPosX * thirdpersonNode->world.scale) - rightDisplacement;
+				position.y = (-m_pluginConfig->Camera().fFirstPersonCombatPosY * thirdpersonNode->world.scale) - forwardDisplacement;
 				position.z = -m_pluginConfig->Camera().fFirstPersonCombatPosZ * thirdpersonNode->world.scale;
 			}
 			else
 			{
-				position.x = (-m_pluginConfig->Camera().fFirstPersonPosX - rightDisplacement) * thirdpersonNode->world.scale;
-				position.y = (-m_pluginConfig->Camera().fFirstPersonPosY - forwardDisplacement) * thirdpersonNode->world.scale;
+				position.x = (-m_pluginConfig->Camera().fFirstPersonPosX * thirdpersonNode->world.scale) - rightDisplacement;
+				position.y = (-m_pluginConfig->Camera().fFirstPersonPosY * thirdpersonNode->world.scale) - forwardDisplacement;
 				position.z = -m_pluginConfig->Camera().fFirstPersonPosZ * thirdpersonNode->world.scale;
 			}
 		}
 		else
 		{
-			position.x = (0.0f - rightDisplacement) * thirdpersonNode->world.scale;
+			position.x = (0.0f * thirdpersonNode->world.scale) - rightDisplacement;
 
 			if ((playerState->IsWeaponDrawn() && m_pluginConfig->Camera().fFirstPersonCombatPosY < 0.1f) || (!playerState->IsWeaponDrawn() && m_pluginConfig->Camera().fFirstPersonPosY < 0.1f))
 				position.y = 0.0f * thirdpersonNode->world.scale;
 			else
-				position.y = (-8.0f - forwardDisplacement) * thirdpersonNode->world.scale;
+				position.y = (-8.0f * thirdpersonNode->world.scale) - forwardDisplacement;
 
 			position.z = 0.0f * thirdpersonNode->world.scale;
 		}

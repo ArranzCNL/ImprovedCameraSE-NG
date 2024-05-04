@@ -479,7 +479,7 @@ namespace Patch {
 				if (currentPayload[0] == 0)
 				{
 					std::memcpy(reinterpret_cast<void*>(currentPayload), reinterpret_cast<const void*>(Address::Hook::ThirdpersonFade + REL::VariantOffset(0x431, 0x4DD, 0).offset()), sizeof(currentPayload));
-					if (currentPayload[2] == 0x90)
+					if (currentPayload[0] == 0xEB)
 					{
 						displayTweaks = true;
 						PlayerCameraUnk0(unk1, unk2, unk3);
@@ -487,8 +487,8 @@ namespace Patch {
 					}
 				}
 
-				bool fadePlayer = ic->IsFirstPerson();
-				if (fadePlayer && payload[0] != 0xEB)
+				bool fadePlayer = !ic->IsFirstPerson();
+				if (!fadePlayer && payload[0] != 0xEB)
 				{
 					std::memcpy(reinterpret_cast<void*>(payload), reinterpret_cast<const void*>(fadePayload), sizeof(payload));
 					// Create a short jump.
@@ -496,7 +496,7 @@ namespace Patch {
 					payload[1] = 0x58;
 					REL::safe_write(Address::Hook::ThirdpersonFade + REL::VariantOffset(0x431, 0x4DD, 0).offset(), payload, sizeof(payload));
 				}
-				else if (!fadePlayer && payload[0] != 0xF3)
+				else if (fadePlayer && payload[0] != 0xF3)
 				{
 					// Copy and restore the original fade state.
 					std::memcpy(reinterpret_cast<void*>(payload), reinterpret_cast<const void*>(fadePayload), sizeof(payload));
