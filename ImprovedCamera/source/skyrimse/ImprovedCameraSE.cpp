@@ -461,6 +461,9 @@ namespace ImprovedCamera {
 			float armScale = UseThirdPersonArms() ? 0.001f : 1.0f;
 			float headRot = 0.0f;
 
+			if (!leftarmNode || !rightarmNode)
+				return;
+
 			leftarmNode->local.scale = armScale;
 			rightarmNode->local.scale = armScale;
 
@@ -1151,7 +1154,7 @@ namespace ImprovedCamera {
 		auto headNode = Helper::GetHeadNode(thirdpersonNode);
 		auto eyeBoneNode = Helper::FindNode(firstpersonNode, "NPCEyeBone");
 
-		if (!headNode)
+		if (!headNode || !eyeBoneNode)
 			return;
 
 		auto cameraNode = RE::PlayerCamera::GetSingleton()->cameraRoot.get()->AsNode();
@@ -1287,6 +1290,10 @@ namespace ImprovedCamera {
 		auto thirdpersonNode = player->Get3D(0)->AsNode();
 		auto headNode = Helper::GetHeadNode(thirdpersonNode);
 		auto eyeNode = Helper::FindNode(thirdpersonNode, "NPCEyeBone");
+		bool isVampireLord = Helper::IsTransformed(player, "DLC1VampireBeastRace");
+		if (!eyeNode && isVampireLord)
+			eyeNode = Helper::FindNode(thirdpersonNode, "NPC EyeBrow");
+
 		auto cameraNode = RE::PlayerCamera::GetSingleton()->cameraRoot.get()->AsNode();
 
 		glm::vec3 cameraPosition = { cameraNode->world.translate.x, cameraNode->world.translate.y, cameraNode->world.translate.z };

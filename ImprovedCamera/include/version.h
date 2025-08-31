@@ -14,7 +14,7 @@
 #define VERSION_PRODUCTNAME_DESCRIPTION_STR "Improved Camera SE" " v" VERSION_STR
 #define VERSION_MAJOR                       1
 #define VERSION_MINOR                       1
-#define VERSION_REVISION                    1
+#define VERSION_REVISION                    2
 #define VERSION_BUILD                       4228
 #define VERSION_STR                         MAKE_STR(VERSION_MAJOR) "." MAKE_STR(VERSION_MINOR) "." MAKE_STR(VERSION_REVISION) "." MAKE_STR(VERSION_BUILD)
 
